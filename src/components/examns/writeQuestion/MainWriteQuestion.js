@@ -1,0 +1,149 @@
+import React from 'react'
+import { Title4, Title5, Title6 } from './../../../styles/textGeneral'
+import { Button } from './../../../styles/buttonGeneral'
+import { WrapperAdmin } from './../../../styles/generalStyles'
+import { InputContainer, FormContainer } from './../../../styles/inputGeneral'
+import { WrapperDuplex } from './../../../styles/boxesGeneral'
+import InputSvg from './../../general/cOthers/InputSvg'
+
+export default function MainWriteQuestion() {
+  return (
+    <main>
+      <WrapperAdmin>
+        <div>
+          <Title4>Redacción de preguntas</Title4>
+        </div>
+        <div>
+          <Title5>Metadatos</Title5>
+          <FormContainer>
+            <div className='inputContainerQuad'>
+              <InputContainer margin10B>
+                <label>Universidad</label>
+                <div class="select">
+                  <select id="standard-select">
+                    <option value="Option 1">Option 1</option>
+                    <option value="Option 2">Option 2</option>
+                  </select>
+                  <span class="focus"></span>
+                </div>
+              </InputContainer>
+            </div>
+            <div className='inputContainerQuad'>
+              <InputContainer margin10B>
+                <label>Curso</label>
+                <div class="select">
+                  <select id="standard-select">
+                    <option value="Option 1">Option 1</option>
+                    <option value="Option 2">Option 2</option>
+                  </select>
+                  <span class="focus"></span>
+                </div>
+              </InputContainer>
+              <InputContainer noMargin>
+                <label>Tema</label>
+                <div class="select">
+                  <select id="standard-select">
+                    <option value="Option 1">Option 1</option>
+                    <option value="Option 2">Option 2</option>
+                  </select>
+                  <span class="focus"></span>
+                </div>
+              </InputContainer>
+              <InputContainer noMargin>
+                <label>Subtema</label>
+                <div class="select">
+                  <select id="standard-select">
+                    <option value="Option 1">Option 1</option>
+                    <option value="Option 2">Option 2</option>
+                  </select>
+                  <span class="focus"></span>
+                </div>
+              </InputContainer>
+              <InputContainer noMargin>
+                <label>Nivel</label>
+                <div class="select">
+                  <select id="standard-select">
+                    <option value="Option 1">Option 1</option>
+                    <option value="Option 2">Option 2</option>
+                  </select>
+                  <span class="focus"></span>
+                </div>
+              </InputContainer>
+            </div>
+            <div className='inputContainerDuplo'>
+              <InputContainer noMargin>
+                <label>Pregunta para</label>
+                <div className='inputsRadioContainer'>
+                  <label className="inputRadioContainer inputType">
+                    <input type="checkbox" />
+                    Simulacros
+                  </label>
+                  <label className="inputRadioContainer inputType">
+                    <input type="checkbox" />
+                    Questionario
+                  </label>
+                </div>
+              </InputContainer>
+            </div>
+            <WrapperDuplex>
+              <div>
+                <Title5>Contenido</Title5>
+                <div>
+                  <Title6>Pregunta</Title6>
+                  <div>
+                    <InputSvg
+                      heightTextArea="140px"
+                      type="textArea"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <Title6>Alternativas</Title6>
+                  <div>
+                    <InputSvg
+                      number="1."
+                    />
+                    <InputSvg
+                      number="2."
+                    />
+                    <InputSvg
+                      number="3."
+                    />
+                    <InputSvg
+                      number="4."
+                    />
+                    <InputSvg
+                      number="5."
+                    />
+                  </div>
+                </div>
+              </div>
+              <div>
+                <Title5>Vista previa</Title5>
+              </div>
+            </WrapperDuplex>
+            <div>
+              <Title5>Resolución</Title5>
+                <WrapperDuplex>
+                  <InputContainer margin="0 0 10px 0">
+                    <label>URL del video</label>
+                    <input />
+                  </InputContainer>
+                </WrapperDuplex>
+                <div>
+                  <InputSvg
+                    heightTextArea="140px"
+                    type="textArea"
+                    label="Texto e imagen"
+                  />
+                </div>
+            </div>
+            <WrapperDuplex>
+              <Button primary formEnd>Enviar a revisión</Button>
+            </WrapperDuplex>
+          </FormContainer>
+        </div>
+      </WrapperAdmin>
+    </main>
+  )
+}

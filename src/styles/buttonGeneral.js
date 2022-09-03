@@ -43,6 +43,7 @@ export const Button = styled.button`
       color: ${props => props.theme.hoverBrand};
     }
   `}
+  
 
   ${props => props.quaternary && css`
     background: transparent;
@@ -153,5 +154,20 @@ export const Button = styled.button`
 
   ${props => props.formEnd && css`
     margin: 30px 0 0 0;
+  `}
+
+  ${props => props.functionLatex && css`
+    background: transparent;
+    color: ${props => props.theme.brandColor};
+    font-size: 0.9em;
+    text-transform: initial;
+    height: initial !important;
+    height: auto!important;
+    width: auto !important;
+    border: 1px solid ${props => props.theme.brandColor};
+
+    &:hover {
+      color: ${props => props.theme.hoverBrand};
+    }
   `}
 `

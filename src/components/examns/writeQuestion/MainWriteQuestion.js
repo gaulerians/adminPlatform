@@ -1,12 +1,24 @@
-import React from 'react'
-import { Title4, Title5, Title6 } from './../../../styles/textGeneral'
-import { Button } from './../../../styles/buttonGeneral'
-import { WrapperAdmin } from './../../../styles/generalStyles'
-import { InputContainer, FormContainer } from './../../../styles/inputGeneral'
-import { WrapperDuplex } from './../../../styles/boxesGeneral'
-import InputSvg from './../../general/cOthers/InputSvg'
+import React, { useEffect, useState } from "react";
+// import {insertarFuncion } from '../functionsLatex/functionsLatex'
+import "katex/dist/katex.min.css";
+import { Latex } from "../../latex/Latex";
+import { Title4, Title5, Title6 } from "./../../../styles/textGeneral";
+import { Button } from "./../../../styles/buttonGeneral";
+import { WrapperAdmin } from "./../../../styles/generalStyles";
+import { InputContainer, FormContainer } from "./../../../styles/inputGeneral";
+import { WrapperDuplex } from "./../../../styles/boxesGeneral";
+import { ButtonLatex } from "./styles/sButtonLatex";
+import InputSvg from "./../../general/cOthers/InputSvg";
+import { functionLatex } from "../functionsLatex/functionsLatex";
 
 export default function MainWriteQuestion() {
+  const [question, setQuestion] = useState("");
+  const [selectionCategory, setSelectionCategory] = useState("");
+
+  useEffect(() => {
+    // console.log(subCategoryValuesState);
+  }, [question]);
+
   return (
     <main>
       <WrapperAdmin>
@@ -16,7 +28,7 @@ export default function MainWriteQuestion() {
         <div>
           <Title5>Metadatos</Title5>
           <FormContainer>
-            <div className='inputContainerQuad'>
+            <div className="inputContainerQuad">
               <InputContainer margin10B>
                 <label>Universidad</label>
                 <div class="select">
@@ -28,7 +40,7 @@ export default function MainWriteQuestion() {
                 </div>
               </InputContainer>
             </div>
-            <div className='inputContainerQuad'>
+            <div className="inputContainerQuad">
               <InputContainer margin10B>
                 <label>Curso</label>
                 <div class="select">
@@ -70,10 +82,10 @@ export default function MainWriteQuestion() {
                 </div>
               </InputContainer>
             </div>
-            <div className='inputContainerDuplo'>
+            <div className="inputContainerDuplo">
               <InputContainer noMargin>
                 <label>Pregunta para</label>
-                <div className='inputsRadioContainer'>
+                <div className="inputsRadioContainer">
                   <label className="inputRadioContainer inputType">
                     <input type="checkbox" />
                     Simulacros
@@ -81,6 +93,10 @@ export default function MainWriteQuestion() {
                   <label className="inputRadioContainer inputType">
                     <input type="checkbox" />
                     Questionario
+                  </label>
+                  <label className="inputRadioContainer inputType">
+                    <input type="checkbox" />
+                    DECO
                   </label>
                 </div>
               </InputContainer>
@@ -94,56 +110,109 @@ export default function MainWriteQuestion() {
                     <InputSvg
                       heightTextArea="140px"
                       type="textArea"
+                      setQuestion={setQuestion}
+                      question={question}
                     />
                   </div>
+                  <Title6>Insertar funciones LATEX</Title6>
+                  <InputContainer noMargin>
+                    <div class="select">
+                      <select
+                        id="standard-select-category"
+                        defaultValue={selectionCategory}
+                        onChange={(e) => setSelectionCategory(e.target.value)}
+                      >
+                        {functionLatex.map((lat, index) => {
+                          return (
+                            <option
+                              key={index}
+                              value={`${lat.category}${
+                                lat.subCategory ? "-" + lat.subCategory : ""
+                              }`}
+                            >{`${lat.category}${
+                              lat.subCategory ? "-" + lat.subCategory : ""
+                            }`}</option>
+                          );
+                        })}
+                        <span class="focus"></span>
+                      </select>
+                    </div>
+                  </InputContainer>
+                </div>
+                <div>
+                  {functionLatex
+                    .filter((lat) => {
+                      if (selectionCategory.split("-")?.length > 1) {
+                        return (
+                          lat.category === selectionCategory.split("-")[0] &&
+                          lat.subCategory === selectionCategory.split("-")[1]
+                        );
+                      } else if (selectionCategory.split("-")?.length === 1) {
+                        return lat.category === selectionCategory;
+                      }
+                    })
+                    .map((lat) =>
+                      lat.functions.map((func, index) => (
+                        <ButtonLatex
+                          type="button"
+                          primary
+                          secundary
+                          inForm
+                          className={func.styleButton}
+                          key={index}
+                          value={func.expressionLatex}
+                          id={index}
+                          onClick={() => {
+                            setQuestion(`${question}${func.expressionLatex}`);
+                          }}
+                        >
+                          <Latex>{func.expressionLatex}</Latex>
+                        </ButtonLatex>
+                      ))
+                    )}
                 </div>
                 <div>
                   <Title6>Alternativas</Title6>
                   <div>
-                    <InputSvg
-                      number="1."
-                    />
-                    <InputSvg
-                      number="2."
-                    />
-                    <InputSvg
-                      number="3."
-                    />
-                    <InputSvg
-                      number="4."
-                    />
-                    <InputSvg
-                      number="5."
-                    />
+                    <InputSvg number="1." />
+                    <InputSvg number="2." />
+                    <InputSvg number="3." />
+                    <InputSvg number="4." />
+                    <InputSvg number="5." />
                   </div>
                 </div>
               </div>
               <div>
                 <Title5>Vista previa</Title5>
+                <div>
+                  <Latex>{question}</Latex>
+                </div>
               </div>
             </WrapperDuplex>
             <div>
               <Title5>Resolución</Title5>
-                <WrapperDuplex>
-                  <InputContainer margin="0 0 10px 0">
-                    <label>URL del video</label>
-                    <input />
-                  </InputContainer>
-                </WrapperDuplex>
-                <div>
-                  <InputSvg
-                    heightTextArea="140px"
-                    type="textArea"
-                    label="Texto e imagen"
-                  />
-                </div>
+              <WrapperDuplex>
+                <InputContainer margin="0 0 10px 0">
+                  <label>URL del video</label>
+                  <input />
+                </InputContainer>
+              </WrapperDuplex>
+              <div>
+                <InputSvg
+                  heightTextArea="140px"
+                  type="textArea"
+                  label="Texto e imagen"
+                />
+              </div>
             </div>
             <WrapperDuplex>
-              <Button primary formEnd>Enviar a revisión</Button>
+              <Button primary formEnd>
+                Enviar a revisión
+              </Button>
             </WrapperDuplex>
           </FormContainer>
         </div>
       </WrapperAdmin>
     </main>
-  )
+  );
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 // import {insertarFuncion } from '../functionsLatex/functionsLatex'
 import "katex/dist/katex.min.css";
 import { Latex } from "../../latex/Latex";
@@ -10,14 +10,33 @@ import { WrapperDuplex } from "./../../../styles/boxesGeneral";
 import { ButtonLatex } from "./styles/sButtonLatex";
 import InputSvg from "./../../general/cOthers/InputSvg";
 import { functionLatex } from "../functionsLatex/functionsLatex";
+import { writingFunctionInQuestion } from "./algorithms/handleChangeQuestion";
 
 export default function MainWriteQuestion() {
   const [question, setQuestion] = useState("");
   const [selectionCategory, setSelectionCategory] = useState("");
+  //crear estadopara referencias
+  //subir de nivel del estado
+
+  const [alternatives, setAlternatives] = useState([
+    { id: 1, alternative: "" },
+    { id: 2, alternative: "" },
+    { id: 3, alternative: "" },
+    { id: 4, alternative: "" },
+    { id: 5, alternative: "" },
+  ]);
+
+  const inputRef = useRef(null);
+  const [selections, setSelections] = useState({
+    start: 0,
+    end: 0,
+  });
+
 
   useEffect(() => {
-    // console.log(subCategoryValuesState);
-  }, [question]);
+    inputRef.current.selectionStart = selections.start;
+    inputRef.current.selectionEnd = selections.end;
+  }, [question, selections]);
 
   return (
     <main>
@@ -112,6 +131,10 @@ export default function MainWriteQuestion() {
                       type="textArea"
                       setQuestion={setQuestion}
                       question={question}
+                      isQuestion={true}
+                      inputRef={inputRef}
+                      selections={selections}
+                      setSelections={setSelections}
                     />
                   </div>
                   <Title6>Insertar funciones LATEX</Title6>
@@ -163,7 +186,14 @@ export default function MainWriteQuestion() {
                           value={func.expressionLatex}
                           id={index}
                           onClick={() => {
-                            setQuestion(`${question}${func.expressionLatex}`);
+                            writingFunctionInQuestion(
+                              func.expressionLatex,
+                              question,
+                              setQuestion,
+                              selections,
+                              setSelections,
+                              inputRef
+                            );
                           }}
                         >
                           <Latex>{func.expressionLatex}</Latex>
@@ -174,11 +204,15 @@ export default function MainWriteQuestion() {
                 <div>
                   <Title6>Alternativas</Title6>
                   <div>
-                    <InputSvg number="1." />
-                    <InputSvg number="2." />
-                    <InputSvg number="3." />
-                    <InputSvg number="4." />
-                    <InputSvg number="5." />
+                    {alternatives.map((key, index) => (
+                      <InputSvg
+                        key={index}
+                        number={`${index + 1}.`}
+                        setAlternatives={setAlternatives}
+                        alternatives={alternatives}
+                        id={key.id}
+                      />
+                    ))}
                   </div>
                 </div>
               </div>

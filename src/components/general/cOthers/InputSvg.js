@@ -12,14 +12,18 @@ export default function InputSvg({
   label,
   setQuestion,
   question,
+  alternatives,
+  setAlternatives,
+  selections,
+  setSelections,
+  inputRef
 }) {
-  const [selections, setSelections] = useState({
-    start: 0,
-    end: 0,
-  });
-  const textAreaRef = useRef(null);
 
-  useEffect(() => {}, [question, selections]);
+
+  // useEffect(() => {
+  //   // inputRef.current.selectionStart = selections.start;
+  //   // inputRef.current.selectionEnd = selections.end;
+  // }, [question, selections]);
 
   return (
     <InputContainer noMargin heightTextArea={heightTextArea}>
@@ -30,7 +34,7 @@ export default function InputSvg({
             <textarea
               id="questionInput"
               value={question}
-              ref={textAreaRef}
+              ref={inputRef}
               placeholder="Escribe aquí tu pregunta"
               onChange={(e) =>
                 handleChangeQuestion(
@@ -39,7 +43,7 @@ export default function InputSvg({
                   setQuestion,
                   selections,
                   setSelections,
-                  textAreaRef
+                  inputRef
                 )
               }
               onSelect={(e) =>
@@ -49,7 +53,7 @@ export default function InputSvg({
                   setQuestion,
                   selections,
                   setSelections,
-                  textAreaRef
+                  inputRef
                 )
               }
             ></textarea>
@@ -59,7 +63,7 @@ export default function InputSvg({
       ) : (
         <InputSvgContainer type={type}>
           <p>{number}</p>
-          <input />
+          <input ref={inputRef} />
           <ImageFilesSVG />
         </InputSvgContainer>
       )}

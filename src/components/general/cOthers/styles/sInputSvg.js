@@ -11,7 +11,7 @@ export const InputSvgContainer = styled.div`
 
   p {
     font-weight: ${props => props.theme.weight.medium};
-    margin: 0 10px 0 0;
+    margin: 8px 10px 0 0;
   }
 
   input {

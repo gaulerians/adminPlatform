@@ -1,13 +1,13 @@
-export const handleChangeQuestion = (
+export const handleChangeTextLatex = ({
   e,
-  question,
-  setQuestion,
+  latexString,
+  setLatexString,
   selections,
   setSelections,
-  inputRef
-) => {
+  inputRef,
+}) => {
   if (e.type === "change") {
-    let copiedText = Array.from(question);
+    let copiedText = Array.from(latexString);
     let lengthAdded = 0;
     if (e.nativeEvent.inputType === "insertLineBreak") {
       let latexFunction = " \\newline ";
@@ -38,33 +38,11 @@ export const handleChangeQuestion = (
       start: inputRef.current.selectionStart + lengthAdded,
       end: inputRef.current.selectionEnd + lengthAdded,
     });
-    setQuestion(copiedText.join(""));
+    setLatexString(copiedText.join(""));
   } else if (e.type === "select") {
     setSelections({
       start: inputRef.current.selectionStart,
       end: inputRef.current.selectionEnd,
     });
   }
-};
-
-
-export const writingFunctionInQuestion = (
-  expressionLatex,
-  question,
-  setQuestion,
-  selections,
-  setSelections,
-  inputRef
-) => {
-  let copiedText = Array.from(question);
-  let lengthAdded = 0;
-  let latexFunction = expressionLatex;
-  copiedText.splice(selections.end, 0, latexFunction);
-  lengthAdded = latexFunction.length - 1;
-  setSelections({
-    start: inputRef.current.selectionStart + lengthAdded,
-    end: inputRef.current.selectionEnd + lengthAdded,
-  });
-  setQuestion(copiedText.join(""));
-  
 };

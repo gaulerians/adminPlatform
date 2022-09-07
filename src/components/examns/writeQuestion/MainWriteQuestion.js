@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 // import {insertarFuncion } from '../functionsLatex/functionsLatex'
 import "katex/dist/katex.min.css";
 import { Latex } from "../../latex/Latex";
@@ -10,13 +10,16 @@ import { WrapperDuplex } from "./../../../styles/boxesGeneral";
 import { ButtonLatex } from "./styles/sButtonLatex";
 import InputSvg from "./../../general/cOthers/InputSvg";
 import { functionLatex } from "../functionsLatex/functionsLatex";
-import { writingFunctionInQuestion } from "./algorithms/handleChangeQuestion";
 
 export default function MainWriteQuestion() {
   const [question, setQuestion] = useState("");
   const [selectionCategory, setSelectionCategory] = useState("");
+  const [superiorSelections, setSuperiorSelections] = useState({
+    selections: { start: 0, end: 0 },
+    setSelections: null,
+    setInferiorText: null,
+  });
   //crear estadopara referencias
-  //subir de nivel del estado
 
   const [alternatives, setAlternatives] = useState([
     { id: 1, alternative: "" },
@@ -26,17 +29,24 @@ export default function MainWriteQuestion() {
     { id: 5, alternative: "" },
   ]);
 
-  const inputRef = useRef(null);
-  const [selections, setSelections] = useState({
-    start: 0,
-    end: 0,
-  });
+  const handleClickFunction = (func) => {
+    if (superiorSelections.setInferiorText && superiorSelections.setSelections) {
+      superiorSelections.setInferiorText((prev) => {
+        return (
+          prev.slice(0, superiorSelections.selections.start) +
+          func +
+          prev.slice(superiorSelections.selections.end)
+        );
+      });
+      superiorSelections.setSelections((prev) => {
+        return {
+          start: prev.start + func.length,
+          end: prev.end + func.length,
+        };
+      });
+    }
+  };
 
-
-  useEffect(() => {
-    inputRef.current.selectionStart = selections.start;
-    inputRef.current.selectionEnd = selections.end;
-  }, [question, selections]);
 
   return (
     <main>
@@ -132,9 +142,7 @@ export default function MainWriteQuestion() {
                       setQuestion={setQuestion}
                       question={question}
                       isQuestion={true}
-                      inputRef={inputRef}
-                      selections={selections}
-                      setSelections={setSelections}
+                      setSuperiorSelections={setSuperiorSelections}
                     />
                   </div>
                   <Title6>Insertar funciones LATEX</Title6>
@@ -164,16 +172,12 @@ export default function MainWriteQuestion() {
                 </div>
                 <div>
                   {functionLatex
-                    .filter((lat) => {
-                      if (selectionCategory.split("-")?.length > 1) {
-                        return (
-                          lat.category === selectionCategory.split("-")[0] &&
+                    .filter((lat) =>
+                      selectionCategory.split("-")?.length > 1
+                        ? lat.category === selectionCategory.split("-")[0] &&
                           lat.subCategory === selectionCategory.split("-")[1]
-                        );
-                      } else if (selectionCategory.split("-")?.length === 1) {
-                        return lat.category === selectionCategory;
-                      }
-                    })
+                        : lat.category === selectionCategory
+                    )
                     .map((lat) =>
                       lat.functions.map((func, index) => (
                         <ButtonLatex
@@ -185,16 +189,9 @@ export default function MainWriteQuestion() {
                           key={index}
                           value={func.expressionLatex}
                           id={index}
-                          onClick={() => {
-                            writingFunctionInQuestion(
-                              func.expressionLatex,
-                              question,
-                              setQuestion,
-                              selections,
-                              setSelections,
-                              inputRef
-                            );
-                          }}
+                          onClick={() =>
+                            handleClickFunction(func.expressionLatex)
+                          }
                         >
                           <Latex>{func.expressionLatex}</Latex>
                         </ButtonLatex>
@@ -207,9 +204,12 @@ export default function MainWriteQuestion() {
                     {alternatives.map((key, index) => (
                       <InputSvg
                         key={index}
+                        type="textArea"
+                        isQuestion={false}
                         number={`${index + 1}.`}
                         setAlternatives={setAlternatives}
                         alternatives={alternatives}
+                        setSuperiorSelections={setSuperiorSelections}
                         id={key.id}
                       />
                     ))}
@@ -220,6 +220,16 @@ export default function MainWriteQuestion() {
                 <Title5>Vista previa</Title5>
                 <div>
                   <Latex>{question}</Latex>
+                </div>
+                <br />
+                <div>
+                  {alternatives.map((alt, index) => (
+                    <div key={index}>
+                      <Latex>{`${index + 1}) \\space ${
+                        alt.alternative
+                      }`}</Latex>
+                    </div>
+                  ))}
                 </div>
               </div>
             </WrapperDuplex>
@@ -240,7 +250,7 @@ export default function MainWriteQuestion() {
               </div>
             </div>
             <WrapperDuplex>
-              <Button primary formEnd>
+              <Button primary formEnd type="button">
                 Enviar a revisión
               </Button>
             </WrapperDuplex>

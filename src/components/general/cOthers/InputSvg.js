@@ -3,7 +3,8 @@ import React, { useEffect, useState, useRef } from "react";
 import { InputContainer } from "../../../styles/inputGeneral";
 import { ReactComponent as ImageFilesSVG } from "./../../../icons/image-files.svg";
 import { InputSvgContainer } from "./styles/sInputSvg";
-import { handleChangeQuestion } from "../../examns/writeQuestion/algorithms/handleChangeQuestion";
+import { handleChangeTextLatex } from "../../examns/writeQuestion/algorithms/handleChangeTextLatex";
+import { writingFunctionInAlternative } from "../../examns/writeQuestion/algorithms/handleChangeTextLatex";
 
 export default function InputSvg({
   heightTextArea,
@@ -11,50 +12,78 @@ export default function InputSvg({
   number,
   label,
   setQuestion,
-  question,
+  id,
+  isQuestion = false,
   alternatives,
   setAlternatives,
-  selections,
-  setSelections,
-  inputRef
+  setSuperiorSelections,
 }) {
+  const [selections, setSelections] = useState({
+    start: 0,
+    end: 0,
+  });
 
+  const [localText, setLocalText] = useState("");
+  const inputRef = useRef(null);
 
-  // useEffect(() => {
-  //   // inputRef.current.selectionStart = selections.start;
-  //   // inputRef.current.selectionEnd = selections.end;
-  // }, [question, selections]);
+  useEffect(() => {
+    inputRef.current.selectionStart = selections.start;
+    inputRef.current.selectionEnd = selections.end;
+    setSuperiorSelections &&
+      setSuperiorSelections({
+        selections: selections,
+        setInferiorText: setLocalText,
+        setSelections: setSelections,
+      });
+  }, [selections]);
+
+  useEffect(() => {
+    isQuestion && setQuestion(localText);
+    !isQuestion &&
+      id &&
+      setAlternatives(
+        Object.values({
+          ...alternatives,
+          [id - 1]: { id, alternative: localText },
+        })
+      );
+  }, [localText]);
 
   return (
     <InputContainer noMargin heightTextArea={heightTextArea}>
-      {type == "textArea" ? (
+      {type === "textArea" ? (
         <>
           <label>{label}</label>
           <InputSvgContainer type={type}>
+            {number && <p>{number}</p>}
             <textarea
               id="questionInput"
-              value={question}
+              value={localText}
               ref={inputRef}
-              placeholder="Escribe aquí tu pregunta"
+              placeholder={
+                isQuestion
+                  ? "Escribe aquí tu pregunta"
+                  : "Escribe aquí tu alternativa"
+              }
               onChange={(e) =>
-                handleChangeQuestion(
+                handleChangeTextLatex({
                   e,
-                  question,
-                  setQuestion,
+                  latexString: localText,
+                  setLatexString: setLocalText,
                   selections,
                   setSelections,
-                  inputRef
-                )
+                  inputRef,
+                })
               }
               onSelect={(e) =>
-                handleChangeQuestion(
+                handleChangeTextLatex({
                   e,
-                  question,
-                  setQuestion,
+                  latexString: localText,
+                  setLatexString: setLocalText,
                   selections,
                   setSelections,
-                  inputRef
-                )
+                  inputRef,
+                })
               }
             ></textarea>
             <ImageFilesSVG />
@@ -63,7 +92,7 @@ export default function InputSvg({
       ) : (
         <InputSvgContainer type={type}>
           <p>{number}</p>
-          <input ref={inputRef} />
+          <input />
           <ImageFilesSVG />
         </InputSvgContainer>
       )}

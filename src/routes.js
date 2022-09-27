@@ -6,7 +6,7 @@ import CheckQuestion from './pages/CheckQuestion'
 
 export const adminRoutes = [
 	{
-		path: "/",
+		path: "/home",
 		element: <Home />
 	},
 	{

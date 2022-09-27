@@ -1,17 +1,23 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
+import React from "react";
+import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import "./index.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
 import MainSpinner from "./components/spinner/MainSpinner";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+//Firebase Configs
+import { firebaseConfig } from "./firebase/Config";
+import { FirebaseAppProvider, SuspenseWithPerf } from "reactfire";
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <FirebaseAppProvider firebaseConfig={firebaseConfig} suspense={true}>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </FirebaseAppProvider>
   </React.StrictMode>
 );
 

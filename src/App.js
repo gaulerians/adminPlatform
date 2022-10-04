@@ -6,20 +6,32 @@ import theme from "./theme/Theme";
 import AdminLayout from "./components/layouts/AdminLayout";
 
 //import firebase utils
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { FirestoreProvider, useFirebaseApp } from "reactfire";
 import firestore, { getFirestore } from "firebase/firestore";
 
 //import Routes
 import { adminRoutes } from "./routes";
+import { collection, query, where, getDocs } from "firebase/firestore";
+
+export const recoverUniversities = async (db) => {
+  let universitiesDocs = await getDocs(
+    query(collection(db, "universities"), where("countryAcronym", "==", "PE"))
+  );
+  let universities = [];
+  universitiesDocs.docs.map((doc) => {
+    universities.push(doc.data());
+  });
+  console.log(universities);
+};
 
 export default function App() {
   const firestoreInstance = getFirestore(useFirebaseApp());
   const auth = getAuth();
 
   useEffect(() => {
-    console.log(firestoreInstance);
-  }, []);
+    recoverUniversities(firestoreInstance);
+  }, [auth]);
 
   return (
     <FirestoreProvider sdk={firestoreInstance}>

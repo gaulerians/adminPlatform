@@ -106,3 +106,45 @@ export const WrapperOthers = styled.div`
     margin: 0 auto 30px auto;
   }
 `
+
+export const RegisterAndLoginWrapper = styled.div`
+  margin: 50px 0 70px 0;
+
+  .registerAndLoginFooter {
+    font-weight: ${props => props.theme.weight.medium};
+  }
+
+  .mainRegisterAndLogin {
+    flex: 1 0 auto;
+  }
+
+  .footerRegisterAndLogin {
+    flex: 0 0 auto;
+  }
+
+  @media(min-width:340px) {
+    .mainRegisterAndLogin {
+      margin: 0 0 200px 0;
+    }
+  }
+
+  @media(min-width:410px) {
+    .mainRegisterAndLogin {
+      margin: 0 0 300px 0;
+    }
+  }
+
+  @media(min-width:1024px) {
+    .mainRegisterAndLogin {
+      margin: 0 0 150px 0;
+    }
+  }
+
+  @media(min-width:1200px) {
+    margin: 35px 110px 25px 110px;
+
+    .mainRegisterAndLogin {
+      margin: 0 0 250px 0;
+    }
+  }
+`

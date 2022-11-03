@@ -23,4 +23,9 @@ export const TagContainer = styled.div`
     background: #BBF9B9;
     color: #083906;
   `}
+
+  .div{
+    cursor: pointer;
+    margin: 5px;
+  }
 `;

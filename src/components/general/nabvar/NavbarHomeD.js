@@ -12,6 +12,7 @@ export default function NavbarHomeD() {
       nameItem: 'Cerrar sesión',
       icon: <DoorCloseSVG />,
       link: '/',
+      item: 'signOut',
     },
   ]
 

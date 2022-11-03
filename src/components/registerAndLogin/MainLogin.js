@@ -17,11 +17,6 @@ import { SignInWithGoogle } from './algorithms/SignInWithGoogle'
 //Import Contexts
 import {AppContext} from '../../App'
 
-// Import Hooks
-import useMounted from '../../hooks/useMounted'
-
-import MainSpinner from '../../components/spinner/MainSpinner';
-
 const Mainlogin = () => {
 
   const db = useFirestore()

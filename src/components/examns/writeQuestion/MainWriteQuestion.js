@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useRef, useMemo } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { AppContext } from "../../../App";
 // import {insertarFuncion } from '../functionsLatex/functionsLatex'
 import "katex/dist/katex.min.css";
 import { Latex } from "../../latex/Latex";
@@ -8,10 +9,13 @@ import { WrapperAdmin } from "./../../../styles/generalStyles";
 import { InputContainer, FormContainer } from "./../../../styles/inputGeneral";
 import { WrapperDuplex } from "./../../../styles/boxesGeneral";
 import { ButtonLatex } from "./styles/sButtonLatex";
+import Tag from "../../general/cOthers/Tag";
 import InputSvg from "./../../general/cOthers/InputSvg";
 import { functionLatex } from "../functionsLatex/functionsLatex";
 
 export default function MainWriteQuestion() {
+  const { universities } = useContext(AppContext);
+  const [universitiesSelected, setUniversitiesSelected] = useState([]);
   const [question, setQuestion] = useState("");
   const [selectionCategory, setSelectionCategory] = useState("");
   const [superiorSelections, setSuperiorSelections] = useState({
@@ -19,7 +23,7 @@ export default function MainWriteQuestion() {
     setSelections: null,
     setInferiorText: null,
   });
-  //crear estadopara referencias
+  //crear estado para referencias
 
   const [alternatives, setAlternatives] = useState([
     { id: 1, alternative: "" },
@@ -30,7 +34,10 @@ export default function MainWriteQuestion() {
   ]);
 
   const handleClickFunction = (func) => {
-    if (superiorSelections.setInferiorText && superiorSelections.setSelections) {
+    if (
+      superiorSelections.setInferiorText &&
+      superiorSelections.setSelections
+    ) {
       superiorSelections.setInferiorText((prev) => {
         return (
           prev.slice(0, superiorSelections.selections.start) +
@@ -47,6 +54,15 @@ export default function MainWriteQuestion() {
     }
   };
 
+  const onTagDelete = (tagName) => {
+    setUniversitiesSelected(
+      [...universitiesSelected].filter((u) => u !== tagName)
+    );
+  };
+
+  useEffect(() => {
+    console.log(universities);
+  }, []);
 
   return (
     <main>
@@ -57,17 +73,36 @@ export default function MainWriteQuestion() {
         <div>
           <Title5>Metadatos</Title5>
           <FormContainer>
-            <div className="inputContainerQuad">
+            <div className="inputContainerChip">
               <InputContainer margin10B>
                 <label>Universidad</label>
                 <div class="select">
-                  <select id="standard-select">
-                    <option value="Option 1">Option 1</option>
-                    <option value="Option 2">Option 2</option>
+                  <select
+                    id="standard-select"
+                    onChange={(e) =>
+                      e.target.selectedIndex !== 0
+                        ? setUniversitiesSelected([
+                            ...new Set([
+                              ...universitiesSelected,
+                              e.target.value,
+                            ]),
+                          ])
+                        : undefined
+                    }
+                  >
+                    <option>Seleccione</option>
+                    {universities.map((u) => (
+                      <option value={u.acronym}>
+                        {u.acronym} - {u.universityName}
+                      </option>
+                    ))}
                   </select>
                   <span class="focus"></span>
                 </div>
               </InputContainer>
+              {universitiesSelected.map((chip) => (
+                <Tag name={chip} type="university" onDelete={onTagDelete} />
+              ))}
             </div>
             <div className="inputContainerQuad">
               <InputContainer margin10B>

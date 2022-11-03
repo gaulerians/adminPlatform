@@ -41,6 +41,12 @@ export const FormContainer = styled.form`
       grid-template-columns: 1fr 1fr 1fr 1fr;
       column-gap: 10px;
     }
+    
+    .inputContainerChip {
+      display: grid;
+      grid-template-columns: 4fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+      column-gap: 10px;
+    }
   }
 `
 

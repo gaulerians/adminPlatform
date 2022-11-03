@@ -1,0 +1,243 @@
+{
+    "aboutUs": "Nosotros",
+    "answeredQuestions": "Has respondido {{answered}} de {{total}} preguntas",
+    "areYouEnrolled": "¿Ya tienes una cuenta en Gauler?",
+    "areYouNotEnrolled":"¿Aún no estás matriculado(a) en Gauler?",
+    "attorneyData": "Datos del apoderado",
+    "attorneyName": "Nombre (apoderado)",
+    "attorneyLastName": "Apellidos (apoderado)",
+    "attorneyPhone": "Celular (apoderado)",
+    "booksOfAcademy": "Libros de la academia",
+    "classBoards": "Pizarras de clase",
+    "classes": "Clases",
+    "college": "Escuela o facultad",
+    "community": "Comunidad",
+    "contact": "Contacto",
+    "weeks": {
+        "week1": "Semana 1",
+        "week2": "Semana 2",
+        "week3": "Semana 3",
+        "week4": "Semana 4",
+        "week5": "Semana 5",
+        "week6": "Semana 6",
+        "week7": "Semana 7",
+        "week8": "Semana 8",
+        "week9": "Semana 9",
+        "week10": "Semana 10",
+        "week11": "Semana 11",
+        "week12": "Semana 12",
+        "week13": "Semana 13",
+        "week14": "Semana 14",
+        "week15": "Semana 15",
+        "week16": "Semana 16",
+        "week17": "Semana 17"
+    },
+    "courses": {
+        "algebra": "Álgebra",
+        "arithmetic": "Aritmética",
+        "biology": "Biología",
+        "civic": "Cívica",
+        "chemistry": "Química",
+        "economy": "Economía",
+        "geography": "Geografía",
+        "geometry": "Geometría",
+        "historyOfPeru": "Historia del Perú",
+        "humanAnatomy": "Anatomía Humana",
+        "language": "Lenguaje",
+        "literature": "Literatura",
+        "mathematicalReasoning": "Razonamiento Matemático",
+        "physics": "Física",
+        "topicality": "Actualidad",
+        "trigonometry": "Trigonometría",
+        "universalHistory": "Historia Universal",
+        "verbalReasoning": "Razonamiento Verbal"
+    },
+    "DNI": "DNI",
+    "editProfile": "Editar perfil",
+    "enterToSimulacrum": "INGRESAR AL SIMULACRO",
+    "email": "Correo electrónico",
+    "exams": {
+        "examsTitle" : "Exámenes",
+        "examsCompetition": "Competencia",
+        "examsCompetitionDesc": "Compite contra estudiantes, posiciónate entre los(as) mejores de Gauler y gana premios y recompensas",
+        "examsDescription": "Demuestra tus habilidades académicas",
+        "examnsPerCourse": "Exámenes por cursos",
+        "examnsPerCourseDesc": "Las preguntas serán de acuerdo a tu nivel de conocimientos y tu progreso en los cursos",
+        "examsTypeAdmision": "Examenes tipo admisión"
+    },
+    "initialRegisterMessage": "Matricúlate y empieza a prepararte para la universidad",
+    "initialLoginMessage": "Todo poder conlleva una gran responsabilidad",
+    "finishedSimulacrum": "EL EXAMEN HA CONCLUIDO",
+    "friday": "Viernes",
+    "URL_iFRAME": "https://www.facebook.com/100008525828178/videos/501982397868121",
+    "landing": {
+        "details": {
+            "address": "Urb. Mariscal Cáceres Mz. L Lote 5\nfrente al CEPRE UNSCH",
+            "benefits": {
+                "books": {
+                    "description": "Libros virtuales en PDF de todos los cursos y semanas totalmente gratuitos.",
+                    "imageDescription": "La mejor clasificación de libros virtuales.",
+                    "title": "Libros virtuales"
+                },
+                "exams": {
+                    "description": "Exámenes semanales y simulacros tipo admisión mensuales.",
+                    "imageDescription":"Simulacros pensados en tu examen de admisión.",
+                    "title": "Exámenes y simulacros"
+                },
+                "exercises": {
+                    "description": "Ejercicios resueltos a nivel básico, intermedio y avanzado.",
+                    "imageDescription": "Ejercicios para que desarrolles tu expertise.",
+                    "title": "Ejercicios resueltos"
+                },
+                "forum": {
+                    "description": "Obtén respuesta a tus dudas en nuestro foro de estudiantes y profesores.",
+                    "imageDescription": "Aprende junto a nuestra comunidad",
+                    "title": "Foro de dudas"
+                },
+                "spaces": {
+                    "description": "Aulas pedagógicas con todos los implementos y protocolos de bioseguridad.",
+                    "imageDescription": "Las mejores aulas pedagógicas en presencial.",
+                    "title": "Espacios adecuados"
+                },
+                "teachers": {
+                    "description": "Aprende junto a los mejores profesores de la región y del Perú.",
+                    "imageDescription": "Conoce a los mejores profesores del mercado latinoamericano.",
+                    "title": "Profesores de primer nivel"
+                },
+                "videoClasses": {
+                    "description": "Clases en vivo y grabadas con los mejores profesores.",
+                    "imageDescription": "Clases pensadas en el desarrollo de la virtualización.",
+                    "title": "Clases en vídeo"
+                }
+            },
+            "copyright": "©Gauler 2022 - Todos los derechos reservados",
+            "downloadSchedule": "Descarga el horario completo",
+            "enterButton": "INGRESAR",
+            "footerUnsch": "MATRICÚLATE EN",
+            "headerUnsch": "LA UNSCH TE ESPERA",
+            "howDoesItWork": "¿Cómo funciona?",
+            "modalities": {
+                "presential": {
+                    "description": "Clases dictadas en nuestro local con acceso a la plataforma virtual",
+                    "title": "MODALIDAD PRESENCIAL"
+                },
+                "virtual": {
+                    "description": "Clases dictadas en vivo y grabadas en nuestra plataforma virtual",
+                    "title": "MODALIDAD VIRTUAL"
+                }
+            },
+            "moreInformation": {
+                "description": "Escríbenos al WhatsApp para saber nuestras promociones.",
+                "title": "Obtén más información de"
+            },
+            "ourTeachers": "Nuestros profesores",
+            "rooms": {
+                "description": "Set de grabación para transmisiones en vivo y las clases grabadas.",
+                "title": "Aulas y ambientes"
+            },
+            "schedule": {
+                "description": "Horario completo del Ciclo verano 2022",
+                "title": "Cursos y horarios"
+            },
+            "seeAllTeachers": "Ver todos los profesores"
+        }
+    },
+    "lastName": "Apellidos",
+    "learningContinue": "Continúa aprendiendo",
+    "live": "En vivo",
+    "materials": "Materiales",
+    "materialsDescription": "Biblioteca virtual de la academia.",
+    "monday": "Lunes",
+    "morningSchedule": "Horario mañana",
+    "name": "Nombres",
+    "nameOfLogo": "Gauler",
+    "password": "Contraseña",
+    "phone": "Celular",
+    "recordedClassAndBoards": "Clases grabadas y pizarras",
+    "recordedClassAndBoardsDescription": "Clases y pizarras separadas por cursos y semanas",
+    "recordOfNotes": "Registro de notas",
+    "recoverPassword": "¿Olvidaste tu contraseña?",
+    "remainingQuestions": "Faltan {{number}} de {{totalNumber}} preguntas",
+    "saturday": "Sábado",
+    "schedule": "Horarios",
+    "seminar": "seminario",
+    "sendExam": "PRESENTAR EXAMEN",
+    "signIn": "Iniciar sesión",
+    "signInIntro": "Es hora de prepararte para la universidad",
+    "signInChangeOption": "o usa una cuenta Gauler",
+    "signInWithGoogle": "Ingresa con Google",
+    "signOut": "Cerrar sesión",
+    "signUpWithGoogle": "Regístrate con Google",
+    "simulacrum": "Simulacros",
+    "simulacrumOfWeek": "Simularo semana {{number}}",
+    "simulacrumOfWeekInstruction1": "El examen consta de <span>{{number}} preguntas.</span>",
+    "simulacrumOfWeekInstruction2": "Tienes <span>{{number}} minutos</span> para presentarlo",
+    "simulacrumTypeAdmissionDescription": "Simulacros semanales",
+    "slogan": "EDUCACIÓN EFECTIVA PARA TODOS",
+    "start": "Inicio",
+    "teachers": "Profesores",
+    "thursday": "Jueves",
+    "timeRemaining": "{{time}}min. restantes",
+    "tuesday": "Martes",
+    "universityApplicant": "Postulante a universidad",
+    "uploadProfilePhoto": "Subir foto de perfil",
+    "user": "Usuario",
+    "wednesday": "Miércoles",
+    "week": "Semana",
+    "welcome": "Hola {{name}}",
+    "welcomeDescription": "Aulas virtuales en vivo y clases grabadas por semanas y cursos",
+    "writeAComment": "Escribe un comentario...",
+    "yourData": "Tus datos",
+    "brand": {
+        "landing": {
+            "title": "Gauler: Academia virtual y presencial",
+            "description": "Gauler - Educación efectiva para todos."
+        },
+        "home": {
+            "title": "Home | Gauler",
+            "description": "Gauler - Educación virtual"
+        },
+        "register": {
+            "title": "Registro | Gauler",
+            "description": "Gauler - Educación virtual"
+        },
+        "login": {
+            "title": "Log in | Gauler",
+            "description": "Gauler - Educación virtual"
+        },
+        "welcome": {
+            "title": "Bienvenido | Gauler",
+            "description": "Gauler - Educación virtual"
+        },
+        "terms-conditions": {
+            "title": "Términos y condiciones | Gauler",
+            "description": "Gauler - Educación virtual"
+        },
+        "materials": {
+            "title": "Materiales | Gauler",
+            "description": "Gauler - Educación virtual"
+        },
+        "exams": {
+            "title": "Examen | Gauler",
+            "description": "Gauler - Educación virtual"
+        },
+        "exam-form": {
+            "title": "Formulario | Gauler",
+            "description": "Gauler - Educación virtual"
+        },
+        "profile": {
+            "title": "Perfil | Gauler",
+            "description": "Gauler - Educación virtual"
+        },
+        "classes": {
+            "title": "Clases | Gauler",
+            "description": "Gauler - Educación virtual"
+        },
+        "spinner": {
+            "title": "Cargando..."
+        },
+        "not-found": {
+            "title": "404 Error!"
+        }   
+    }
+}

@@ -6,6 +6,7 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",
+    "env-cmd": "^10.1.0",
     "firebase": "^9.10.0",
     "katex": "^0.16.0",
     "react": "^18.2.0",
@@ -20,8 +21,12 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "env-cmd -f ./env/.development.env react-scripts start",
+    "build": "env-cmd -f ./env/.development.env react-scripts build && firebase hosting:channel:deploy admint_data_public_development",
+    "start:test": "env-cmd -f ./env/.testing.env react-scripts start",
+    "build:test": "env-cmd -f ./env/.testing.env react-scripts build && firebase hosting:channel:deploy admint_data_public_qa",
+    "start:prod": "env-cmd -f ./env/.production.env react-scripts start",
+    "build:prod": "env-cmd -f ./env/.production.env react-scripts build && firebase deploy --only hosting",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

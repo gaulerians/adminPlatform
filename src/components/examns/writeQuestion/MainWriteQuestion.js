@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { AppContext } from "../../../App";
 // import {insertarFuncion } from '../functionsLatex/functionsLatex'
 import "katex/dist/katex.min.css";
@@ -15,6 +16,7 @@ import { functionLatex } from "../functionsLatex/functionsLatex";
 
 export default function MainWriteQuestion() {
   const { universities } = useContext(AppContext);
+  const { register, handleSubmit, errors } = useForm();
   const [universitiesSelected, setUniversitiesSelected] = useState([]);
   const [question, setQuestion] = useState("");
   const [selectionCategory, setSelectionCategory] = useState("");
@@ -23,6 +25,19 @@ export default function MainWriteQuestion() {
     setSelections: null,
     setInferiorText: null,
   });
+
+  const [dataImageUpload, setDataImageUpload] = useState({
+    question: null,
+    alternative1: null,
+    alternative2: null,
+    alternative3: null,
+    alternative4: null,
+    alternative5: null,
+    solution: null,
+  });
+
+
+  console.log(dataImageUpload);
   //crear estado para referencias
 
   const [alternatives, setAlternatives] = useState([
@@ -60,8 +75,19 @@ export default function MainWriteQuestion() {
     );
   };
 
+  const onSubmit = (data) => {
+    console.log(data);
+    console.log(universitiesSelected);
+    const $form = document.querySelector("#formWriteQuestion");
+    $form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.currentTarget);
+      console.log(formData.get("question"));
+    });
+  };
+
   useEffect(() => {
-    console.log(universities);
+    // console.log(universities);
   }, []);
 
   return (
@@ -72,11 +98,14 @@ export default function MainWriteQuestion() {
         </div>
         <div>
           <Title5>Metadatos</Title5>
-          <FormContainer>
+          <FormContainer
+            id={"formWriteQuestion"}
+            onSubmit={handleSubmit(onSubmit)}
+          >
             <div className="inputContainerChip">
               <InputContainer margin10B>
                 <label>Universidad</label>
-                <div class="select">
+                <div className="select">
                   <select
                     id="standard-select"
                     onChange={(e) =>
@@ -89,6 +118,7 @@ export default function MainWriteQuestion() {
                           ])
                         : undefined
                     }
+                    onClick={(e) => console.log(e.target.value)}
                   >
                     <option>Seleccione</option>
                     {universities.map((u) => (
@@ -97,7 +127,7 @@ export default function MainWriteQuestion() {
                       </option>
                     ))}
                   </select>
-                  <span class="focus"></span>
+                  <span className="focus"></span>
                 </div>
               </InputContainer>
               {universitiesSelected.map((chip) => (
@@ -107,42 +137,41 @@ export default function MainWriteQuestion() {
             <div className="inputContainerQuad">
               <InputContainer margin10B>
                 <label>Curso</label>
-                <div class="select">
-                  <select id="standard-select">
+                <div className="select">
+                  <select
+                    id="standard-select"
+                    {...register("course", { required: true })}
+                  >
                     <option value="Option 1">Option 1</option>
                     <option value="Option 2">Option 2</option>
                   </select>
-                  <span class="focus"></span>
+                  <span className="focus"></span>
                 </div>
               </InputContainer>
               <InputContainer noMargin>
                 <label>Tema</label>
-                <div class="select">
-                  <select id="standard-select">
+                <div className="select">
+                  <select
+                    id="standard-select"
+                    {...register("theme", { required: true })}
+                  >
                     <option value="Option 1">Option 1</option>
                     <option value="Option 2">Option 2</option>
                   </select>
-                  <span class="focus"></span>
+                  <span className="focus"></span>
                 </div>
               </InputContainer>
               <InputContainer noMargin>
                 <label>Subtema</label>
-                <div class="select">
-                  <select id="standard-select">
+                <div className="select">
+                  <select
+                    id="standard-select"
+                    {...register("subtheme", { required: true })}
+                  >
                     <option value="Option 1">Option 1</option>
                     <option value="Option 2">Option 2</option>
                   </select>
-                  <span class="focus"></span>
-                </div>
-              </InputContainer>
-              <InputContainer noMargin>
-                <label>Nivel</label>
-                <div class="select">
-                  <select id="standard-select">
-                    <option value="Option 1">Option 1</option>
-                    <option value="Option 2">Option 2</option>
-                  </select>
-                  <span class="focus"></span>
+                  <span className="focus"></span>
                 </div>
               </InputContainer>
             </div>
@@ -151,15 +180,30 @@ export default function MainWriteQuestion() {
                 <label>Pregunta para</label>
                 <div className="inputsRadioContainer">
                   <label className="inputRadioContainer inputType">
-                    <input type="checkbox" />
+                    <input
+                      value="simuluacro"
+                      name="typeOfQuestion"
+                      type="checkbox"
+                      {...register("questionFor", { required: true })}
+                    />
                     Simulacros
                   </label>
                   <label className="inputRadioContainer inputType">
-                    <input type="checkbox" />
+                    <input
+                      value="cuestionario"
+                      name="typeOfQuestion"
+                      type="checkbox"
+                      {...register("questionFor", { required: true })}
+                    />
                     Questionario
                   </label>
                   <label className="inputRadioContainer inputType">
-                    <input type="checkbox" />
+                    <input
+                      value={"deco"}
+                      name="typeOfQuestion"
+                      type="checkbox"
+                      {...register("questionFor", { required: true })}
+                    />
                     DECO
                   </label>
                 </div>
@@ -178,11 +222,12 @@ export default function MainWriteQuestion() {
                       question={question}
                       isQuestion={true}
                       setSuperiorSelections={setSuperiorSelections}
+                      setDataImageUpload={setDataImageUpload}
                     />
                   </div>
                   <Title6>Insertar funciones LATEX</Title6>
                   <InputContainer noMargin>
-                    <div class="select">
+                    <div className="select">
                       <select
                         id="standard-select-category"
                         defaultValue={selectionCategory}
@@ -200,7 +245,7 @@ export default function MainWriteQuestion() {
                             }`}</option>
                           );
                         })}
-                        <span class="focus"></span>
+                        <span className="focus"></span>
                       </select>
                     </div>
                   </InputContainer>
@@ -245,7 +290,7 @@ export default function MainWriteQuestion() {
                         setAlternatives={setAlternatives}
                         alternatives={alternatives}
                         setSuperiorSelections={setSuperiorSelections}
-                        id={key.id}
+                        alternativeId={key.id}
                       />
                     ))}
                   </div>
@@ -272,8 +317,18 @@ export default function MainWriteQuestion() {
               <Title5>Resolución</Title5>
               <WrapperDuplex>
                 <InputContainer margin="0 0 10px 0">
-                  <label>URL del video</label>
-                  <input />
+                  <label>URL del video de Youtube</label>
+                  <input
+                    type="url"
+                    {...register("urlVideo", { required: true })}
+                  />
+                </InputContainer>
+                <InputContainer margin="0 0 10px 0">
+                  <label>URL del video de Facebook</label>
+                  <input
+                    type="url"
+                    {...register("urlVideo", { required: true })}
+                  />
                 </InputContainer>
               </WrapperDuplex>
               <div>
@@ -285,7 +340,7 @@ export default function MainWriteQuestion() {
               </div>
             </div>
             <WrapperDuplex>
-              <Button primary formEnd type="button">
+              <Button primary formEnd type="submit">
                 Enviar a revisión
               </Button>
             </WrapperDuplex>

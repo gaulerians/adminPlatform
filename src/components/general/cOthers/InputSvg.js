@@ -12,11 +12,12 @@ export default function InputSvg({
   number,
   label,
   setQuestion,
-  id,
+  alternativeId = null,
   isQuestion = false,
   alternatives,
   setAlternatives,
   setSuperiorSelections,
+  setDataImageUpload,
 }) {
   const [selections, setSelections] = useState({
     start: 0,
@@ -25,6 +26,20 @@ export default function InputSvg({
 
   const [localText, setLocalText] = useState("");
   const inputRef = useRef(null);
+  const refImageFile = useRef(null);
+
+  const uploadImageFile = (e) => {
+    e.preventDefault();
+    refImageFile.current.click();
+    refImageFile.current.addEventListener("change", (ev) => {
+      // setDataImageUpload((prev) => ({
+      //   ...prev,
+      //   [ev.target.name]: ev.target.files[0],
+      // }));
+      console.log(ev);
+    });
+    console.log(refImageFile.current.name);
+  };
 
   useEffect(() => {
     inputRef.current.selectionStart = selections.start;
@@ -40,11 +55,11 @@ export default function InputSvg({
   useEffect(() => {
     isQuestion && setQuestion(localText);
     !isQuestion &&
-      id &&
+      alternativeId &&
       setAlternatives(
         Object.values({
           ...alternatives,
-          [id - 1]: { id, alternative: localText },
+          [alternativeId - 1]: { alternativeId, alternative: localText },
         })
       );
   }, [localText]);
@@ -86,14 +101,27 @@ export default function InputSvg({
                 })
               }
             ></textarea>
-            <ImageFilesSVG />
+            <ImageFilesSVG onClick={uploadImageFile} />
+            <input
+              name={
+                isQuestion
+                  ? "question"
+                  : alternativeId
+                  ? `alternative${alternativeId}`
+                  : "solution"
+              }
+              ref={refImageFile}
+              type={"file"}
+              accept="image/*"
+              style={{ display: "none" }}
+            />
           </InputSvgContainer>
         </>
       ) : (
         <InputSvgContainer type={type}>
           <p>{number}</p>
           <input />
-          <ImageFilesSVG />
+          {/* <ImageFilesSVG /> */}
         </InputSvgContainer>
       )}
     </InputContainer>

@@ -5,6 +5,7 @@ import { ReactComponent as ImageFilesSVG } from "./../../../icons/image-files.sv
 import { InputSvgContainer } from "./styles/sInputSvg";
 import { handleChangeTextLatex } from "../../examns/writeQuestion/algorithms/handleChangeTextLatex";
 import { writingFunctionInAlternative } from "../../examns/writeQuestion/algorithms/handleChangeTextLatex";
+import { connectStorageEmulator } from "firebase/storage";
 
 export default function InputSvg({
   heightTextArea,
@@ -17,7 +18,6 @@ export default function InputSvg({
   alternatives,
   setAlternatives,
   setSuperiorSelections,
-  setDataImageUpload,
 }) {
   const [selections, setSelections] = useState({
     start: 0,
@@ -25,6 +25,7 @@ export default function InputSvg({
   });
 
   const [localText, setLocalText] = useState("");
+  const [localImage, setLocalImage] = useState(null);
   const inputRef = useRef(null);
   const refImageFile = useRef(null);
 
@@ -32,13 +33,10 @@ export default function InputSvg({
     e.preventDefault();
     refImageFile.current.click();
     refImageFile.current.addEventListener("change", (ev) => {
-      // setDataImageUpload((prev) => ({
-      //   ...prev,
-      //   [ev.target.name]: ev.target.files[0],
-      // }));
-      console.log(ev);
+      const image = {value: ev.target.files[0]}
+      console.log(image)
+      setLocalImage(ev.target.files[0]);
     });
-    console.log(refImageFile.current.name);
   };
 
   useEffect(() => {
@@ -53,16 +51,19 @@ export default function InputSvg({
   }, [selections]);
 
   useEffect(() => {
-    isQuestion && setQuestion(localText);
+    isQuestion && setQuestion({ image: localImage, text: localText });
     !isQuestion &&
       alternativeId &&
       setAlternatives(
         Object.values({
           ...alternatives,
-          [alternativeId - 1]: { alternativeId, alternative: localText },
+          [alternativeId - 1]: {
+            alternativeId,
+            alternative: { image: localImage, text: localText },
+          },
         })
       );
-  }, [localText]);
+  }, [localText, localImage]);
 
   return (
     <InputContainer noMargin heightTextArea={heightTextArea}>
@@ -103,13 +104,6 @@ export default function InputSvg({
             ></textarea>
             <ImageFilesSVG onClick={uploadImageFile} />
             <input
-              name={
-                isQuestion
-                  ? "question"
-                  : alternativeId
-                  ? `alternative${alternativeId}`
-                  : "solution"
-              }
               ref={refImageFile}
               type={"file"}
               accept="image/*"

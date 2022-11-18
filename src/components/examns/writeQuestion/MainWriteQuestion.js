@@ -18,7 +18,6 @@ export default function MainWriteQuestion() {
   const { universities } = useContext(AppContext);
   const { register, handleSubmit, errors } = useForm();
   const [universitiesSelected, setUniversitiesSelected] = useState([]);
-  const [question, setQuestion] = useState("");
   const [selectionCategory, setSelectionCategory] = useState("");
   const [superiorSelections, setSuperiorSelections] = useState({
     selections: { start: 0, end: 0 },
@@ -26,26 +25,16 @@ export default function MainWriteQuestion() {
     setInferiorText: null,
   });
 
-  const [dataImageUpload, setDataImageUpload] = useState({
-    question: null,
-    alternative1: null,
-    alternative2: null,
-    alternative3: null,
-    alternative4: null,
-    alternative5: null,
-    solution: null,
+  const [question, setQuestion] = useState({
+    image: null,
+    text: null,
   });
-
-
-  console.log(dataImageUpload);
-  //crear estado para referencias
-
   const [alternatives, setAlternatives] = useState([
-    { id: 1, alternative: "" },
-    { id: 2, alternative: "" },
-    { id: 3, alternative: "" },
-    { id: 4, alternative: "" },
-    { id: 5, alternative: "" },
+    { alternativeId: 1, alternative: { image: null, text: null } },
+    { alternativeId: 2, alternative: { image: null, text: null } },
+    { alternativeId: 3, alternative: { image: null, text: null } },
+    { alternativeId: 4, alternative: { image: null, text: null } },
+    { alternativeId: 5, alternative: { image: null, text: null } },
   ]);
 
   const handleClickFunction = (func) => {
@@ -86,9 +75,9 @@ export default function MainWriteQuestion() {
     });
   };
 
-  useEffect(() => {
-    // console.log(universities);
-  }, []);
+  console.log(alternatives);
+  console.log(question);
+  useEffect(() => {}, [alternatives, question]);
 
   return (
     <main>
@@ -219,10 +208,8 @@ export default function MainWriteQuestion() {
                       heightTextArea="140px"
                       type="textArea"
                       setQuestion={setQuestion}
-                      question={question}
                       isQuestion={true}
                       setSuperiorSelections={setSuperiorSelections}
-                      setDataImageUpload={setDataImageUpload}
                     />
                   </div>
                   <Title6>Insertar funciones LATEX</Title6>
@@ -290,7 +277,7 @@ export default function MainWriteQuestion() {
                         setAlternatives={setAlternatives}
                         alternatives={alternatives}
                         setSuperiorSelections={setSuperiorSelections}
-                        alternativeId={key.id}
+                        alternativeId={key.alternativeId}
                       />
                     ))}
                   </div>
@@ -299,14 +286,18 @@ export default function MainWriteQuestion() {
               <div>
                 <Title5>Vista previa</Title5>
                 <div>
-                  <Latex>{question}</Latex>
+                  <Latex>{question?.text ?? ""}</Latex>
+                  {question.image && (
+                    <img src={URL.createObjectURL(question.image)} />
+                  )}
                 </div>
                 <br />
                 <div>
+                  {/* {console.log(alternatives)} */}
                   {alternatives.map((alt, index) => (
                     <div key={index}>
                       <Latex>{`${index + 1}) \\space ${
-                        alt.alternative
+                        alt.alternative?.text ?? ""
                       }`}</Latex>
                     </div>
                   ))}

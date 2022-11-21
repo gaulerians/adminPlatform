@@ -52,7 +52,7 @@ export default function App() {
     setDataOfUser,
     dataOfUser,
     universities,
-    setLoading,
+    setLoading, 
   };
 
   if ((loading && !currentUser) || loading) {

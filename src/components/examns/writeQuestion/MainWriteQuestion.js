@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { AppContext } from "../../../App";
 // import {insertarFuncion } from '../functionsLatex/functionsLatex'
@@ -28,14 +28,47 @@ export default function MainWriteQuestion() {
   const [question, setQuestion] = useState({
     image: null,
     text: null,
+    plainText: null,
+    imageSolution: null,
+    textSolution: null,
+    plainTextSolution: null,
+    urlVideoYoutube: null,
+    urlVideoFacebook: null,
   });
+
+  
+
   const [alternatives, setAlternatives] = useState([
-    { alternativeId: 1, alternative: { image: null, text: null } },
-    { alternativeId: 2, alternative: { image: null, text: null } },
-    { alternativeId: 3, alternative: { image: null, text: null } },
-    { alternativeId: 4, alternative: { image: null, text: null } },
-    { alternativeId: 5, alternative: { image: null, text: null } },
+    {
+      alternativeId: 1,
+      alternative: { image: null, text: null, plainText: null },
+    },
+    {
+      alternativeId: 2,
+      alternative: { image: null, text: null, plainText: null },
+    },
+    {
+      alternativeId: 3,
+      alternative: { image: null, text: null, plainText: null },
+    },
+    {
+      alternativeId: 4,
+      alternative: { image: null, text: null, plainText: null },
+    },
+    {
+      alternativeId: 5,
+      alternative: { image: null, text: null, plainText: null },
+    },
   ]);
+
+  const listOfCourses = [
+    "Selecione curso",
+    "Matemáticas",
+    "Física",
+    "Química",
+    "Biología",
+    "Historia",
+  ];
 
   const handleClickFunction = (func) => {
     if (
@@ -58,26 +91,35 @@ export default function MainWriteQuestion() {
     }
   };
 
-  const onTagDelete = (tagName) => {
+  const onTagDeleteU = (tagName) => {
     setUniversitiesSelected(
       [...universitiesSelected].filter((u) => u !== tagName)
     );
   };
 
   const onSubmit = (data) => {
-    console.log(data);
-    console.log(universitiesSelected);
-    const $form = document.querySelector("#formWriteQuestion");
-    $form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const formData = new FormData(e.currentTarget);
-      console.log(formData.get("question"));
-    });
+    const { theme, subtheme, typeQuestion, urlVideoFacebook, urlVideoYoutube } =
+      data;
+
+    const questionData = {
+      universities: universitiesSelected,
+      theme,
+      subtheme,
+      typeQuestion,
+      latexQuestion: question,
+      alternatives,
+      solution: {
+        
+        urlVideoFacebook: urlVideoFacebook.length > 5 ? urlVideoFacebook : null,
+        urlVideoYoutube: urlVideoYoutube.length > 5 ? urlVideoYoutube : null,
+      },
+    };
+    // console.log(questionData);
   };
 
-  console.log(alternatives);
-  console.log(question);
-  useEffect(() => {}, [alternatives, question]);
+  useEffect(() => {
+    console.log(question);
+  }, [alternatives, question]);
 
   return (
     <main>
@@ -87,10 +129,7 @@ export default function MainWriteQuestion() {
         </div>
         <div>
           <Title5>Metadatos</Title5>
-          <FormContainer
-            id={"formWriteQuestion"}
-            onSubmit={handleSubmit(onSubmit)}
-          >
+          <FormContainer onSubmit={handleSubmit(onSubmit)}>
             <div className="inputContainerChip">
               <InputContainer margin10B>
                 <label>Universidad</label>
@@ -120,7 +159,7 @@ export default function MainWriteQuestion() {
                 </div>
               </InputContainer>
               {universitiesSelected.map((chip) => (
-                <Tag name={chip} type="university" onDelete={onTagDelete} />
+                <Tag name={chip} type="university" onDelete={onTagDeleteU} />
               ))}
             </div>
             <div className="inputContainerQuad">
@@ -131,8 +170,11 @@ export default function MainWriteQuestion() {
                     id="standard-select"
                     {...register("course", { required: true })}
                   >
-                    <option value="Option 1">Option 1</option>
-                    <option value="Option 2">Option 2</option>
+                    {listOfCourses.map((courses, index) => (
+                      <option key={index} value={courses}>
+                        {courses}
+                      </option>
+                    ))}
                   </select>
                   <span className="focus"></span>
                 </div>
@@ -173,7 +215,7 @@ export default function MainWriteQuestion() {
                       value="simuluacro"
                       name="typeOfQuestion"
                       type="checkbox"
-                      {...register("questionFor", { required: true })}
+                      {...register("typeQuestion", { required: true })}
                     />
                     Simulacros
                   </label>
@@ -182,7 +224,7 @@ export default function MainWriteQuestion() {
                       value="cuestionario"
                       name="typeOfQuestion"
                       type="checkbox"
-                      {...register("questionFor", { required: true })}
+                      {...register("typeQuestion", { required: true })}
                     />
                     Questionario
                   </label>
@@ -191,7 +233,7 @@ export default function MainWriteQuestion() {
                       value={"deco"}
                       name="typeOfQuestion"
                       type="checkbox"
-                      {...register("questionFor", { required: true })}
+                      {...register("typeQuestion", { required: true })}
                     />
                     DECO
                   </label>
@@ -207,6 +249,7 @@ export default function MainWriteQuestion() {
                     <InputSvg
                       heightTextArea="140px"
                       type="textArea"
+                      question={question}
                       setQuestion={setQuestion}
                       isQuestion={true}
                       setSuperiorSelections={setSuperiorSelections}
@@ -288,7 +331,10 @@ export default function MainWriteQuestion() {
                 <div>
                   <Latex>{question?.text ?? ""}</Latex>
                   {question.image && (
-                    <img src={URL.createObjectURL(question.image)} />
+                    <img
+                      src={URL.createObjectURL(question.image)}
+                      style={{ width: "300px", marginTop: "10px" }}
+                    />
                   )}
                 </div>
                 <br />
@@ -302,6 +348,16 @@ export default function MainWriteQuestion() {
                     </div>
                   ))}
                 </div>
+                <div>
+                  <Title5>Solución: </Title5>
+                  <Latex>{question?.textSolution ?? ""}</Latex>
+                  {question.imageSolution && (
+                    <img
+                      src={URL.createObjectURL(question.imageSolution)}
+                      style={{ width: "300px", marginTop: "10px" }}
+                    />
+                  )}
+                </div>
               </div>
             </WrapperDuplex>
             <div>
@@ -311,14 +367,26 @@ export default function MainWriteQuestion() {
                   <label>URL del video de Youtube</label>
                   <input
                     type="url"
-                    {...register("urlVideo", { required: true })}
+                    {...register("urlVideoYoutube")}
+                    onChange={(e) => {
+                      setQuestion({
+                        ...question,
+                        urlVideoYoutube: e.target.value,
+                      });
+                    }}
                   />
                 </InputContainer>
                 <InputContainer margin="0 0 10px 0">
                   <label>URL del video de Facebook</label>
                   <input
                     type="url"
-                    {...register("urlVideo", { required: true })}
+                    {...register("urlVideoFacebook")}
+                    onChange={(e) => {
+                      setQuestion({
+                        ...question,
+                        urlVideoFacebook: e.target.value,
+                      });
+                    }}
                   />
                 </InputContainer>
               </WrapperDuplex>
@@ -327,6 +395,9 @@ export default function MainWriteQuestion() {
                   heightTextArea="140px"
                   type="textArea"
                   label="Texto e imagen"
+                  isQuestion={false}
+                  question={question}
+                  setQuestion={setQuestion}
                 />
               </div>
             </div>

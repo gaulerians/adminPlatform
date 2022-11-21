@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { InputContainer } from "../../../styles/inputGeneral";
 import { ReactComponent as ImageFilesSVG } from "./../../../icons/image-files.svg";
 import { InputSvgContainer } from "./styles/sInputSvg";
-import { handleChangeTextLatex } from "../../examns/writeQuestion/algorithms/handleChangeTextLatex";
+import { handleChangeTextLatex, transformTextLatexInPlain} from "../../examns/writeQuestion/algorithms";
 import { writingFunctionInAlternative } from "../../examns/writeQuestion/algorithms/handleChangeTextLatex";
 import { connectStorageEmulator } from "firebase/storage";
 
@@ -12,6 +12,7 @@ export default function InputSvg({
   type,
   number,
   label,
+  question,
   setQuestion,
   alternativeId = null,
   isQuestion = false,
@@ -33,8 +34,6 @@ export default function InputSvg({
     e.preventDefault();
     refImageFile.current.click();
     refImageFile.current.addEventListener("change", (ev) => {
-      const image = {value: ev.target.files[0]}
-      console.log(image)
       setLocalImage(ev.target.files[0]);
     });
   };
@@ -51,7 +50,13 @@ export default function InputSvg({
   }, [selections]);
 
   useEffect(() => {
-    isQuestion && setQuestion({ image: localImage, text: localText });
+    isQuestion &&
+      setQuestion({
+        ...question,
+        image: localImage,
+        text: localText,
+        plainText: transformTextLatexInPlain(localText),
+      });
     !isQuestion &&
       alternativeId &&
       setAlternatives(
@@ -59,10 +64,22 @@ export default function InputSvg({
           ...alternatives,
           [alternativeId - 1]: {
             alternativeId,
-            alternative: { image: localImage, text: localText },
+            alternative: {
+              image: localImage,
+              text: localText,
+              plainText: transformTextLatexInPlain(localText),
+            },
           },
         })
       );
+    !isQuestion &&
+      !alternativeId &&
+      setQuestion({
+        ...question,
+        imageSolution: localImage,
+        textSolution: localText,
+        plainTextSolution: transformTextLatexInPlain(localText),
+      });
   }, [localText, localImage]);
 
   return (
@@ -73,7 +90,12 @@ export default function InputSvg({
           <InputSvgContainer type={type}>
             {number && <p>{number}</p>}
             <textarea
-              id="questionInput"
+              required={isQuestion || alternativeId ? true : false}
+              id={
+                isQuestion
+                  ? "questionInput"
+                  : `alternativeInput${alternativeId}`
+              }
               value={localText}
               ref={inputRef}
               placeholder={
@@ -89,6 +111,8 @@ export default function InputSvg({
                   selections,
                   setSelections,
                   inputRef,
+                  alternatives,
+                  setAlternatives,
                 })
               }
               onSelect={(e) =>
@@ -99,6 +123,8 @@ export default function InputSvg({
                   selections,
                   setSelections,
                   inputRef,
+                  alternatives,
+                  setAlternatives,
                 })
               }
             ></textarea>
@@ -115,7 +141,6 @@ export default function InputSvg({
         <InputSvgContainer type={type}>
           <p>{number}</p>
           <input />
-          {/* <ImageFilesSVG /> */}
         </InputSvgContainer>
       )}
     </InputContainer>

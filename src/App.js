@@ -17,18 +17,18 @@ import Login from "./pages/Login";
 import { adminRoutes } from "./routes";
 
 //import ALGORITHMS
-import { recoverDataOfUser } from "./algorithms/recoverDataOfUser";
-import { recoverUniversities } from "./algorithms/recoverUniversities";
+import { recoverDataOfUser, recoverUniversities  } from "./algorithms";
 
 const AppContext = createContext();
 const { Provider: AppProvider, Consumer } = AppContext;
 
 export default function App() {
-  const firestoreInstance = getFirestore(useFirebaseApp());
+  const firestoreInstance = getFirestore(useFirebaseApp());//db
   const auth = getAuth();
   const [currentUser, setCurrentUser] = useState(auth.currentUser || null);
   const [dataOfUser, setDataOfUser] = useState(null);
   const [universities, setUniversities] = useState(null);
+  const [dataSubTopics, setDataSubTopics] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -52,7 +52,9 @@ export default function App() {
     setDataOfUser,
     dataOfUser,
     universities,
-    setLoading, 
+    setLoading,
+    dataSubTopics,
+    setDataSubTopics, 
   };
 
   if ((loading && !currentUser) || loading) {

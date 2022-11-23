@@ -3,7 +3,10 @@ import React, { useEffect, useState, useRef } from "react";
 import { InputContainer } from "../../../styles/inputGeneral";
 import { ReactComponent as ImageFilesSVG } from "./../../../icons/image-files.svg";
 import { InputSvgContainer } from "./styles/sInputSvg";
-import { handleChangeTextLatex, transformTextLatexInPlain} from "../../examns/writeQuestion/algorithms";
+import {
+  handleChangeTextLatex,
+  transformTextLatexInPlain,
+} from "../../examns/writeQuestion/algorithms";
 import { writingFunctionInAlternative } from "../../examns/writeQuestion/algorithms/handleChangeTextLatex";
 import { connectStorageEmulator } from "firebase/storage";
 
@@ -94,15 +97,16 @@ export default function InputSvg({
               id={
                 isQuestion
                   ? "questionInput"
-                  : `alternativeInput${alternativeId}`
+                  : alternativeId? `alternativeInput${alternativeId}` : "solutionInput"
               }
               value={localText}
               ref={inputRef}
               placeholder={
                 isQuestion
                   ? "Escribe aquí tu pregunta"
-                  : "Escribe aquí tu alternativa"
+                  : alternativeId? (alternativeId ===1 )? "Escriba aquí la alternativa correcta" : "Escribe aquí la alternativa Incorrecta" : "Escribe aquí tu solución"
               }
+              style={alternativeId? (alternativeId===1) ? { color: "green" }:{ color: "red"} : {}}
               onChange={(e) =>
                 handleChangeTextLatex({
                   e,

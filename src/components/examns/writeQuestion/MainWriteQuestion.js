@@ -1,8 +1,9 @@
 import React, { useContext, useEffect, useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { AppContext } from "../../../App";
-// import {insertarFuncion } from '../functionsLatex/functionsLatex'
+import { FirestoreSdkContext } from "reactfire";
 import "katex/dist/katex.min.css";
+import { recoveryDataSubTopics } from "./algorithms";
 import { Latex } from "../../latex/Latex";
 import { Title4, Title5, Title6 } from "./../../../styles/textGeneral";
 import { Button } from "./../../../styles/buttonGeneral";
@@ -15,9 +16,15 @@ import InputSvg from "./../../general/cOthers/InputSvg";
 import { functionLatex } from "../functionsLatex/functionsLatex";
 
 export default function MainWriteQuestion() {
-  const { universities } = useContext(AppContext);
-  const { register, handleSubmit, errors } = useForm();
+  const { universities, dataSubTopics, setDataSubTopics } =
+    useContext(AppContext);
+  const db = useContext(FirestoreSdkContext);
+  const { register, handleSubmit } = useForm();
   const [universitiesSelected, setUniversitiesSelected] = useState([]);
+  const [themesFilters, setThemesFilters] = useState([]);
+  const [subThemesFilters, setSubThemesFilters] = useState([]);
+  const [courseSelected, setCourseSelected] = useState(null);
+  const [themeSelected, setThemeSelected] = useState(null);
   const [selectionCategory, setSelectionCategory] = useState("");
   const [superiorSelections, setSuperiorSelections] = useState({
     selections: { start: 0, end: 0 },
@@ -25,6 +32,7 @@ export default function MainWriteQuestion() {
     setInferiorText: null,
   });
 
+  // console.log(db);
   const [question, setQuestion] = useState({
     image: null,
     text: null,
@@ -35,8 +43,6 @@ export default function MainWriteQuestion() {
     urlVideoYoutube: null,
     urlVideoFacebook: null,
   });
-
-  
 
   const [alternatives, setAlternatives] = useState([
     {
@@ -63,11 +69,12 @@ export default function MainWriteQuestion() {
 
   const listOfCourses = [
     "Selecione curso",
-    "Matemáticas",
-    "Física",
-    "Química",
-    "Biología",
-    "Historia",
+    "chemistry",
+    "biology",
+    "physics",
+    "mathematics",
+    "geography",
+    "history",
   ];
 
   const handleClickFunction = (func) => {
@@ -109,7 +116,6 @@ export default function MainWriteQuestion() {
       latexQuestion: question,
       alternatives,
       solution: {
-        
         urlVideoFacebook: urlVideoFacebook.length > 5 ? urlVideoFacebook : null,
         urlVideoYoutube: urlVideoYoutube.length > 5 ? urlVideoYoutube : null,
       },
@@ -117,9 +123,30 @@ export default function MainWriteQuestion() {
     // console.log(questionData);
   };
 
+  const filterThemes = (courseSelected = "", arr = [], setThemesFilters) => {
+    setThemesFilters(
+      arr
+        ?.map(
+          (st) =>
+            st?.topics &&
+            Object.keys(st?.topics).includes(courseSelected) &&
+            st.topics[courseSelected]
+        )
+        .filter(
+          (st) => st !== undefined && st !== false && st !== true && st !== null
+        )
+    );
+  };
+
   useEffect(() => {
-    console.log(question);
-  }, [alternatives, question]);
+    filterThemes(courseSelected, dataSubTopics, setThemesFilters);
+  }, [courseSelected, dataSubTopics, setThemesFilters]);
+
+  useEffect(() => {
+    recoveryDataSubTopics(db, dataSubTopics, setDataSubTopics, courseSelected);
+
+    console.log(dataSubTopics);
+  }, [courseSelected]);
 
   return (
     <main>
@@ -146,7 +173,6 @@ export default function MainWriteQuestion() {
                           ])
                         : undefined
                     }
-                    onClick={(e) => console.log(e.target.value)}
                   >
                     <option>Seleccione</option>
                     {universities.map((u) => (
@@ -169,6 +195,9 @@ export default function MainWriteQuestion() {
                   <select
                     id="standard-select"
                     {...register("course", { required: true })}
+                    onChange={(e) =>
+                      setCourseSelected(e.target?.value ? e.target?.value : [])
+                    }
                   >
                     {listOfCourses.map((courses, index) => (
                       <option key={index} value={courses}>
@@ -185,9 +214,13 @@ export default function MainWriteQuestion() {
                   <select
                     id="standard-select"
                     {...register("theme", { required: true })}
+                    onChange={(e) => setThemeSelected(e.target.value)}
                   >
-                    <option value="Option 1">Option 1</option>
-                    <option value="Option 2">Option 2</option>
+                    {themesFilters?.map((theme, index) => (
+                      <option key={index} value={theme}>
+                        {theme}
+                      </option>
+                    ))}
                   </select>
                   <span className="focus"></span>
                 </div>
@@ -199,8 +232,20 @@ export default function MainWriteQuestion() {
                     id="standard-select"
                     {...register("subtheme", { required: true })}
                   >
-                    <option value="Option 1">Option 1</option>
-                    <option value="Option 2">Option 2</option>
+                    {dataSubTopics
+                      ?.filter(
+                        (st) =>
+                          st.courses?.includes(courseSelected) &&
+                          Object.values(st.topics).includes(themeSelected) &&
+                          st.title
+                      )
+                      .map((subtheme, index) => {
+                        return (
+                          <option key={index} value={subtheme.title}>
+                            {subtheme.title}
+                          </option>
+                        );
+                      })}
                   </select>
                   <span className="focus"></span>
                 </div>
@@ -331,6 +376,7 @@ export default function MainWriteQuestion() {
                 <div>
                   <Latex>{question?.text ?? ""}</Latex>
                   {question.image && (
+                    // eslint-disable-next-line jsx-a11y/alt-text
                     <img
                       src={URL.createObjectURL(question.image)}
                       style={{ width: "300px", marginTop: "10px" }}
@@ -342,9 +388,20 @@ export default function MainWriteQuestion() {
                   {/* {console.log(alternatives)} */}
                   {alternatives.map((alt, index) => (
                     <div key={index}>
-                      <Latex>{`${index + 1}) \\space ${
-                        alt.alternative?.text ?? ""
-                      }`}</Latex>
+                      <Latex>{`
+                      ${
+                        index + 1 === 1
+                          ? `\\textcolor{green}{${index + 1})}`
+                          : `\\textcolor{red}{${index + 1})}`
+                      } \\space 
+                      ${
+                        alt.alternative?.text
+                          ? index + 1 === 1
+                            ? `\\textcolor{green}{${alt.alternative?.text}}`
+                            : `\\textcolor{red}{${alt.alternative?.text}}`
+                          : ""
+                      }
+                      `}</Latex>
                     </div>
                   ))}
                 </div>
@@ -398,6 +455,7 @@ export default function MainWriteQuestion() {
                   isQuestion={false}
                   question={question}
                   setQuestion={setQuestion}
+                  setSuperiorSelections={setSuperiorSelections}
                 />
               </div>
             </div>

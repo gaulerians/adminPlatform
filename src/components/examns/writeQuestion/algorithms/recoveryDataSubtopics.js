@@ -1,11 +1,11 @@
 import { collection, query, where, getDocs } from "firebase/firestore";
 
-export const recoveryDataSubTopics = async (
+export const recoveryDataSubTopics = async ({
   db,
-  dataTopics,
-  setDataTopics,
-  courseSelected
-) => {
+  dataSubTopics,
+  setDataSubTopics,
+  courseSelected,
+}) => {
   const courseTopics = await getDocs(
     query(
       collection(db, "subTopics"),
@@ -13,16 +13,11 @@ export const recoveryDataSubTopics = async (
     )
   );
 
-  // setDataTopics((prev) => [
-  //   ...prev,
-  //   ...deleteRepeatedTopics(courseTopics.docs.map((doc) => doc.data())),
-  // ]);
-
-  const dataTopicsArray = dataTopics ? dataTopics : [];
+  const dataTopicsArray = dataSubTopics ? dataSubTopics : [];
   if (dataTopicsArray.length === 0) {
-    setDataTopics(courseTopics.docs.map((st) => st.data()));
+    setDataSubTopics(courseTopics.docs.map((st) => st.data()));
   } else {
-    setDataTopics(
+    setDataSubTopics(
       deleteRepeatedTopics([
         ...dataTopicsArray,
         ...courseTopics.docs.map((doc) => doc.data()),

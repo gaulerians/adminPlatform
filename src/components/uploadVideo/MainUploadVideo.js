@@ -1,4 +1,5 @@
-import React, { useRef } from "react";
+import React, { useContext, useRef, useState } from "react";
+import { AppContext } from "../../App";
 import { useForm } from "react-hook-form";
 import { Title4, Title5, Title6 } from "./../../styles/textGeneral";
 import { Button } from "./../../styles/buttonGeneral";
@@ -7,7 +8,22 @@ import { InputContainer, FormContainer } from "./../../styles/inputGeneral";
 import { WrapperDuplex } from "./../../styles/boxesGeneral";
 
 export default function MainUploadVideo() {
+  const { universities, dataSubTopics, setDataSubTopics } =
+    useContext(AppContext);
   const { register, handleSubmit, watch, errors } = useForm();
+  const [courseSelected, setCourseSelected] = useState(null);
+  const [themeSelected, setThemeSelected] = useState(null);
+  const [themesFilters, setThemesFilters] = useState([]);
+
+  const listOfCourses = [
+    "Selecione curso",
+    "chemistry",
+    "biology",
+    "physics",
+    "mathematics",
+    "geography",
+    "history",
+  ];
 
   const fileInputVideo = useRef(null);
   const fileInputImage = useRef(null);
@@ -41,56 +57,122 @@ export default function MainUploadVideo() {
             <div>
               <Title5>Subir videos a YouTube y Facebook</Title5>
             </div>
-            <FormContainer
-              onSubmit={handleSubmit(onSubmit)}
-            >
+            <FormContainer onSubmit={handleSubmit(onSubmit)}>
               <div>
+                <div>
                 <Title6>Detalles</Title6>
-                <div>
+                </div>
+                <div >
                   <InputContainer margin10B>
-                    <label>Titulo</label>
-                    <input
-                      type={"text"}
-                      {...register("title", { required: true })}
-                    />
+                    <label>Curso</label>
+                    <div className="select">
+                      <select
+                        id="standard-select"
+                        {...register("course", { required: true })}
+                        onChange={(e) =>
+                          setCourseSelected(
+                            e.target?.value ? e.target?.value : []
+                          )
+                        }
+                      >
+                        {listOfCourses.map((courses, index) => (
+                          <option key={index} value={courses}>
+                            {courses}
+                          </option>
+                        ))}
+                      </select>
+                      <span className="focus"></span>
+                    </div>
                   </InputContainer>
-                  <InputContainer noMargin>
-                    <label>Descripción (Explicito)</label>
-                    <input
-                      type={"text"}
-                      {...register("description", { required: true })}
-                    />
+                  <InputContainer margin10B>
+                    <label>Tema</label>
+                    <div className="select">
+                      <select
+                        id="standard-select"
+                        {...register("theme", { required: true })}
+                        onChange={(e) => setThemeSelected(e.target.value)}
+                      >
+                        {themesFilters?.map((theme, index) => (
+                          <option key={index} value={theme}>
+                            {theme}
+                          </option>
+                        ))}
+                      </select>
+                      <span className="focus"></span>
+                    </div>
+                  </InputContainer>
+                  <InputContainer margin10B>
+                    <label>Subtema</label>
+                    <div className="select">
+                      <select
+                        id="standard-select"
+                        {...register("subtheme", { required: true })}
+                      >
+                        {dataSubTopics
+                          ?.filter(
+                            (st) =>
+                              st.courses?.includes(courseSelected) &&
+                              Object.values(st.topics).includes(
+                                themeSelected
+                              ) &&
+                              st.title
+                          )
+                          .map((subtheme, index) => {
+                            return (
+                              <option key={index} value={subtheme.title}>
+                                {subtheme.title}
+                              </option>
+                            );
+                          })}
+                      </select>
+                      <span className="focus"></span>
+                    </div>
                   </InputContainer>
                 </div>
-                <div>
-                  <InputContainer noMargin>
-                    <label>Imagen de miniatura</label>
-                    <Button
-                      primary
-                      iris
-                      onClick={(e) => {
-                        uploadImageFile(e);
-                      }}
-                    >
-                      Seleccionar imagen
-                    </Button>
-                  </InputContainer>
-                  <InputContainer noMargin>
-                    <label>Archivo de video</label>
-                    <Button
-                      primary
-                      onClick={(e) => {
-                        uploadVideoFile(e);
-                      }}
-                    >
-                      Seleccionar video
-                    </Button>
-                  </InputContainer>
-                </div>
-                <Button secondary inForm type={"submit"}>
-                  Subir video
-                </Button>
+
+                <InputContainer margin10B>
+                  <label>Titulo del video</label>
+                  <input
+                    type={"text"}
+                    {...register("title", { required: true })}
+                  />
+                </InputContainer>
+                <InputContainer margin10B>
+                  <label>Descripción (Explicito)</label>
+                  <input
+                    type={"text"}
+                    {...register("description", { required: true })}
+                  />
+                </InputContainer>
               </div>
+              <div>
+                <InputContainer margin10B>
+                  <label>Imagen de miniatura</label>
+                  <Button
+                    primary
+                    iris
+                    onClick={(e) => {
+                      uploadImageFile(e);
+                    }}
+                  >
+                    Seleccionar imagen
+                  </Button>
+                </InputContainer>
+                <InputContainer margin10B>
+                  <label>Archivo de video</label>
+                  <Button
+                    primary
+                    onClick={(e) => {
+                      uploadVideoFile(e);
+                    }}
+                  >
+                    Seleccionar video
+                  </Button>
+                </InputContainer>
+              </div>
+              <Button secondary inForm type={"submit"}>
+                Subir video
+              </Button>
             </FormContainer>
             {/* inputs type file for Button */}
             <input

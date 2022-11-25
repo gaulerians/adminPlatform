@@ -2,13 +2,12 @@ import React, { useEffect, useState, useRef } from "react";
 
 import { InputContainer } from "../../../styles/inputGeneral";
 import { ReactComponent as ImageFilesSVG } from "./../../../icons/image-files.svg";
+import { ReactComponent as CloseImage } from "./../../../icons/close.svg";
 import { InputSvgContainer } from "./styles/sInputSvg";
 import {
   handleChangeTextLatex,
   transformTextLatexInPlain,
 } from "../../examns/writeQuestion/algorithms";
-import { writingFunctionInAlternative } from "../../examns/writeQuestion/algorithms/handleChangeTextLatex";
-import { connectStorageEmulator } from "firebase/storage";
 
 export default function InputSvg({
   heightTextArea,
@@ -32,6 +31,7 @@ export default function InputSvg({
   const [localImage, setLocalImage] = useState(null);
   const inputRef = useRef(null);
   const refImageFile = useRef(null);
+  const refCloseImage = useRef(null);
 
   const uploadImageFile = (e) => {
     e.preventDefault();
@@ -56,9 +56,11 @@ export default function InputSvg({
     isQuestion &&
       setQuestion({
         ...question,
-        image: localImage,
-        text: localText,
-        plainText: transformTextLatexInPlain(localText),
+        question: {
+          image: localImage,
+          text: localText,
+          plainText: transformTextLatexInPlain(localText),
+        },
       });
     !isQuestion &&
       alternativeId &&
@@ -79,9 +81,11 @@ export default function InputSvg({
       !alternativeId &&
       setQuestion({
         ...question,
-        imageSolution: localImage,
-        textSolution: localText,
-        plainTextSolution: transformTextLatexInPlain(localText),
+        solution: {
+          imageSolution: localImage,
+          textSolution: localText,
+          plainTextSolution: transformTextLatexInPlain(localText),
+        },
       });
   }, [localText, localImage]);
 
@@ -93,20 +97,32 @@ export default function InputSvg({
           <InputSvgContainer type={type}>
             {number && <p>{number}</p>}
             <textarea
-              required={isQuestion || alternativeId ? true : false}
+              // required={isQuestion || alternativeId ? true : false}
               id={
                 isQuestion
                   ? "questionInput"
-                  : alternativeId? `alternativeInput${alternativeId}` : "solutionInput"
+                  : alternativeId
+                  ? `alternativeInput${alternativeId}`
+                  : "solutionInput"
               }
               value={localText}
               ref={inputRef}
               placeholder={
                 isQuestion
                   ? "Escribe aquí tu pregunta"
-                  : alternativeId? (alternativeId ===1 )? "Escriba aquí la alternativa correcta" : "Escribe aquí la alternativa Incorrecta" : "Escribe aquí tu solución"
+                  : alternativeId
+                  ? alternativeId === 1
+                    ? "Escribe aquí la alternativa correcta"
+                    : "Escribe aquí la alternativa Incorrecta"
+                  : "Escribe aquí tu solución"
               }
-              style={alternativeId? (alternativeId===1) ? { color: "green" }:{ color: "red"} : {}}
+              style={
+                alternativeId
+                  ? alternativeId === 1
+                    ? { color: "green" }
+                    : { color: "red" }
+                  : {}
+              }
               onChange={(e) =>
                 handleChangeTextLatex({
                   e,
@@ -138,6 +154,13 @@ export default function InputSvg({
               type={"file"}
               accept="image/*"
               style={{ display: "none" }}
+            />
+            <CloseImage
+              ref={refCloseImage}
+              style={{
+                display: localImage ? "block" : "none",
+              }}
+              onClick={() => setLocalImage(null)}
             />
           </InputSvgContainer>
         </>

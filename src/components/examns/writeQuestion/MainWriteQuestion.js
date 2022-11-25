@@ -14,17 +14,20 @@ import { ButtonLatex } from "./styles/sButtonLatex";
 import Tag from "../../general/cOthers/Tag";
 import InputSvg from "./../../general/cOthers/InputSvg";
 import { functionLatex } from "../functionsLatex/functionsLatex";
+import { onSubmitImage } from "./algorithms/onSubmitImage";
+import { onSubmitDataQuestion } from "./algorithms/onSubmitDataQuestion";
 
 export default function MainWriteQuestion() {
-  const { universities, dataSubTopics, setDataSubTopics } =
+  const { universities, dataSubTopics, setDataSubTopics, setLoading } =
     useContext(AppContext);
   const db = useContext(FirestoreSdkContext);
   const { register, handleSubmit } = useForm();
   const [universitiesSelected, setUniversitiesSelected] = useState([]);
-  const [themesFilters, setThemesFilters] = useState([]);
-  const [subThemesFilters, setSubThemesFilters] = useState([]);
   const [courseSelected, setCourseSelected] = useState(null);
+  const [themesFilters, setThemesFilters] = useState([]);
+  // const [subThemesFilters, setSubThemesFilters] = useState([]);
   const [themeSelected, setThemeSelected] = useState(null);
+  const [subThemeSelected, setSubThemeSelected] = useState(null);
   const [selectionCategory, setSelectionCategory] = useState("");
   const [superiorSelections, setSuperiorSelections] = useState({
     selections: { start: 0, end: 0 },
@@ -32,38 +35,45 @@ export default function MainWriteQuestion() {
     setInferiorText: null,
   });
 
-  // console.log(db);
   const [question, setQuestion] = useState({
-    image: null,
-    text: null,
-    plainText: null,
-    imageSolution: null,
-    textSolution: null,
-    plainTextSolution: null,
-    urlVideoYoutube: null,
-    urlVideoFacebook: null,
+    question: {
+      //Dejar como key 0
+      image: null,
+      text: null,
+      plainText: null,
+      urlImage: null,
+    },
+    solution: {
+      //Dejar como key 1
+      imageSolution: null,
+      urlImageSolution: null,
+      textSolution: null,
+      plainTextSolution: null,
+      urlVideoYoutube: null,
+      urlVideoFacebook: null,
+    },
   });
 
   const [alternatives, setAlternatives] = useState([
     {
       alternativeId: 1,
-      alternative: { image: null, text: null, plainText: null },
+      alternative: { image: null, text: null, plainText: null, urlImage: null },
     },
     {
       alternativeId: 2,
-      alternative: { image: null, text: null, plainText: null },
+      alternative: { image: null, text: null, plainText: null, urlImage: null },
     },
     {
       alternativeId: 3,
-      alternative: { image: null, text: null, plainText: null },
+      alternative: { image: null, text: null, plainText: null, urlImage: null },
     },
     {
       alternativeId: 4,
-      alternative: { image: null, text: null, plainText: null },
+      alternative: { image: null, text: null, plainText: null, urlImage: null },
     },
     {
       alternativeId: 5,
-      alternative: { image: null, text: null, plainText: null },
+      alternative: { image: null, text: null, plainText: null, urlImage: null },
     },
   ]);
 
@@ -104,28 +114,56 @@ export default function MainWriteQuestion() {
     );
   };
 
-  const onSubmit = (data) => {
-    const { theme, subtheme, typeQuestion, urlVideoFacebook, urlVideoYoutube } =
-      data;
+  const onSubmit = async (data) => {
+    const alternativesImage = alternatives.filter(
+      (a) => a.alternative.image !== null
+    );
 
-    const questionData = {
-      universities: universitiesSelected,
-      theme,
-      subtheme,
-      typeQuestion,
-      latexQuestion: question,
+    const imagesArr = Object.values({
+      ...(question.question.image
+        ? {
+            question: {
+              image: question?.question.image,
+              typeImage: Object.keys(question)[0],
+            },
+          }
+        : {}),
+      ...(question.solution?.imageSolution
+        ? {
+            solution: {
+              image: question.solution?.imageSolution,
+              typeImage: Object.keys(question)[1],
+            },
+          }
+        : {}),
+      ...(alternativesImage.length > 0
+        ? alternativesImage.map((a) => ({
+            image: a.alternative.image,
+            typeImage: `alternative-${a.alternativeId}`,
+          }))
+        : {}),
+    });
+    await onSubmitImage({
+      data,
+      db,
+      imagesArr,
       alternatives,
-      solution: {
-        urlVideoFacebook: urlVideoFacebook.length > 5 ? urlVideoFacebook : null,
-        urlVideoYoutube: urlVideoYoutube.length > 5 ? urlVideoYoutube : null,
-      },
-    };
-    // console.log(questionData);
+      setAlternatives,
+      question,
+      setQuestion,
+      setLoading,
+    });
+    // console.log(question);
+    // await onSubmitDataQuestion({ question, alternatives });
   };
 
-  const filterThemes = (courseSelected = "", arr = [], setThemesFilters) => {
+  const filterThemes = ({
+    courseSelected = "",
+    dataSubTopics = [],
+    setThemesFilters,
+  }) => {
     setThemesFilters(
-      arr
+      dataSubTopics
         ?.map(
           (st) =>
             st?.topics &&
@@ -139,13 +177,22 @@ export default function MainWriteQuestion() {
   };
 
   useEffect(() => {
-    filterThemes(courseSelected, dataSubTopics, setThemesFilters);
+    console.log("courseSelected", courseSelected);
+  console.log("themeSelected", themeSelected);
+  console.log("subThemesFilters", subThemeSelected);
+  }, [courseSelected, themeSelected, subThemeSelected]);
+
+  useEffect(() => {
+    filterThemes({ courseSelected, dataSubTopics, setThemesFilters });
   }, [courseSelected, dataSubTopics, setThemesFilters]);
 
   useEffect(() => {
-    recoveryDataSubTopics(db, dataSubTopics, setDataSubTopics, courseSelected);
-
-    console.log(dataSubTopics);
+    recoveryDataSubTopics({
+      db,
+      dataSubTopics,
+      setDataSubTopics,
+      courseSelected,
+    });
   }, [courseSelected]);
 
   return (
@@ -194,7 +241,6 @@ export default function MainWriteQuestion() {
                 <div className="select">
                   <select
                     id="standard-select"
-                    {...register("course", { required: true })}
                     onChange={(e) =>
                       setCourseSelected(e.target?.value ? e.target?.value : [])
                     }
@@ -213,7 +259,7 @@ export default function MainWriteQuestion() {
                 <div className="select">
                   <select
                     id="standard-select"
-                    {...register("theme", { required: true })}
+                    {...register("theme", { required: false })}
                     onChange={(e) => setThemeSelected(e.target.value)}
                   >
                     {themesFilters?.map((theme, index) => (
@@ -230,7 +276,8 @@ export default function MainWriteQuestion() {
                 <div className="select">
                   <select
                     id="standard-select"
-                    {...register("subtheme", { required: true })}
+                    defaultValue={dataSubTopics.length > 0 ? dataSubTopics :""}
+                    onChange={(e) => setSubThemeSelected(e.target.value)}
                   >
                     {dataSubTopics
                       ?.filter(
@@ -260,7 +307,7 @@ export default function MainWriteQuestion() {
                       value="simuluacro"
                       name="typeOfQuestion"
                       type="checkbox"
-                      {...register("typeQuestion", { required: true })}
+                      {...register("typeQuestion", { required: false })}
                     />
                     Simulacros
                   </label>
@@ -269,7 +316,7 @@ export default function MainWriteQuestion() {
                       value="cuestionario"
                       name="typeOfQuestion"
                       type="checkbox"
-                      {...register("typeQuestion", { required: true })}
+                      {...register("typeQuestion", { required: false })}
                     />
                     Questionario
                   </label>
@@ -278,7 +325,7 @@ export default function MainWriteQuestion() {
                       value={"deco"}
                       name="typeOfQuestion"
                       type="checkbox"
-                      {...register("typeQuestion", { required: true })}
+                      {...register("typeQuestion", { required: false })}
                     />
                     DECO
                   </label>
@@ -374,11 +421,11 @@ export default function MainWriteQuestion() {
               <div>
                 <Title5>Vista previa</Title5>
                 <div>
-                  <Latex>{question?.text ?? ""}</Latex>
-                  {question.image && (
+                  <Latex>{question.question?.text ?? ""}</Latex>
+                  {question.question.image && (
                     // eslint-disable-next-line jsx-a11y/alt-text
                     <img
-                      src={URL.createObjectURL(question.image)}
+                      src={URL.createObjectURL(question.question.image)}
                       style={{ width: "300px", marginTop: "10px" }}
                     />
                   )}
@@ -407,10 +454,11 @@ export default function MainWriteQuestion() {
                 </div>
                 <div>
                   <Title5>Solución: </Title5>
-                  <Latex>{question?.textSolution ?? ""}</Latex>
-                  {question.imageSolution && (
+                  <Latex>{question.solution?.textSolution ?? ""}</Latex>
+                  {question.solution.imageSolution && (
+                    // eslint-disable-next-line jsx-a11y/alt-text
                     <img
-                      src={URL.createObjectURL(question.imageSolution)}
+                      src={URL.createObjectURL(question.solution.imageSolution)}
                       style={{ width: "300px", marginTop: "10px" }}
                     />
                   )}
@@ -428,7 +476,10 @@ export default function MainWriteQuestion() {
                     onChange={(e) => {
                       setQuestion({
                         ...question,
-                        urlVideoYoutube: e.target.value,
+                        solution: {
+                          ...question.solution,
+                          urlVideoYoutube: e.target.value,
+                        },
                       });
                     }}
                   />
@@ -441,7 +492,10 @@ export default function MainWriteQuestion() {
                     onChange={(e) => {
                       setQuestion({
                         ...question,
-                        urlVideoFacebook: e.target.value,
+                        solution: {
+                          ...question.solution,
+                          urlVideoFacebook: e.target.value,
+                        },
                       });
                     }}
                   />

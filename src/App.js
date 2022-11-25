@@ -17,31 +17,31 @@ import Login from "./pages/Login";
 import { adminRoutes } from "./routes";
 
 //import ALGORITHMS
-import { recoverDataOfUser, recoverUniversities  } from "./algorithms";
+import { recoverDataOfUser, recoverUniversities } from "./algorithms";
 
 const AppContext = createContext();
 const { Provider: AppProvider, Consumer } = AppContext;
 
 export default function App() {
-  const firestoreInstance = getFirestore(useFirebaseApp());//db
+  const firestoreInstance = getFirestore(useFirebaseApp()); //db
   const auth = getAuth();
   const [currentUser, setCurrentUser] = useState(auth.currentUser || null);
   const [dataOfUser, setDataOfUser] = useState(null);
   const [universities, setUniversities] = useState(null);
   const [dataSubTopics, setDataSubTopics] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState({ status: true, title: null });
 
   useEffect(() => {
     !universities && recoverUniversities(firestoreInstance, setUniversities);
     !currentUser &&
       onAuthStateChanged(auth, async (user) => {
-        setLoading(true);
+        setLoading({ status: true, title: null });
         user ? setCurrentUser(user) : setCurrentUser(null);
         if (user) {
           const recoverUser = await recoverDataOfUser(firestoreInstance, user);
           recoverUser.forEach((doc) => setDataOfUser(doc.data()));
         }
-        setLoading(false);
+        setLoading({ status: false, title: null });
       });
     return () => {};
   }, [auth, dataOfUser, currentUser]);
@@ -54,11 +54,15 @@ export default function App() {
     universities,
     setLoading,
     dataSubTopics,
-    setDataSubTopics, 
+    setDataSubTopics,
   };
 
-  if ((loading && !currentUser) || loading) {
-    return <MainSpinner title={"Hey tú, sí tú... ¡ME IMPORTAS MUCHO!"} />;
+  if ((loading.status && !currentUser) || loading.status) {
+    return (
+      <MainSpinner
+        title={loading.title ?? "Hey tú, sí tú... ¡ME IMPORTAS MUCHO!"}
+      />
+    );
   }
 
   return (

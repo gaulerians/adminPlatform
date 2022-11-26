@@ -24,10 +24,10 @@ export default function MainWriteQuestion() {
   const { register, handleSubmit } = useForm();
   const [universitiesSelected, setUniversitiesSelected] = useState([]);
   const [courseSelected, setCourseSelected] = useState(null);
-  const [themesFilters, setThemesFilters] = useState([]);
-  // const [subThemesFilters, setSubThemesFilters] = useState([]);
-  const [themeSelected, setThemeSelected] = useState(null);
-  const [subThemeSelected, setSubThemeSelected] = useState(null);
+  const [topicsFilters, setTopicsFilters] = useState([]);
+  // const [subTopicsFilters, setSubTopicsFilters] = useState([]);
+  const [topicSelected, setTopicSelected] = useState(null);
+  const [subTopicSelected, setSubTopicSelected] = useState(null);
   const [selectionCategory, setSelectionCategory] = useState("");
   const [superiorSelections, setSuperiorSelections] = useState({
     selections: { start: 0, end: 0 },
@@ -57,23 +57,23 @@ export default function MainWriteQuestion() {
   const [alternatives, setAlternatives] = useState([
     {
       alternativeId: 1,
-      alternative: { image: null, text: null, plainText: null, urlImage: null },
+      alternative: { image: null, text: null, plainText: null },
     },
     {
       alternativeId: 2,
-      alternative: { image: null, text: null, plainText: null, urlImage: null },
+      alternative: { image: null, text: null, plainText: null },
     },
     {
       alternativeId: 3,
-      alternative: { image: null, text: null, plainText: null, urlImage: null },
+      alternative: { image: null, text: null, plainText: null },
     },
     {
       alternativeId: 4,
-      alternative: { image: null, text: null, plainText: null, urlImage: null },
+      alternative: { image: null, text: null, plainText: null },
     },
     {
       alternativeId: 5,
-      alternative: { image: null, text: null, plainText: null, urlImage: null },
+      alternative: { image: null, text: null, plainText: null },
     },
   ]);
 
@@ -143,26 +143,36 @@ export default function MainWriteQuestion() {
           }))
         : {}),
     });
-    await onSubmitImage({
+    console.log(imagesArr);
+    console.log(data)
+    // await onSubmitImage({
+    //   data,
+    //   db,
+    //   imagesArr,
+    //   alternatives,
+    //   setAlternatives,
+    //   question,
+    //   setQuestion,
+    //   setLoading,
+    // });
+    onSubmitDataQuestion({
+      setLoading,
       data,
       db,
       imagesArr,
       alternatives,
-      setAlternatives,
       question,
-      setQuestion,
-      setLoading,
     });
     // console.log(question);
     // await onSubmitDataQuestion({ question, alternatives });
   };
 
-  const filterThemes = ({
+  const filterTopics = ({
     courseSelected = "",
     dataSubTopics = [],
-    setThemesFilters,
+    setTopicsFilters,
   }) => {
-    setThemesFilters(
+    setTopicsFilters(
       dataSubTopics
         ?.map(
           (st) =>
@@ -176,15 +186,15 @@ export default function MainWriteQuestion() {
     );
   };
 
-  useEffect(() => {
-    console.log("courseSelected", courseSelected);
-  console.log("themeSelected", themeSelected);
-  console.log("subThemesFilters", subThemeSelected);
-  }, [courseSelected, themeSelected, subThemeSelected]);
+  // useEffect(() => {
+  //   console.log("courseSelected", courseSelected);
+  //   console.log("topicSelected", topicSelected);
+  //   console.log("subTopicsFilters", subTopicSelected);
+  // }, [courseSelected, topicSelected, subTopicSelected]);
 
   useEffect(() => {
-    filterThemes({ courseSelected, dataSubTopics, setThemesFilters });
-  }, [courseSelected, dataSubTopics, setThemesFilters]);
+    filterTopics({ courseSelected, dataSubTopics, setTopicsFilters });
+  }, [courseSelected, dataSubTopics, setTopicsFilters]);
 
   useEffect(() => {
     recoveryDataSubTopics({
@@ -259,12 +269,12 @@ export default function MainWriteQuestion() {
                 <div className="select">
                   <select
                     id="standard-select"
-                    {...register("theme", { required: false })}
-                    onChange={(e) => setThemeSelected(e.target.value)}
+                    {...register("topic", { required: false })}
+                    onChange={(e) => setTopicSelected(e.target.value)}
                   >
-                    {themesFilters?.map((theme, index) => (
-                      <option key={index} value={theme}>
-                        {theme}
+                    {topicsFilters?.map((topic, index) => (
+                      <option key={index} value={topic}>
+                        {topic}
                       </option>
                     ))}
                   </select>
@@ -276,20 +286,20 @@ export default function MainWriteQuestion() {
                 <div className="select">
                   <select
                     id="standard-select"
-                    defaultValue={dataSubTopics.length > 0 ? dataSubTopics :""}
-                    onChange={(e) => setSubThemeSelected(e.target.value)}
+                    defaultValue={dataSubTopics.length > 0 ? dataSubTopics : ""}
+                    onChange={(e) => setSubTopicSelected(e.target.value)}
                   >
                     {dataSubTopics
                       ?.filter(
                         (st) =>
                           st.courses?.includes(courseSelected) &&
-                          Object.values(st.topics).includes(themeSelected) &&
+                          Object.values(st.topics).includes(topicSelected) &&
                           st.title
                       )
-                      .map((subtheme, index) => {
+                      .map((subtopic, index) => {
                         return (
-                          <option key={index} value={subtheme.title}>
-                            {subtheme.title}
+                          <option key={index} value={subtopic.title}>
+                            {subtopic.title}
                           </option>
                         );
                       })}
@@ -472,7 +482,7 @@ export default function MainWriteQuestion() {
                   <label>URL del video de Youtube</label>
                   <input
                     type="url"
-                    {...register("urlVideoYoutube")}
+                    {...register("urlVideoYoutube")} //TODO: String.includes(youtube.com)
                     onChange={(e) => {
                       setQuestion({
                         ...question,
@@ -488,7 +498,7 @@ export default function MainWriteQuestion() {
                   <label>URL del video de Facebook</label>
                   <input
                     type="url"
-                    {...register("urlVideoFacebook")}
+                    {...register("urlVideoFacebook")}//TODO: String.includes(fb.watch)
                     onChange={(e) => {
                       setQuestion({
                         ...question,

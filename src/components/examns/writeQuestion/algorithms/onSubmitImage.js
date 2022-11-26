@@ -6,80 +6,54 @@ import {
 } from "firebase/storage";
 import { onSubmitDataQuestion } from "./onSubmitDataQuestion";
 
-export const onSubmitImage = async ({
-  data,
-  db,
-  imagesArr = [],
-  alternatives,
-  // setAlternatives,
-  question,
-  // setQuestion,
-  setLoading,
-}) => {
+export const onSubmitImage = async ({ imagesArr = [], setLoading }) => {
   const storage = getStorage();
-  let dataUrls = [];
-  let counter = 0;
-  setLoading({ status: true, title: "Preparando datos..." });
-  imagesArr.map(async (i) => {
-    const storageRef = ref(storage, `questionImages/${i.image.name}`);
-    const uploadTask = uploadBytesResumable(storageRef, i.image);
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {
-        const progress =
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        setLoading({ status: true, title: `Subiendo imagen ${progress}%` });
-        console.log("snapshot", snapshot.state);
-        switch (snapshot.state) {
-          case "paused":
-            console.log("Upload is paused");
-            break;
-          case "running":
-            console.log("Upload is running");
-            break;
-          default:
-            break;
+  // setLoading({ status: true, title: "Preparando datos..." });
+  return await Promise.all(
+    await imagesArr.map(async (i) => {
+      const storageRef = ref(storage, `questionImages/${i.image.name}`);
+      const uploadTask = uploadBytesResumable(storageRef, i.image);
+      console.log(uploadTask);
+
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          // setLoading({ status: true, title: `Subiendo imagen ${progress}%` });
+        },
+        (error) => {
+          console.log(error);
         }
-      },
-      (error) => {
-        console.log(error);
-      },
-      async () => {
+      );
+
+      return await uploadTask.then(async (result) => {
         const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-        if (!i.typeImage.startsWith("alternative")) {
-          if (i.typeImage === "question") {
-            dataUrls.push({ urlImage: downloadURL, typeImage: i.typeImage });
+        if (result.state === "success" && downloadURL) {
+          if (
+            !i.typeImage.startsWith("alternative") &&
+            (i.typeImage === "question" || i.typeImage === "solution")
+          ) {
+            return {
+              urlImage: downloadURL,
+              typeImage: i.typeImage,
+              path: result.metadata.fullPath,
+              bucket: result.metadata.bucket,
+            };
           } else {
-            dataUrls.push({ urlImage: downloadURL, typeImage: i.typeImage });
+            const alternativeId = i.typeImage.split("-")[1];
+            return {
+              urlImage: downloadURL,
+              typeImage: i.typeImage,
+              alternativeId: alternativeId,
+              path: result.metadata.fullPath,
+              bucket: result.metadata.bucket,
+            };
           }
-        } else {
-          const alternativeId = i.typeImage.split("-")[1];
-          dataUrls.push({
-            urlImage: downloadURL,
-            typeImage: i.typeImage,
-            alternativeId: alternativeId,
-          });
+        }else{
+          //TODO: CANCEL TO SEND DATA
         }
-        counter = counter + 1;
-        imagesArr.length === counter &&
-          (await onSubmitDataQuestion({
-            setLoading,
-            data,
-            db,
-            dataUrls,
-            question,
-            alternatives,
-          }));
-      }
-    );
-  });
-  imagesArr.length === counter &&
-    (await onSubmitDataQuestion({
-      setLoading,
-      data,
-      db,
-      dataUrls,
-      question,
-      alternatives,
-    }));
+      });
+    })
+  ).then((result) => result);
 };

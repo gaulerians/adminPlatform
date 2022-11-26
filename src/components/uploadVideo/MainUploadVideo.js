@@ -12,8 +12,8 @@ export default function MainUploadVideo() {
     useContext(AppContext);
   const { register, handleSubmit, watch, errors } = useForm();
   const [courseSelected, setCourseSelected] = useState(null);
-  const [themeSelected, setThemeSelected] = useState(null);
-  const [themesFilters, setThemesFilters] = useState([]);
+  const [topicSelected, setTopicSelected] = useState(null);
+  const [topicsFilters, setTopicsFilters] = useState([]);
 
   const listOfCourses = [
     "Selecione curso",
@@ -89,12 +89,12 @@ export default function MainUploadVideo() {
                     <div className="select">
                       <select
                         id="standard-select"
-                        {...register("theme", { required: true })}
-                        onChange={(e) => setThemeSelected(e.target.value)}
+                        {...register("topic", { required: true })}
+                        onChange={(e) => setTopicSelected(e.target.value)}
                       >
-                        {themesFilters?.map((theme, index) => (
-                          <option key={index} value={theme}>
-                            {theme}
+                        {topicsFilters?.map((topic, index) => (
+                          <option key={index} value={topic}>
+                            {topic}
                           </option>
                         ))}
                       </select>
@@ -106,21 +106,21 @@ export default function MainUploadVideo() {
                     <div className="select">
                       <select
                         id="standard-select"
-                        {...register("subtheme", { required: true })}
+                        {...register("subtopic", { required: true })}
                       >
                         {dataSubTopics
                           ?.filter(
                             (st) =>
                               st.courses?.includes(courseSelected) &&
                               Object.values(st.topics).includes(
-                                themeSelected
+                                topicSelected
                               ) &&
                               st.title
                           )
-                          .map((subtheme, index) => {
+                          .map((subtopic, index) => {
                             return (
-                              <option key={index} value={subtheme.title}>
-                                {subtheme.title}
+                              <option key={index} value={subtopic.title}>
+                                {subtopic.title}
                               </option>
                             );
                           })}

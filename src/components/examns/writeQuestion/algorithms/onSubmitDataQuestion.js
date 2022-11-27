@@ -1,4 +1,10 @@
-import { addDoc, collection, doc, setDoc } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  setDoc,
+  arrayUnion,
+} from "firebase/firestore";
 import { onSubmitImage } from "./onSubmitImage";
 import { v4 as uuidv4 } from "uuid";
 
@@ -9,13 +15,20 @@ export const onSubmitDataQuestion = async ({
   imagesArr,
   question,
   alternatives,
+  subTopicSelected,
+  uqid = null,
 }) => {
   // setLoading({ status: true, title: "Enviando pregunta ... " });
-  const uuid = uuidv4();
+  let uuid = uqid;
+  if (!uqid) {
+    uuid = uuidv4();
+  }
+  if (!subTopicSelected) return;
+  console.log(subTopicSelected);
   const { typeQuestion, urlVideoFacebook, urlVideoYoutube } = data;
-
-  const refQuestionsDb = doc(collection(db, "questions"));
-  const refSolutionsDb = doc(collection(db, "solutions"));
+  const refQuestionsDb = doc(collection(db, "questions"), uuid);
+  const refSolutionsDb = doc(collection(db, "solutions"), uuid);
+  const subTopicRef = doc(collection(db, "subTopics"), subTopicSelected);
 
   const dataUrls =
     imagesArr.length > 0 ? await onSubmitImage({ imagesArr }) : [];
@@ -68,11 +81,15 @@ export const onSubmitDataQuestion = async ({
       youtube: urlVideoYoutube,
     },
   };
-
-  console.log("solutionData", solutionData);
-  // console.log("questionData", questionData);
-
-  // await setDoc( refQuestionsDb, questionData);
-  // await setDoc( refSolutionsDb, solutionData);
+  setDoc(refQuestionsDb, questionData, { merge: true });
+  console.log(refQuestionsDb);
+  setDoc(refSolutionsDb, solutionData, { merge: true });
+  setDoc(
+    subTopicRef,
+    {
+      listOfQuestions: arrayUnion(refQuestionsDb),
+    },
+    { merge: true }
+  );
   // setLoading({ status: false, title: null });
 };

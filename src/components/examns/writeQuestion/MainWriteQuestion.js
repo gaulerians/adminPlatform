@@ -87,7 +87,6 @@ export default function MainWriteQuestion() {
   ]);
 
   const listOfCourses = [
-    "Selecione curso",
     "chemistry",
     "biology",
     "physics",
@@ -152,18 +151,7 @@ export default function MainWriteQuestion() {
           }))
         : {}),
     });
-    // console.log(imagesArr);
-    console.log("data " ,data);
-    // await onSubmitImage({
-    //   data,
-    //   db,
-    //   imagesArr,
-    //   alternatives,
-    //   setAlternatives,
-    //   question,
-    //   setQuestion,
-    //   setLoading,
-    // });
+
     onSubmitDataQuestion({
       setLoading,
       data,
@@ -171,9 +159,8 @@ export default function MainWriteQuestion() {
       imagesArr,
       alternatives,
       question,
+      subTopicSelected,
     });
-    // console.log(question);
-    // await onSubmitDataQuestion({ question, alternatives });
   };
 
   const filterTopics = ({
@@ -181,25 +168,19 @@ export default function MainWriteQuestion() {
     dataSubTopics = [],
     setTopicsFilters,
   }) => {
+    // console.log("dataSubTopics", dataSubTopics);
     setTopicsFilters(
       dataSubTopics
-        ?.map(
-          (st) =>
-            st?.topics &&
-            Object.keys(st?.topics).includes(courseSelected) &&
-            st.topics[courseSelected]
-        )
+        ?.map((st) => {
+          if (st?.topics && Object.keys(st?.topics).includes(courseSelected)) {
+            return st.topics[courseSelected];
+          }
+        })
         .filter(
           (st) => st !== undefined && st !== false && st !== true && st !== null
         )
     );
   };
-
-  // useEffect(() => {
-  //   console.log("courseSelected", courseSelected);
-  //   console.log("topicSelected", topicSelected);
-  //   console.log("subTopicsFilters", subTopicSelected);
-  // }, [courseSelected, topicSelected, subTopicSelected]);
 
   useEffect(() => {
     filterTopics({ courseSelected, dataSubTopics, setTopicsFilters });
@@ -241,7 +222,7 @@ export default function MainWriteQuestion() {
                         : undefined
                     }
                   >
-                    <option>Seleccione</option>
+                    <option>Seleccione Universidad</option>
                     {universities.map((u) => (
                       <option value={u.acronym}>
                         {u.acronym} - {u.universityName}
@@ -262,10 +243,12 @@ export default function MainWriteQuestion() {
                   <select
                     id="standard-select"
                     {...register("course", { required: false })}
+                    defaultValue={courseSelected}
                     onChange={(e) =>
                       setCourseSelected(e.target?.value ? e.target?.value : [])
                     }
                   >
+                    <option>Seleccione curso</option>
                     {listOfCourses.map((courses, index) => (
                       <option key={index} value={courses}>
                         {courses}
@@ -283,6 +266,7 @@ export default function MainWriteQuestion() {
                     {...register("topic", { required: false })}
                     onChange={(e) => setTopicSelected(e.target.value)}
                   >
+                    <option>Seleccione tema</option>
                     {topicsFilters?.map((topic, index) => (
                       <option key={index} value={topic}>
                         {topic}
@@ -298,9 +282,14 @@ export default function MainWriteQuestion() {
                   <select
                     id="standard-select"
                     {...register("subTopic", { required: false })}
-                    defaultValue={dataSubTopics.length > 0 ? dataSubTopics : ""}
-                    onChange={(e) => setSubTopicSelected(e.target.value)}
+                    defaultValue={
+                      dataSubTopics.length > 0 ? dataSubTopics : undefined
+                    }
+                    onChange={(e) =>
+                      setSubTopicSelected(e.target.selectedOptions[0].id)
+                    }
                   >
+                    <option>Seleccione Subtema</option>
                     {dataSubTopics
                       ?.filter(
                         (st) =>
@@ -310,7 +299,11 @@ export default function MainWriteQuestion() {
                       )
                       .map((subtopic, index) => {
                         return (
-                          <option key={index} value={subtopic.title}>
+                          <option
+                            key={index}
+                            value={subtopic.title}
+                            id={subtopic.subTopicId}
+                          >
                             {subtopic.title}
                           </option>
                         );
@@ -329,7 +322,7 @@ export default function MainWriteQuestion() {
                       value="simuluacro"
                       name="typeOfQuestion"
                       type="checkbox"
-                      {...register("typeQuestion", { required: false })}//actualizar despues
+                      {...register("typeQuestion", { required: false })} //actualizar despues
                     />
                     Simulacros
                   </label>

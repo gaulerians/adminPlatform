@@ -8,6 +8,7 @@ import { Latex } from "../../latex/Latex";
 import { Title4, Title5, Title6 } from "./../../../styles/textGeneral";
 import { Button } from "./../../../styles/buttonGeneral";
 import { WrapperAdmin } from "./../../../styles/generalStyles";
+import { ErrorText } from "./styles/sErrorText";
 import { InputContainer, FormContainer } from "./../../../styles/inputGeneral";
 import { WrapperDuplex } from "./../../../styles/boxesGeneral";
 import { ButtonLatex } from "./styles/sButtonLatex";
@@ -16,12 +17,20 @@ import InputSvg from "./../../general/cOthers/InputSvg";
 import { functionLatex } from "../functionsLatex/functionsLatex";
 import { onSubmitImage } from "./algorithms/onSubmitImage";
 import { onSubmitDataQuestion } from "./algorithms/onSubmitDataQuestion";
+import {
+  urlVideoFacebookValidator,
+  urlVideoYoutubeValidator,
+} from "./validators/formValidators";
 
 export default function MainWriteQuestion() {
   const { universities, dataSubTopics, setDataSubTopics, setLoading } =
     useContext(AppContext);
   const db = useContext(FirestoreSdkContext);
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
   const [universitiesSelected, setUniversitiesSelected] = useState([]);
   const [courseSelected, setCourseSelected] = useState(null);
   const [topicsFilters, setTopicsFilters] = useState([]);
@@ -143,8 +152,8 @@ export default function MainWriteQuestion() {
           }))
         : {}),
     });
-    console.log(imagesArr);
-    console.log(data)
+    // console.log(imagesArr);
+    console.log("data " ,data);
     // await onSubmitImage({
     //   data,
     //   db,
@@ -220,6 +229,7 @@ export default function MainWriteQuestion() {
                 <div className="select">
                   <select
                     id="standard-select"
+                    {...register("university", { required: false })}
                     onChange={(e) =>
                       e.target.selectedIndex !== 0
                         ? setUniversitiesSelected([
@@ -251,6 +261,7 @@ export default function MainWriteQuestion() {
                 <div className="select">
                   <select
                     id="standard-select"
+                    {...register("course", { required: false })}
                     onChange={(e) =>
                       setCourseSelected(e.target?.value ? e.target?.value : [])
                     }
@@ -286,6 +297,7 @@ export default function MainWriteQuestion() {
                 <div className="select">
                   <select
                     id="standard-select"
+                    {...register("subTopic", { required: false })}
                     defaultValue={dataSubTopics.length > 0 ? dataSubTopics : ""}
                     onChange={(e) => setSubTopicSelected(e.target.value)}
                   >
@@ -317,7 +329,7 @@ export default function MainWriteQuestion() {
                       value="simuluacro"
                       name="typeOfQuestion"
                       type="checkbox"
-                      {...register("typeQuestion", { required: false })}
+                      {...register("typeQuestion", { required: false })}//actualizar despues
                     />
                     Simulacros
                   </label>
@@ -482,7 +494,8 @@ export default function MainWriteQuestion() {
                   <label>URL del video de Youtube</label>
                   <input
                     type="url"
-                    {...register("urlVideoYoutube")} //TODO: String.includes(youtube.com)
+                    defaultValue={""}
+                    {...register("urlVideoYoutube", urlVideoYoutubeValidator)} //TODO: String.includes(youtube.com)
                     onChange={(e) => {
                       setQuestion({
                         ...question,
@@ -493,12 +506,16 @@ export default function MainWriteQuestion() {
                       });
                     }}
                   />
+                  {errors.urlVideoYoutube && (
+                    <ErrorText>{errors.urlVideoYoutube.message}</ErrorText>
+                  )}
                 </InputContainer>
                 <InputContainer margin="0 0 10px 0">
                   <label>URL del video de Facebook</label>
                   <input
                     type="url"
-                    {...register("urlVideoFacebook")}//TODO: String.includes(fb.watch)
+                    defaultValue={""}
+                    {...register("urlVideoFacebook", urlVideoFacebookValidator)} //TODO: String.includes(fb.watch)
                     onChange={(e) => {
                       setQuestion({
                         ...question,
@@ -509,6 +526,9 @@ export default function MainWriteQuestion() {
                       });
                     }}
                   />
+                  {errors.urlVideoFacebook && (
+                    <ErrorText>{errors.urlVideoFacebook.message}</ErrorText>
+                  )}
                 </InputContainer>
               </WrapperDuplex>
               <div>

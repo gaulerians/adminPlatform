@@ -19,6 +19,7 @@ export const onSubmitDataQuestion = async ({
 
   const dataUrls =
     imagesArr.length > 0 ? await onSubmitImage({ imagesArr }) : [];
+
   const questionData = alternatives.reduce(
     (acc, curr) => {
       acc.urlOfImage.typeImage && delete acc.urlOfImage.typeImage;
@@ -29,7 +30,7 @@ export const onSubmitDataQuestion = async ({
       const urlKey = {
         ...(urlsObject.length === 1
           ? urlsObject[0]
-          : { bucket: null, path: null, urlImage: null }),
+          : { path: null, urlImage: null }),
       };
       delete urlKey.alternativeId;
       delete urlKey.typeImage;
@@ -44,32 +45,31 @@ export const onSubmitDataQuestion = async ({
       urlOfImage: {
         ...(dataUrls.length > 0
           ? dataUrls.filter((obj) => obj.typeImage === "question")[0]
-          : { bucket: null, path: null, urlImage: null }),
+          : { path: null, urlImage: null }),
       },
       keys: [],
       SEOAlternatives: [],
     }
   );
-  console.log(questionData);
 
-  // const solutionData = {
-  //   uqid: uuid,
-  //   SEOjustification: question.solution?.plainTextSolution,
-  //   justification: question.solution?.textSolution,
-  //   urlOfImage:
-  //     dataUrls?.length > 0
-  //       ? dataUrls
-  //           ?.filter((item) => item.typeImage === "solution")
-  //           .map((item) => item.urlImage)
-  //           .shift() ?? null
-  //       : null,
-  //   urlOfVideo: {
-  //     facebook: urlVideoFacebook,
-  //     youtube: urlVideoYoutube,
-  //   },
-  // };
+  // console.log("Question data",questionData);
 
-  // console.log("solutionData", solutionData);
+  const solutionData = {
+    uqid: uuid,
+    SEOjustification: question.solution.plainTextSolution,
+    justification: question.solution.textSolution,
+    urlOfImage: {
+      ...(dataUrls.length > 0
+        ? dataUrls.filter((obj) => obj.typeImage === "solution")[0]
+        : { path: null, urlImage: null }),
+    },
+    urlOfVideo: {
+      facebook: urlVideoFacebook,
+      youtube: urlVideoYoutube,
+    },
+  };
+
+  console.log("solutionData", solutionData);
   // console.log("questionData", questionData);
 
   // await setDoc( refQuestionsDb, questionData);

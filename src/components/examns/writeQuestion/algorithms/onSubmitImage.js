@@ -38,7 +38,6 @@ export const onSubmitImage = async ({ imagesArr = [], setLoading }) => {
               urlImage: downloadURL,
               typeImage: i.typeImage,
               path: result.metadata.fullPath,
-              bucket: result.metadata.bucket,
             };
           } else {
             const alternativeId = i.typeImage.split("-")[1];
@@ -47,7 +46,6 @@ export const onSubmitImage = async ({ imagesArr = [], setLoading }) => {
               typeImage: i.typeImage,
               alternativeId: alternativeId,
               path: result.metadata.fullPath,
-              bucket: result.metadata.bucket,
             };
           }
         }else{

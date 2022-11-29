@@ -1,29 +1,42 @@
-import React, { useContext, useEffect, useState, useRef } from "react";
+import React, { useContext, useEffect, useState} from "react";
 import { useForm } from "react-hook-form";
 import { AppContext } from "../../../App";
 import { FirestoreSdkContext } from "reactfire";
 import "katex/dist/katex.min.css";
-import { recoveryDataSubTopics } from "./algorithms";
 import { Latex } from "../../latex/Latex";
+
+// IMPORT COMPONENTS AND STYLES
 import { Title4, Title5, Title6 } from "./../../../styles/textGeneral";
 import { Button } from "./../../../styles/buttonGeneral";
 import { WrapperAdmin } from "./../../../styles/generalStyles";
+import { MainModalUpload } from "../.././modal/MainModalUpload";
 import { ErrorText } from "./styles/sErrorText";
 import { InputContainer, FormContainer } from "./../../../styles/inputGeneral";
 import { WrapperDuplex } from "./../../../styles/boxesGeneral";
 import { ButtonLatex } from "./styles/sButtonLatex";
 import Tag from "../../general/cOthers/Tag";
 import InputSvg from "./../../general/cOthers/InputSvg";
+import Mainspinner from "../../spinner/MainSpinner";
+
+//IMPORTS FUNCTIONS
+import { recoveryDataSubTopics } from "./algorithms/recoveryDataSubtopics";
 import { functionLatex } from "../functionsLatex/functionsLatex";
-import { onSubmitImage } from "./algorithms/onSubmitImage";
 import { onSubmitDataQuestion } from "./algorithms/onSubmitDataQuestion";
+import {
+  handleClickFunction,
+  filterTopics,
+  resetValues,
+  onChangeStateModal,
+} from "./functions";
 import {
   urlVideoFacebookValidator,
   urlVideoYoutubeValidator,
+  typeQuestionValidator,
+  requeridValidator,
 } from "./validators/formValidators";
 
 export default function MainWriteQuestion() {
-  const { universities, dataSubTopics, setDataSubTopics, setLoading } =
+  const { universities, dataSubTopics, setDataSubTopics, listOfCourses } =
     useContext(AppContext);
   const db = useContext(FirestoreSdkContext);
   const {
@@ -31,10 +44,10 @@ export default function MainWriteQuestion() {
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const [modalState, setModalState] = useState(false);
   const [universitiesSelected, setUniversitiesSelected] = useState([]);
   const [courseSelected, setCourseSelected] = useState(null);
   const [topicsFilters, setTopicsFilters] = useState([]);
-  // const [subTopicsFilters, setSubTopicsFilters] = useState([]);
   const [topicSelected, setTopicSelected] = useState(null);
   const [subTopicSelected, setSubTopicSelected] = useState(null);
   const [selectionCategory, setSelectionCategory] = useState("");
@@ -43,17 +56,16 @@ export default function MainWriteQuestion() {
     setSelections: null,
     setInferiorText: null,
   });
+  const [loading, setLoading] = useState({ status: false, title: null });
 
   const [question, setQuestion] = useState({
     question: {
-      //Dejar como key 0
       image: null,
       text: null,
       plainText: null,
       urlImage: null,
     },
     solution: {
-      //Dejar como key 1
       imageSolution: null,
       urlImageSolution: null,
       textSolution: null,
@@ -86,35 +98,13 @@ export default function MainWriteQuestion() {
     },
   ]);
 
-  const listOfCourses = [
-    "chemistry",
-    "biology",
-    "physics",
-    "mathematics",
-    "geography",
-    "history",
-  ];
+  const listOfCoursesNames = listOfCourses
+    ?.map((course) => course.value)
+    .sort((a, b) => a.localeCompare(b));
 
-  const handleClickFunction = (func) => {
-    if (
-      superiorSelections.setInferiorText &&
-      superiorSelections.setSelections
-    ) {
-      superiorSelections.setInferiorText((prev) => {
-        return (
-          prev.slice(0, superiorSelections.selections.start) +
-          func +
-          prev.slice(superiorSelections.selections.end)
-        );
-      });
-      superiorSelections.setSelections((prev) => {
-        return {
-          start: prev.start + func.length,
-          end: prev.end + func.length,
-        };
-      });
-    }
-  };
+  const courseSelectedName = listOfCourses?.find(
+    (c) => c.value === courseSelected
+  )?.name;
 
   const onTagDeleteU = (tagName) => {
     setUniversitiesSelected(
@@ -152,7 +142,7 @@ export default function MainWriteQuestion() {
         : {}),
     });
 
-    onSubmitDataQuestion({
+    const result = await onSubmitDataQuestion({
       setLoading,
       data,
       db,
@@ -161,29 +151,20 @@ export default function MainWriteQuestion() {
       question,
       subTopicSelected,
     });
-  };
-
-  const filterTopics = ({
-    courseSelected = "",
-    dataSubTopics = [],
-    setTopicsFilters,
-  }) => {
-    // console.log("dataSubTopics", dataSubTopics);
-    setTopicsFilters(
-      dataSubTopics
-        ?.map((st) => {
-          if (st?.topics && Object.keys(st?.topics).includes(courseSelected)) {
-            return st.topics[courseSelected];
-          }
-        })
-        .filter(
-          (st) => st !== undefined && st !== false && st !== true && st !== null
-        )
-    );
+    if (result.status === 200) {
+      resetValues({ setQuestion, setAlternatives });
+    } else {
+      alert(result.message);
+    }
+    setLoading({ status: false, title: null });
   };
 
   useEffect(() => {
-    filterTopics({ courseSelected, dataSubTopics, setTopicsFilters });
+    filterTopics({
+      courseSelectedName,
+      dataSubTopics,
+      setTopicsFilters,
+    });
   }, [courseSelected, dataSubTopics, setTopicsFilters]);
 
   useEffect(() => {
@@ -191,10 +172,18 @@ export default function MainWriteQuestion() {
       db,
       dataSubTopics,
       setDataSubTopics,
-      courseSelected,
+      courseSelectedName,
     });
   }, [courseSelected]);
 
+  useEffect(() => {}, [loading]);
+  if (loading.status) {
+    return (
+      <Mainspinner
+        title={loading.title ?? "Hey tú, sí tú... ¡ME IMPORTAS MUCHO!"}
+      />
+    );
+  }
   return (
     <main>
       <WrapperAdmin>
@@ -203,14 +192,19 @@ export default function MainWriteQuestion() {
         </div>
         <div>
           <Title5>Metadatos</Title5>
-          <FormContainer onSubmit={handleSubmit(onSubmit)}>
+          <FormContainer
+            onSubmit={(e) => {
+              e.preventDefault();
+              onChangeStateModal({ modalState, setModalState });
+            }}
+          >
             <div className="inputContainerChip">
               <InputContainer margin10B>
                 <label>Universidad</label>
                 <div className="select">
                   <select
                     id="standard-select"
-                    {...register("university", { required: false })}
+                    {...register("university", requeridValidator)}
                     onChange={(e) =>
                       e.target.selectedIndex !== 0
                         ? setUniversitiesSelected([
@@ -236,20 +230,25 @@ export default function MainWriteQuestion() {
                 <Tag name={chip} type="university" onDelete={onTagDeleteU} />
               ))}
             </div>
+            {errors.university && (
+              <ErrorText>{errors.university.message}</ErrorText>
+            )}
             <div className="inputContainerQuad">
               <InputContainer margin10B>
                 <label>Curso</label>
                 <div className="select">
                   <select
                     id="standard-select"
-                    {...register("course", { required: false })}
-                    defaultValue={courseSelected}
+                    {...register("course", requeridValidator, {
+                      required: true,
+                    })}
+                    defaultValue={courseSelected ?? ""}
                     onChange={(e) =>
                       setCourseSelected(e.target?.value ? e.target?.value : [])
                     }
                   >
                     <option>Seleccione curso</option>
-                    {listOfCourses.map((courses, index) => (
+                    {listOfCoursesNames?.map((courses, index) => (
                       <option key={index} value={courses}>
                         {courses}
                       </option>
@@ -257,13 +256,16 @@ export default function MainWriteQuestion() {
                   </select>
                   <span className="focus"></span>
                 </div>
+                {errors.course && (
+                  <ErrorText>{errors.course.message}</ErrorText>
+                )}
               </InputContainer>
               <InputContainer noMargin>
                 <label>Tema</label>
                 <div className="select">
                   <select
                     id="standard-select"
-                    {...register("topic", { required: false })}
+                    {...register("topic", requeridValidator)}
                     onChange={(e) => setTopicSelected(e.target.value)}
                   >
                     <option>Seleccione tema</option>
@@ -275,13 +277,14 @@ export default function MainWriteQuestion() {
                   </select>
                   <span className="focus"></span>
                 </div>
+                {errors.topic && <ErrorText>{errors.topic.message}</ErrorText>}
               </InputContainer>
               <InputContainer noMargin>
                 <label>Subtema</label>
                 <div className="select">
                   <select
                     id="standard-select"
-                    {...register("subTopic", { required: false })}
+                    {...register("subTopic", requeridValidator)}
                     defaultValue={
                       dataSubTopics.length > 0 ? dataSubTopics : undefined
                     }
@@ -293,7 +296,7 @@ export default function MainWriteQuestion() {
                     {dataSubTopics
                       ?.filter(
                         (st) =>
-                          st.courses?.includes(courseSelected) &&
+                          st.courses?.includes(courseSelectedName) &&
                           Object.values(st.topics).includes(topicSelected) &&
                           st.title
                       )
@@ -311,6 +314,9 @@ export default function MainWriteQuestion() {
                   </select>
                   <span className="focus"></span>
                 </div>
+                {errors.subTopic && (
+                  <ErrorText>{errors.subTopic.message}</ErrorText>
+                )}
               </InputContainer>
             </div>
             <div className="inputContainerDuplo">
@@ -322,7 +328,7 @@ export default function MainWriteQuestion() {
                       value="simuluacro"
                       name="typeOfQuestion"
                       type="checkbox"
-                      {...register("typeQuestion", { required: false })} //actualizar despues
+                      {...register("typeQuestion", typeQuestionValidator)} //actualizar despues
                     />
                     Simulacros
                   </label>
@@ -331,7 +337,7 @@ export default function MainWriteQuestion() {
                       value="cuestionario"
                       name="typeOfQuestion"
                       type="checkbox"
-                      {...register("typeQuestion", { required: false })}
+                      {...register("typeQuestion", typeQuestionValidator)}
                     />
                     Questionario
                   </label>
@@ -340,11 +346,14 @@ export default function MainWriteQuestion() {
                       value={"deco"}
                       name="typeOfQuestion"
                       type="checkbox"
-                      {...register("typeQuestion", { required: false })}
+                      {...register("typeQuestion", typeQuestionValidator)}
                     />
                     DECO
                   </label>
                 </div>
+                {errors.typeQuestion && (
+                  <ErrorText>{errors.typeQuestion.message}</ErrorText>
+                )}
               </InputContainer>
             </div>
             <WrapperDuplex>
@@ -406,9 +415,13 @@ export default function MainWriteQuestion() {
                           key={index}
                           value={func.expressionLatex}
                           id={index}
-                          onClick={() =>
-                            handleClickFunction(func.expressionLatex)
-                          }
+                          onClick={() => {
+                            let funcExpresion = func.expressionLatex;
+                            handleClickFunction({
+                              funcExpresion,
+                              superiorSelections,
+                            });
+                          }}
                         >
                           <Latex>{func.expressionLatex}</Latex>
                         </ButtonLatex>
@@ -433,10 +446,22 @@ export default function MainWriteQuestion() {
                   </div>
                 </div>
               </div>
-              <div>
+              <div
+                style={{
+                  backgroundColor: "#fff",
+                  borderRadius: "10px",
+                  padding: "10px",
+                  boxShadow: "0px 0px 10px 0px rgba(0,0,0,0.25)",
+                }}
+              >
                 <Title5>Vista previa</Title5>
+                <hr />
                 <div>
-                  <Latex>{question.question?.text ?? ""}</Latex>
+                  <Latex>
+                    {question.question?.text
+                      ? ` \\textcolor{RoyalBlue}{${question.question?.text}}`
+                      : "\\blacktriangleright"}
+                  </Latex>
                   {question.question.image && (
                     // eslint-disable-next-line jsx-a11y/alt-text
                     <img
@@ -447,7 +472,6 @@ export default function MainWriteQuestion() {
                 </div>
                 <br />
                 <div>
-                  {/* {console.log(alternatives)} */}
                   {alternatives.map((alt, index) => (
                     <div key={index}>
                       <Latex>{`
@@ -542,6 +566,12 @@ export default function MainWriteQuestion() {
               </Button>
             </WrapperDuplex>
           </FormContainer>
+          <MainModalUpload
+            modalState={modalState}
+            setModalState={setModalState}
+            title="¿Estas seguro de enviar la pregunta?"
+            functionUpload={handleSubmit(onSubmit)}
+          />
         </div>
       </WrapperAdmin>
     </main>

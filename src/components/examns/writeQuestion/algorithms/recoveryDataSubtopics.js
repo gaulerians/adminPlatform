@@ -4,12 +4,12 @@ export const recoveryDataSubTopics = async ({
   db,
   dataSubTopics,
   setDataSubTopics,
-  courseSelected,
+  courseSelectedName = "",
 }) => {
   const courseTopics = await getDocs(
     query(
       collection(db, "subTopics"),
-      where("courses", "array-contains", courseSelected)
+      where("courses", "array-contains", courseSelectedName)
     )
   );
 

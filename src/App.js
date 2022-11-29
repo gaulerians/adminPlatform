@@ -17,7 +17,10 @@ import Login from "./pages/Login";
 import { adminRoutes } from "./routes";
 
 //import ALGORITHMS
-import { recoverDataOfUser, recoverUniversities } from "./algorithms";
+import { recoverDataOfUser  } from "./algorithms/recoverDataOfUser";
+import { recoverUniversities  } from "./algorithms/recoverUniversities";
+import { recoverDataListOfCourses  } from "./algorithms/recoverDataListOfCourses";
+
 
 const AppContext = createContext();
 const { Provider: AppProvider, Consumer } = AppContext;
@@ -27,12 +30,14 @@ export default function App() {
   const auth = getAuth();
   const [currentUser, setCurrentUser] = useState(auth.currentUser || null);
   const [dataOfUser, setDataOfUser] = useState(null);
+  const [listOfCourses, setListOfCourses] = useState(null);
   const [universities, setUniversities] = useState(null);
   const [dataSubTopics, setDataSubTopics] = useState([]);
   const [loading, setLoading] = useState({ status: true, title: null });
 
   useEffect(() => {
     !universities && recoverUniversities(firestoreInstance, setUniversities);
+    !listOfCourses && recoverDataListOfCourses(firestoreInstance, setListOfCourses);
     !currentUser &&
       onAuthStateChanged(auth, async (user) => {
         setLoading({ status: true, title: null });
@@ -44,7 +49,7 @@ export default function App() {
         setLoading({ status: false, title: null });
       });
     return () => {};
-  }, [auth, dataOfUser, currentUser]);
+  }, [auth, dataOfUser, currentUser]);    
 
   const appValue = {
     setCurrentUser,
@@ -55,6 +60,8 @@ export default function App() {
     setLoading,
     dataSubTopics,
     setDataSubTopics,
+    listOfCourses,
+    setListOfCourses,
   };
 
   if ((loading.status && !currentUser) || loading.status) {

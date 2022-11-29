@@ -4,23 +4,21 @@ import {
   uploadBytesResumable,
   getDownloadURL,
 } from "firebase/storage";
-import { onSubmitDataQuestion } from "./onSubmitDataQuestion";
 
 export const onSubmitImage = async ({ imagesArr = [], setLoading }) => {
+  setLoading({ status: true, title: "Preparando datos..." });
   const storage = getStorage();
-  // setLoading({ status: true, title: "Preparando datos..." });
   return await Promise.all(
     await imagesArr.map(async (i) => {
       const storageRef = ref(storage, `questionImages/${i.image.name}`);
       const uploadTask = uploadBytesResumable(storageRef, i.image);
-      console.log(uploadTask);
 
       uploadTask.on(
         "state_changed",
         (snapshot) => {
           const progress =
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          // setLoading({ status: true, title: `Subiendo imagen ${progress}%` });
+          setLoading({ status: true, title: `Subiendo imagen ${progress}%` });
         },
         (error) => {
           console.log(error);
@@ -48,7 +46,7 @@ export const onSubmitImage = async ({ imagesArr = [], setLoading }) => {
               path: result.metadata.fullPath,
             };
           }
-        }else{
+        } else {
           //TODO: CANCEL TO SEND DATA
         }
       });

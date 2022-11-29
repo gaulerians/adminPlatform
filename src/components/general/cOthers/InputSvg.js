@@ -4,10 +4,8 @@ import { InputContainer } from "../../../styles/inputGeneral";
 import { ReactComponent as ImageFilesSVG } from "./../../../icons/image-files.svg";
 import { ReactComponent as CloseImage } from "./../../../icons/close.svg";
 import { InputSvgContainer } from "./styles/sInputSvg";
-import {
-  handleChangeTextLatex,
-  transformTextLatexInPlain,
-} from "../../examns/writeQuestion/algorithms";
+import { handleChangeTextLatex } from "../../examns/writeQuestion/algorithms/handleChangeTextLatex";
+import { transformTextLatexInPlain } from "../../examns/writeQuestion/algorithms/transformTextLatexInPlain";
 
 export default function InputSvg({
   heightTextArea,
@@ -97,7 +95,7 @@ export default function InputSvg({
           <InputSvgContainer type={type}>
             {number && <p>{number}</p>}
             <textarea
-              // required={isQuestion || alternativeId ? true : false}
+              required={isQuestion || alternativeId ? true : false}
               id={
                 isQuestion
                   ? "questionInput"

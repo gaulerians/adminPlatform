@@ -10,17 +10,17 @@ import MainSpinner from "./components/spinner/MainSpinner";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { FirestoreProvider, useFirebaseApp } from "reactfire";
 import { getFirestore } from "firebase/firestore";
-import { collection, query, where, getDocs } from "firebase/firestore";
 
 //import Routes
 import Login from "./pages/Login";
 import { adminRoutes } from "./routes";
 
 //import ALGORITHMS
-import { recoverDataOfUser  } from "./algorithms/recoverDataOfUser";
-import { recoverUniversities  } from "./algorithms/recoverUniversities";
-import { recoverDataListOfCourses  } from "./algorithms/recoverDataListOfCourses";
-
+import { recoverDataOfUser } from "./algorithms/recoverDataOfUser";
+import { recoverUniversities } from "./algorithms/recoverUniversities";
+import { recoverDataListOfCourses } from "./algorithms/recoverDataListOfCourses";
+import { recoverDataUnreviewedQuestions } from "./algorithms/recoverDataUnreviewedQuestions";
+import { recoverDataOfAuthor } from "./algorithms/recoverDataOfAuthor";
 
 const AppContext = createContext();
 const { Provider: AppProvider, Consumer } = AppContext;
@@ -33,11 +33,16 @@ export default function App() {
   const [listOfCourses, setListOfCourses] = useState(null);
   const [universities, setUniversities] = useState(null);
   const [dataSubTopics, setDataSubTopics] = useState([]);
+  const [dataOfAuthors, setDataOfAuthors] = useState(null);
+  const [dataOfQuestionToReview, setDataOfQuestionToReview] = useState(null);
+  const [unreviewedQuestionData, setUnreviewedQuestionData] = useState(null);
   const [loading, setLoading] = useState({ status: true, title: null });
 
   useEffect(() => {
     !universities && recoverUniversities(firestoreInstance, setUniversities);
-    !listOfCourses && recoverDataListOfCourses(firestoreInstance, setListOfCourses);
+    !listOfCourses &&
+      recoverDataListOfCourses(firestoreInstance, setListOfCourses);
+    !dataOfAuthors && recoverDataOfAuthor(firestoreInstance, setDataOfAuthors);
     !currentUser &&
       onAuthStateChanged(auth, async (user) => {
         setLoading({ status: true, title: null });
@@ -49,7 +54,19 @@ export default function App() {
         setLoading({ status: false, title: null });
       });
     return () => {};
-  }, [auth, dataOfUser, currentUser]);    
+  }, [auth, dataOfUser, currentUser]);
+
+  useEffect(() => {
+    !unreviewedQuestionData &&
+      recoverDataUnreviewedQuestions({
+        firestoreInstance,
+        setUnreviewedQuestionData,
+        setLoading,
+      });
+    // unreviewedQuestionData && console.log(unreviewedQuestionData);
+  }, [unreviewedQuestionData]);
+
+
 
   const appValue = {
     setCurrentUser,
@@ -62,6 +79,12 @@ export default function App() {
     setDataSubTopics,
     listOfCourses,
     setListOfCourses,
+    dataOfQuestionToReview,
+    setDataOfQuestionToReview,
+    unreviewedQuestionData,
+    setUnreviewedQuestionData,
+    setDataOfAuthors,
+    dataOfAuthors,
   };
 
   if ((loading.status && !currentUser) || loading.status) {

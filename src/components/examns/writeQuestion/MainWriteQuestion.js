@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState} from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { AppContext } from "../../../App";
 import { FirestoreSdkContext } from "reactfire";
@@ -34,16 +34,23 @@ import {
   typeQuestionValidator,
   requeridValidator,
 } from "./validators/formValidators";
+import { generatorYear } from "./algorithms/generatorYear";
 
 export default function MainWriteQuestion() {
-  const { universities, dataSubTopics, setDataSubTopics, listOfCourses } =
-    useContext(AppContext);
+  const {
+    universities,
+    dataSubTopics,
+    setDataSubTopics,
+    listOfCourses,
+    dataOfUser,
+  } = useContext(AppContext);
   const db = useContext(FirestoreSdkContext);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const [loading, setLoading] = useState({ status: false, title: null });
   const [modalState, setModalState] = useState(false);
   const [universitiesSelected, setUniversitiesSelected] = useState([]);
   const [courseSelected, setCourseSelected] = useState(null);
@@ -56,7 +63,6 @@ export default function MainWriteQuestion() {
     setSelections: null,
     setInferiorText: null,
   });
-  const [loading, setLoading] = useState({ status: false, title: null });
 
   const [question, setQuestion] = useState({
     question: {
@@ -150,6 +156,7 @@ export default function MainWriteQuestion() {
       alternatives,
       question,
       subTopicSelected,
+      dataOfUser,
     });
     if (result.status === 200) {
       resetValues({ setQuestion, setAlternatives });
@@ -165,6 +172,7 @@ export default function MainWriteQuestion() {
       dataSubTopics,
       setTopicsFilters,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [courseSelected, dataSubTopics, setTopicsFilters]);
 
   useEffect(() => {
@@ -174,9 +182,12 @@ export default function MainWriteQuestion() {
       setDataSubTopics,
       courseSelectedName,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [courseSelected]);
 
-  useEffect(() => {}, [loading]);
+  useEffect(() => {
+  }, [loading]);
+
   if (loading.status) {
     return (
       <Mainspinner
@@ -200,7 +211,7 @@ export default function MainWriteQuestion() {
           >
             <div className="inputContainerChip">
               <InputContainer margin10B>
-                <label>Universidad</label>
+                <label>Universidad *</label>
                 <div className="select">
                   <select
                     id="standard-select"
@@ -217,8 +228,8 @@ export default function MainWriteQuestion() {
                     }
                   >
                     <option>Seleccione Universidad</option>
-                    {universities.map((u) => (
-                      <option value={u.acronym}>
+                    {universities.map((u, index) => (
+                      <option key={index} value={u.acronym}>
                         {u.acronym} - {u.universityName}
                       </option>
                     ))}
@@ -226,16 +237,37 @@ export default function MainWriteQuestion() {
                   <span className="focus"></span>
                 </div>
               </InputContainer>
-              {universitiesSelected.map((chip) => (
-                <Tag name={chip} type="university" onDelete={onTagDeleteU} />
+              {universitiesSelected.map((chip, index) => (
+                <Tag
+                  key={index}
+                  name={chip}
+                  type="university"
+                  onDelete={onTagDeleteU}
+                />
               ))}
             </div>
             {errors.university && (
               <ErrorText>{errors.university.message}</ErrorText>
             )}
+            <div className="inputContainerDuplo">
+              <InputContainer margin20B>
+                <label>¿Pertenece al centro preuniversitario? (Opcional)</label>
+                <div className="inputsRadioContainer">
+                  <label className="inputRadioContainer inputType">
+                    <input
+                      value= {true}
+                      name="isPreUniversityCheck"
+                      type="checkbox"
+                      {...register("isPreUniversityCheck")}
+                    />
+                    Si
+                  </label>
+                </div>
+              </InputContainer>
+            </div>
             <div className="inputContainerQuad">
               <InputContainer margin10B>
-                <label>Curso</label>
+                <label>Curso *</label>
                 <div className="select">
                   <select
                     id="standard-select"
@@ -261,7 +293,7 @@ export default function MainWriteQuestion() {
                 )}
               </InputContainer>
               <InputContainer noMargin>
-                <label>Tema</label>
+                <label>Tema *</label>
                 <div className="select">
                   <select
                     id="standard-select"
@@ -280,7 +312,7 @@ export default function MainWriteQuestion() {
                 {errors.topic && <ErrorText>{errors.topic.message}</ErrorText>}
               </InputContainer>
               <InputContainer noMargin>
-                <label>Subtema</label>
+                <label>Subtema * </label>
                 <div className="select">
                   <select
                     id="standard-select"
@@ -318,10 +350,30 @@ export default function MainWriteQuestion() {
                   <ErrorText>{errors.subTopic.message}</ErrorText>
                 )}
               </InputContainer>
+              <InputContainer noMargin>
+                <label>Año (opcional)</label>
+                <div className="select">
+                  <select
+                    id="standard-select"
+                    defaultValue={null}
+                    {...register("year")}
+                  >
+                    <option>Seleccione el año</option>
+                    {generatorYear().map((year, index) => {
+                      return (
+                        <option key={index} value={year}>
+                          {year}
+                        </option>
+                      );
+                    })}
+                  </select>
+                  <span className="focus"></span>
+                </div>
+              </InputContainer>
             </div>
             <div className="inputContainerDuplo">
               <InputContainer noMargin>
-                <label>Pregunta para</label>
+                <label>Pregunta para *</label>
                 <div className="inputsRadioContainer">
                   <label className="inputRadioContainer inputType">
                     <input
@@ -360,7 +412,7 @@ export default function MainWriteQuestion() {
               <div>
                 <Title5>Contenido</Title5>
                 <div>
-                  <Title6>Pregunta</Title6>
+                  <Title6>Pregunta *</Title6>
                   <div>
                     <InputSvg
                       heightTextArea="140px"
@@ -371,7 +423,7 @@ export default function MainWriteQuestion() {
                       setSuperiorSelections={setSuperiorSelections}
                     />
                   </div>
-                  <Title6>Insertar funciones LATEX</Title6>
+                  <Title6>Insertar funciones LATEX (Opcional)</Title6>
                   <InputContainer noMargin>
                     <div className="select">
                       <select
@@ -404,7 +456,7 @@ export default function MainWriteQuestion() {
                           lat.subCategory === selectionCategory.split("-")[1]
                         : lat.category === selectionCategory
                     )
-                    .map((lat) =>
+                    .map((lat, index) =>
                       lat.functions.map((func, index) => (
                         <ButtonLatex
                           type="button"
@@ -423,13 +475,13 @@ export default function MainWriteQuestion() {
                             });
                           }}
                         >
-                          <Latex>{func.expressionLatex}</Latex>
+                          <Latex key={index}>{func.expressionLatex}</Latex>
                         </ButtonLatex>
                       ))
                     )}
                 </div>
                 <div>
-                  <Title6>Alternativas</Title6>
+                  <Title6>Alternativas *</Title6>
                   <div>
                     {alternatives.map((key, index) => (
                       <InputSvg
@@ -508,7 +560,7 @@ export default function MainWriteQuestion() {
               <Title5>Resolución</Title5>
               <WrapperDuplex>
                 <InputContainer margin="0 0 10px 0">
-                  <label>URL del video de Youtube</label>
+                  <label>URL del video de Youtube (Opcional)</label>
                   <input
                     type="url"
                     defaultValue={""}
@@ -528,7 +580,7 @@ export default function MainWriteQuestion() {
                   )}
                 </InputContainer>
                 <InputContainer margin="0 0 10px 0">
-                  <label>URL del video de Facebook</label>
+                  <label>URL del video de Facebook (Opcional)</label>
                   <input
                     type="url"
                     defaultValue={""}
@@ -552,7 +604,7 @@ export default function MainWriteQuestion() {
                 <InputSvg
                   heightTextArea="140px"
                   type="textArea"
-                  label="Texto e imagen"
+                  label="Texto e imagen (Opcional)"
                   isQuestion={false}
                   question={question}
                   setQuestion={setQuestion}

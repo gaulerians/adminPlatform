@@ -1,15 +1,22 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
+import { AppContext } from "../../App";
 import { Button } from "../../styles/buttonGeneral";
+import { UploadStatusRevisedQuestion } from "../examns/checkQuestion/algorithms/updateStatusQuestion";
 import { ReactComponent as CloseSVG } from "./../../icons/close.svg";
 import { Overlay, ModalContainer } from "./styles/sMainModal";
 
-export function MainModalUpload({
-  functionUpload,
+export function MainModalCheck({
+  db,
+  uqid,
+  navigate,
   modalState,
   setModalState,
   title,
+  uqidSubTopic,
 }) {
-  useEffect(() => {}, []);
+  const { setLoading, setUnreviewedQuestionData, dataOfUser } =
+    useContext(AppContext);
+  // console.log("uquid", uqidSubTopic);
   return (
     <>
       {modalState && (
@@ -45,8 +52,16 @@ export function MainModalUpload({
                 <Button
                   iris
                   secundary
-                  onClick={(e) => {
-                    functionUpload();
+                  onClick={() => {
+                    UploadStatusRevisedQuestion({
+                      db,
+                      uqid,
+                      setLoading,
+                      navigate,
+                      setUnreviewedQuestionData,
+                      dataOfUser,
+                      uqidSubTopic,
+                    });
                     setModalState(!modalState);
                   }}
                 >

@@ -1,4 +1,4 @@
-import { collection, doc, setDoc, arrayUnion } from "firebase/firestore";
+import { collection, doc, setDoc, arrayUnion, serverTimestamp } from "firebase/firestore";
 import { onSubmitImage } from "./onSubmitImage";
 import { v4 as uuidv4 } from "uuid";
 
@@ -11,8 +11,8 @@ export const onSubmitDataQuestion = async ({
   alternatives,
   subTopicSelected,
   uqid = null,
+  dataOfUser,
 }) => {
-  console.log("test");
   setLoading({ status: true, title: "Enviando pregunta ... " });
   let uuid = uqid;
   if (!uqid) {
@@ -25,20 +25,28 @@ export const onSubmitDataQuestion = async ({
       errorCode: "SUBTOPIC_NOT_DEFINED",
     };
   try {
-    const { typeQuestion, urlVideoFacebook, urlVideoYoutube } = data;
+    const {
+      university,
+      year,
+      typeQuestion,
+      urlVideoFacebook,
+      urlVideoYoutube,
+      isPreUniversityCheck,
+      course,
+    } = data;
     const refQuestionsDb = doc(collection(db, "questions"), uuid);
     const refSolutionsDb = doc(collection(db, "solutions"), uuid);
-    const subTopicRef = doc(collection(db, "subTopics"), subTopicSelected);
 
     const dataUrls =
       imagesArr.length > 0
         ? await onSubmitImage({ imagesArr, setLoading })
         : [];
-    if(!Array.isArray(dataUrls)) return {
-      status: 400,
-      message: "Error al subir las imagenes",
-      errorCode: "ERROR_UPLOAD_IMAGES",
-    };
+    if (!Array.isArray(dataUrls))
+      return {
+        status: 400,
+        message: "Error al subir las imagenes",
+        errorCode: "ERROR_UPLOAD_IMAGES",
+      };
 
     const questionData = alternatives.reduce(
       (acc, curr) => {
@@ -59,6 +67,14 @@ export const onSubmitDataQuestion = async ({
       },
       {
         uqid: uuid,
+        revisedQuestion: false, 
+        authorId: dataOfUser?.uid, 
+        dateUpload: serverTimestamp(), 
+        university: university, 
+        yearOfQuestion: year ?? null, 
+        curse: course ?? null,
+        isQuestionOfPreuniversity: isPreUniversityCheck=== "true" ? true : false,
+        subTopicID: subTopicSelected, 
         latexQuestion: question.question?.text,
         SEOQuestion: question.question.plainText,
         typeQuestion: typeQuestion,
@@ -88,13 +104,13 @@ export const onSubmitDataQuestion = async ({
     };
     setDoc(refQuestionsDb, questionData, { merge: true });
     setDoc(refSolutionsDb, solutionData, { merge: true });
-    setDoc(
-      subTopicRef,
-      {
-        listOfQuestions: arrayUnion(refQuestionsDb),
-      },
-      { merge: true }
-    );
+    //setDoc(
+    //   subTopicRef,
+    //   {
+    //     listOfQuestions: arrayUnion(subTopicRef),
+    //   },
+    //   { merge: true }
+    // );
     return {
       status: 200,
       message: "Pregunta enviada correctamente",

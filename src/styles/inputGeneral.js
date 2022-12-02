@@ -60,6 +60,10 @@ export const InputContainer = styled.div`
     margin: 0 0 10px 0;
   `}
 
+  ${props => props.margin20B && css`
+    margin: 0 0 20px 0;
+  `}
+
   ${props => props.noMargin && css`
     margin: 0;
   `}

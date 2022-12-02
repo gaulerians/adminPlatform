@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { AppContext } from "../../App";
 import { Button } from "../../styles/buttonGeneral";
 import { UploadStatusRevisedQuestion } from "../examns/checkQuestion/algorithms/updateStatusQuestion";

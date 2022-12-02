@@ -149,6 +149,7 @@ export default function MainWriteQuestion() {
     });
 
     const result = await onSubmitDataQuestion({
+      //mandar el nombre del curso en ingles
       setLoading,
       data,
       db,
@@ -185,8 +186,7 @@ export default function MainWriteQuestion() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [courseSelected]);
 
-  useEffect(() => {
-  }, [loading]);
+  useEffect(() => {}, [loading]);
 
   if (loading.status) {
     return (
@@ -255,7 +255,7 @@ export default function MainWriteQuestion() {
                 <div className="inputsRadioContainer">
                   <label className="inputRadioContainer inputType">
                     <input
-                      value= {true}
+                      value={true}
                       name="isPreUniversityCheck"
                       type="checkbox"
                       {...register("isPreUniversityCheck")}
@@ -297,6 +297,7 @@ export default function MainWriteQuestion() {
                 <div className="select">
                   <select
                     id="standard-select"
+                    defaultValue={topicSelected ?? ""}
                     {...register("topic", requeridValidator)}
                     onChange={(e) => setTopicSelected(e.target.value)}
                   >

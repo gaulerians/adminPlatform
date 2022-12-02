@@ -1,50 +1,99 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { AppContext } from "../../App";
 import { useForm } from "react-hook-form";
 import { Title4, Title5, Title6 } from "./../../styles/textGeneral";
 import { Button } from "./../../styles/buttonGeneral";
+import { ReactComponent as ImageFilesSVG } from "./../../icons/image-files.svg";
+import { ReactComponent as VideoFilesSVG } from "./../../icons/play.svg";
+import { ReactComponent as CloseImage } from "./../../icons/close.svg";
 import { WrapperAdmin } from "./../../styles/generalStyles";
 import { InputContainer, FormContainer } from "./../../styles/inputGeneral";
 import { WrapperDuplex } from "./../../styles/boxesGeneral";
+import { filterTopics } from "../examns/writeQuestion/functions";
+import { recoveryDataSubTopics } from "../examns/writeQuestion/algorithms/recoveryDataSubtopics";
+import { FirestoreSdkContext } from "reactfire";
+import { ErrorText } from "../examns/writeQuestion/styles/sErrorText";
+import {
+  requeridValidator,
+  textRequiredValidator,
+} from "../examns/writeQuestion/validators/formValidators";
+import { InputSvgContainer } from "../general/cOthers/styles/sInputSvg";
 
 export default function MainUploadVideo() {
-  const { universities, dataSubTopics, setDataSubTopics } =
+  const db = useContext(FirestoreSdkContext);
+  const { listOfCourses, dataSubTopics, setDataSubTopics } =
     useContext(AppContext);
-  const { register, handleSubmit, watch, errors } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
   const [courseSelected, setCourseSelected] = useState(null);
   const [topicSelected, setTopicSelected] = useState(null);
+  const [subTopicSelected, setSubTopicSelected] = useState(null);
   const [topicsFilters, setTopicsFilters] = useState([]);
-
-  const listOfCourses = [
-    "Selecione curso",
-    "chemistry",
-    "biology",
-    "physics",
-    "mathematics",
-    "geography",
-    "history",
-  ];
+  const [localImage, setLocalImage] = useState(null);
+  const [localVideo, setLocalVideo] = useState(null);
 
   const fileInputVideo = useRef(null);
   const fileInputImage = useRef(null);
+  const refCloseImage = useRef(null);
+  const refCloseVideo = useRef(null);
 
   const uploadVideoFile = (e) => {
-    console.log("seleccionando archivo de video");
+    e.preventDefault();
     fileInputVideo.current.click();
-    console.log(fileInputVideo.current.value);
+    fileInputVideo.current.addEventListener("change", (ev) => {
+      setLocalVideo(ev.target.files[0]);
+    });
   };
 
   const uploadImageFile = (e) => {
-    console.log("seleccionando archivo de imagen");
+    e.preventDefault();
     fileInputImage.current.click();
-    console.log(fileInputImage.current.id);
+    fileInputImage.current.addEventListener("change", (ev) => {
+      setLocalImage(ev.target.files[0]);
+    });
   };
 
-  const dataAfter = { title: "hola", description: "hola" };
+  const listOfCoursesNames = listOfCourses
+    ?.map((course) => course.value)
+    .sort((a, b) => a.localeCompare(b));
+  const courseSelectedName = listOfCourses?.find(
+    (c) => c.value === courseSelected
+  )?.name;
 
   const onSubmit = (data) => {
-    console.log(data);
+    const dataGeneral = {
+      title: data.title,
+      description: data.description,
+      course: courseSelectedName,
+      topic: topicSelected,
+      subTopic: subTopicSelected,
+      image: localImage,
+      video: localVideo,
+    };
+    console.log(dataGeneral);
   };
+
+  useEffect(() => {
+    filterTopics({
+      courseSelectedName,
+      dataSubTopics,
+      setTopicsFilters,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [courseSelected, dataSubTopics, setTopicsFilters]);
+
+  useEffect(() => {
+    recoveryDataSubTopics({
+      db,
+      dataSubTopics,
+      setDataSubTopics,
+      courseSelectedName,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [courseSelected]);
 
   return (
     <main>
@@ -60,22 +109,24 @@ export default function MainUploadVideo() {
             <FormContainer onSubmit={handleSubmit(onSubmit)}>
               <div>
                 <div>
-                <Title6>Detalles</Title6>
+                  <Title6>Detalles</Title6>
                 </div>
-                <div >
+                <div>
                   <InputContainer margin10B>
                     <label>Curso</label>
                     <div className="select">
                       <select
                         id="standard-select"
-                        {...register("course", { required: true })}
+                        {...register("course", requeridValidator)}
+                        defaultValue={courseSelected ?? ""}
                         onChange={(e) =>
                           setCourseSelected(
                             e.target?.value ? e.target?.value : []
                           )
                         }
                       >
-                        {listOfCourses.map((courses, index) => (
+                        <option>Seleccione curso</option>
+                        {listOfCoursesNames?.map((courses, index) => (
                           <option key={index} value={courses}>
                             {courses}
                           </option>
@@ -83,15 +134,20 @@ export default function MainUploadVideo() {
                       </select>
                       <span className="focus"></span>
                     </div>
+                    {errors.course && (
+                      <ErrorText>{errors.course.message}</ErrorText>
+                    )}
                   </InputContainer>
                   <InputContainer margin10B>
                     <label>Tema</label>
                     <div className="select">
                       <select
                         id="standard-select"
-                        {...register("topic", { required: true })}
+                        defaultValue={topicSelected ?? ""}
+                        {...register("topic", requeridValidator)}
                         onChange={(e) => setTopicSelected(e.target.value)}
                       >
+                        <option>Seleccione tema</option>
                         {topicsFilters?.map((topic, index) => (
                           <option key={index} value={topic}>
                             {topic}
@@ -100,18 +156,28 @@ export default function MainUploadVideo() {
                       </select>
                       <span className="focus"></span>
                     </div>
+                    {errors.topic && (
+                      <ErrorText>{errors.topic.message}</ErrorText>
+                    )}
                   </InputContainer>
                   <InputContainer margin10B>
                     <label>Subtema</label>
                     <div className="select">
                       <select
                         id="standard-select"
-                        {...register("subtopic", { required: true })}
+                        {...register("subTopic", requeridValidator)}
+                        defaultValue={
+                          dataSubTopics.length > 0 ? dataSubTopics : undefined
+                        }
+                        onChange={(e) =>
+                          setSubTopicSelected(e.target.selectedOptions[0].id)
+                        }
                       >
+                        <option>Seleccione Subtema</option>
                         {dataSubTopics
                           ?.filter(
                             (st) =>
-                              st.courses?.includes(courseSelected) &&
+                              st.courses?.includes(courseSelectedName) &&
                               Object.values(st.topics).includes(
                                 topicSelected
                               ) &&
@@ -119,7 +185,11 @@ export default function MainUploadVideo() {
                           )
                           .map((subtopic, index) => {
                             return (
-                              <option key={index} value={subtopic.title}>
+                              <option
+                                key={index}
+                                value={subtopic.title}
+                                id={subtopic.subTopicId}
+                              >
                                 {subtopic.title}
                               </option>
                             );
@@ -127,50 +197,86 @@ export default function MainUploadVideo() {
                       </select>
                       <span className="focus"></span>
                     </div>
+                    {errors.subTopic && (
+                      <ErrorText>{errors.subTopic.message}</ErrorText>
+                    )}
                   </InputContainer>
                 </div>
+                <InputContainer margin10B>
+                  <div>
+                    <label>Titulo del video</label>
+                  </div>
+                  <input
+                    name="title"
+                    type={"text"}
+                    {...register("title", textRequiredValidator)}
+                  />
+                  {errors.title && (
+                    <ErrorText>{errors.title.message}</ErrorText>
+                  )}
+                </InputContainer>
 
                 <InputContainer margin10B>
-                  <label>Titulo del video</label>
+                  <div>
+                    <label>Descripción (Explicito)</label>
+                  </div>
                   <input
+                    name="description"
                     type={"text"}
-                    {...register("title", { required: true })}
+                    {...register("description", textRequiredValidator)}
                   />
-                </InputContainer>
-                <InputContainer margin10B>
-                  <label>Descripción (Explicito)</label>
-                  <input
-                    type={"text"}
-                    {...register("description", { required: true })}
-                  />
+                  {errors.description && (
+                    <ErrorText>{errors.description.message}</ErrorText>
+                  )}
                 </InputContainer>
               </div>
               <div>
                 <InputContainer margin10B>
                   <label>Imagen de miniatura</label>
-                  <Button
-                    primary
-                    iris
-                    onClick={(e) => {
-                      uploadImageFile(e);
-                    }}
-                  >
-                    Seleccionar imagen
-                  </Button>
+                  <InputSvgContainer>
+                    <Button
+                      primary
+                      iris
+                      onClick={(e) => {
+                        uploadImageFile(e);
+                      }}
+                    >
+                      Seleccionar imagen
+                    </Button>
+                    <ImageFilesSVG onClick={uploadImageFile} />
+                    <CloseImage
+                      ref={refCloseImage}
+                      style={{
+                        display: localImage ? "block" : "none",
+                      }}
+                      onClick={() => setLocalImage(null)}
+                    />
+                  </InputSvgContainer>
                 </InputContainer>
                 <InputContainer margin10B>
                   <label>Archivo de video</label>
-                  <Button
-                    primary
-                    onClick={(e) => {
-                      uploadVideoFile(e);
-                    }}
-                  >
-                    Seleccionar video
-                  </Button>
+                  <InputSvgContainer>
+                    <Button
+                      primary
+                      iris
+                      onClick={(e) => {
+                        uploadVideoFile(e);
+                      }}
+                    >
+                      Seleccionar video
+                    </Button>
+                    <VideoFilesSVG onClick={uploadVideoFile} />
+                    <CloseImage
+                      ref={refCloseVideo}
+                      style={{
+                        display: localVideo ? "block" : "none",
+                      }}
+                      onClick={() => setLocalVideo(null)}
+                    />
+                  </InputSvgContainer>
                 </InputContainer>
               </div>
-              <Button secondary inForm type={"submit"}>
+              <Button primary inForm type={"submit"}>
                 Subir video
               </Button>
             </FormContainer>

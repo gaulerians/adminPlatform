@@ -98,6 +98,16 @@ export const InputContainer = styled.div`
     }
   }
 
+  .errorMesaggem {
+    color: ${props => props.theme.red500};
+    font-size: 0.938em;
+    font-family: ${props => props.theme.textFont};
+    margin-bottom: 5px;
+    margin-left: 8px;
+
+  }
+
+
   .inputRadioContainer {
     display: flex;
     align-items: center;

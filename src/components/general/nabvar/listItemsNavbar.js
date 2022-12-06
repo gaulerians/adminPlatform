@@ -30,4 +30,9 @@ export const listItemsNavbar = [
     icon: <CarruselVideoSVG />,
     link: "/lives",
   },
+  {
+    nameItem: "Agregar Temas y Subtemas",
+    icon: <ExamsSVG />,
+    link: "/write-subtopics",
+  },
 ]

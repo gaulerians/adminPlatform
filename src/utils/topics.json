@@ -1,0 +1,62 @@
+[
+    {
+        "topic": "La física",
+        "suTopic": "La física como ciencia. "
+    },
+    {
+        "topic": "La física",
+        "suTopic": "Estructura de la materia. "
+    },
+    {
+        "topic": "La física",
+        "suTopic": "El universo. "
+    },
+    {
+        "topic": "La física",
+        "suTopic": "Interacciones. "
+    },
+    {
+        "topic": "La física",
+        "suTopic": "Origen del universo. "
+    },
+    {
+        "topic": "Magnitudes Físicas",
+        "suTopic": "Magnitudes físicas"
+    },
+    {
+        "topic": "Magnitudes Físicas",
+        "suTopic": "El Sistema Internacional (SI)."
+    },
+    {
+        "topic": "Magnitudes Físicas",
+        "suTopic": "Sistema inglés"
+    },
+    {
+        "topic": "Magnitudes Físicas",
+        "suTopic": "Ecuaciones dimensionales - De magnitudes Fundamentales"
+    },
+    {
+        "topic": "Magnitudes Físicas",
+        "suTopic": "Ecuaciones dimensionales - De magnitudes Derivadas"
+    },
+    {
+        "topic": "Magnitudes Físicas",
+        "suTopic": "Análisis dimensional"
+    },
+    {
+        "topic": "Análisis Vectorial",
+        "suTopic": "Definición de vector"
+    },
+    {
+        "topic": "Análisis Vectorial",
+        "suTopic": "Adición y sustracción de vectores  - Métodos geométricos -  Método del triángulo"
+    },
+    {
+        "topic": "Análisis Vectorial",
+        "suTopic": "Adición y sustracción de vectores  - Métodos geométricos -   Método del paralelogramo"
+    },
+    {
+        "topic": "Análisis Vectorial",
+        "suTopic": "Adición y sustracción de vectores  -  Método de componentes (método analítico)."
+    }
+]

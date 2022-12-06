@@ -7,7 +7,7 @@ import { AppContext } from "../../App";
 import { useNavigate } from "react-router";
 
 export default function MainHome() {
-  const { unreviewedQuestionData, setDataOfQuestionToReview, dataOfAuthors } =
+  const { unreviewedQuestionData, setDataOfQuestionToReview, dataOfAuthors, dataOfUser } =
     useContext(AppContext);
   const navigate = useNavigate();
 
@@ -25,7 +25,7 @@ export default function MainHome() {
     <main>
       <WrapperAdmin>
         <div>
-          <Title4>Hola Administrador</Title4>
+          <Title4>{`Hola ${dataOfUser?.username}`}</Title4>
         </div>
         <div>
           <Title5>Preguntas para revisar</Title5>

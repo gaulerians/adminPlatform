@@ -4,6 +4,7 @@ import Lives from './pages/Lives';
 import WriteQuestion from './pages/WriteQuestion'
 import CheckQuestion from './pages/CheckQuestion'
 import UploadVideo from './pages/UploadVideo';
+import WriteTopic from './pages/WriteTopic';
 
 export const adminRoutes = [
 	{
@@ -25,5 +26,9 @@ export const adminRoutes = [
 	{
 		path: "/lives",
 		element: <Lives />
+	},
+	{
+		path: "/write-subtopics",
+		element: <WriteTopic />
 	},
 ]

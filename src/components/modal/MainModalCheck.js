@@ -53,15 +53,16 @@ export function MainModalCheck({
                   iris
                   secundary
                   onClick={() => {
-                    UploadStatusRevisedQuestion({
-                      db,
-                      uqid,
-                      setLoading,
-                      navigate,
-                      setUnreviewedQuestionData,
-                      dataOfUser,
-                      uqidSubTopic,
-                    });
+                    uqidSubTopic &&
+                      UploadStatusRevisedQuestion({
+                        db,
+                        uqid,
+                        setLoading,
+                        navigate,
+                        setUnreviewedQuestionData,
+                        dataOfUser,
+                        uqidSubTopic,
+                      });
                     setModalState(!modalState);
                   }}
                 >

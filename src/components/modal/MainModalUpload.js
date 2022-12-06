@@ -10,7 +10,7 @@ export function MainModalUpload({
   title,
 }) {
   useEffect(() => {}, []);
-  return (
+  return (  
     <>
       {modalState && (
         <>

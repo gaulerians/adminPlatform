@@ -104,13 +104,7 @@ export const onSubmitDataQuestion = async ({
     };
     setDoc(refQuestionsDb, questionData, { merge: true });
     setDoc(refSolutionsDb, solutionData, { merge: true });
-    //setDoc(
-    //   subTopicRef,
-    //   {
-    //     listOfQuestions: arrayUnion(subTopicRef),
-    //   },
-    //   { merge: true }
-    // );
+  
     return {
       status: 200,
       message: "Pregunta enviada correctamente",

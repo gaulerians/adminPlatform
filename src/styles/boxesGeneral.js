@@ -12,6 +12,19 @@ export const WrapperDuplex = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
+
+
+  .containerBottons {
+    display: flex;
+    gap: 10px;
+    margin: 32px 0;
+  }
+
+  .containerInputsURL {
+    margin-left: 30px;
+  }
+
+
 `;
 
 export const TagsUnlist = styled.ul`

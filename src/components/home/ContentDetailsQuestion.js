@@ -15,7 +15,6 @@ export const ContentDetailsQuestion = ({
   dataOfAuthors = [],
 }) => {
   const fecha = new Date(date.seconds * 1000);
-  console.log(course);
   return (
     <QuestionPrevContainer>
       <div className="container-text ">

@@ -6,7 +6,7 @@ export const updateDataSubTopic = async ({
   db,
   subTopicId,
 }) => {
-  setLoading({ status: true, title: "Actualizando... " });
+  setLoading({ status: true, title: "Actualizando subtema... " });
   try {
     const batch = await writeBatch(db);
     const refSubTopic = doc(db, "subTopics", subTopicId);

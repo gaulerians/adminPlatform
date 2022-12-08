@@ -21,6 +21,7 @@ import { recoverUniversities } from "./algorithms/recoverUniversities";
 import { recoverDataListOfCourses } from "./algorithms/recoverDataListOfCourses";
 import { recoverDataUnreviewedQuestions } from "./algorithms/recoverDataUnreviewedQuestions";
 import { recoverDataOfAuthor } from "./algorithms/recoverDataOfAuthor";
+import { useTranslation } from "react-i18next";
 
 const AppContext = createContext();
 const { Provider: AppProvider, Consumer } = AppContext;
@@ -28,6 +29,7 @@ const { Provider: AppProvider, Consumer } = AppContext;
 export default function App() {
   const firestoreInstance = getFirestore(useFirebaseApp()); //db
   const auth = getAuth();
+  const { t } = useTranslation();
   const [currentUser, setCurrentUser] = useState(auth.currentUser || null);
   const [dataOfUser, setDataOfUser] = useState(null);
   const [listOfCourses, setListOfCourses] = useState(null);
@@ -104,7 +106,7 @@ export default function App() {
             {/* <Route path="/" element={<h1>Landing</h1>} /> */}
             <Route path="/" element={<Login />} />
             {currentUser
-              ? dataOfUser?.typeOfUser?.includes("data_administrator")
+              ? dataOfUser?.typeOfUser?.includes(t("data_administrator"))
                 ? adminRoutes.map((route) => (
                     <Route
                       path={route.path}

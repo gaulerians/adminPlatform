@@ -1,41 +1,46 @@
 import React from "react";
-
-import { Title6, Text} from "../../styles/textGeneral";
+import { Link } from "react-router-dom";
+import { Button } from "../../styles/buttonGeneral";
+import { Text } from "../../styles/textGeneral";
 import { Latex } from "../latex/Latex";
 import { QuestionPrevContainer } from "./styles/sContentDetailsQuestion";
 
 export const ContentDetailsQuestion = ({
+  uqid = "No hay datos",
   topic = "No hay datos",
-  authorId = "Fernando la comelona",
+  authorId = "Sin autor",
   date = "Fecha no disponible",
   course = "No hay curso",
-  universities = "UNSCH",
+  universities = "Sin universidad",
   dataOfAuthors = [],
 }) => {
   const fecha = new Date(date.seconds * 1000);
-
-  //recuperar cursos del subtopic
-  const courses = (subTopicId) => {
-    const subTopic = dataOfAuthors.filter((subTopic) => {
-      return subTopic.subTopicId === subTopicId;
-    });
-    return subTopic[0].courses;
-   };
-
+  console.log(course);
   return (
     <QuestionPrevContainer>
-      <Latex>{topic}</Latex>
-      <div>
-        <Text>{`Creada por: ${dataOfAuthors?.filter((e) => e.uid === authorId)[0]?.username}`}</Text>
+      <div className="container-text ">
+        <div className="latex-container">
+          <Latex>{topic}</Latex>
+        </div>
+        <div className="container-text-data">
+          <div>
+            <Text>{`Autor: ${
+              dataOfAuthors?.filter((e) => e.uid === authorId)[0]?.username
+            }`}</Text>
+          </div>
+          <div>
+            <Text>{`Creada el: ${fecha.toLocaleString()}`}</Text>
+          </div>
+          <div className="container-duplex">
+            <Text>{course}</Text>
+            <Text>{universities}</Text>
+          </div>
+        </div>
       </div>
-      <div>
-        <Text>{`Creada el: ${fecha.toLocaleString()}`}</Text>
-      </div>
-      <div>
-        <Text>{course}</Text>
-      </div>
-      <div>
-        <Text>{universities}</Text>
+      <div className="container-button">
+        <Link to={`/question/${uqid}`}>
+          <Button primary>{"REVISAR"}</Button>
+        </Link>
       </div>
     </QuestionPrevContainer>
   );

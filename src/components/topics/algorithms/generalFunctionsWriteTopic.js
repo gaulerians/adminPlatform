@@ -82,7 +82,8 @@ export const resetStates = ({
   setSubTopicSelected = () => {},
   setDataSubTopicSelected = () => {},
   setDataSubVideos = () => {},
-  setCoursesSelected = () => {},
+  setCoursesSelected = () => { },
+  setDataText = () => {},
 }) => {
   setUrlsSuTopic({
     urlFacebook: "",
@@ -96,4 +97,8 @@ export const resetStates = ({
   setDataSubTopicSelected(null);
   setDataSubVideos([]);
   setCoursesSelected([]);
+  setDataText({
+    textTopic: "",
+    textSubTopic: "",
+  });
 };

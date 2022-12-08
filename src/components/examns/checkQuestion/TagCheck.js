@@ -25,7 +25,7 @@ export default function TagCheck({
           <div>
             <CloseSvg
               className={"svg-icon"}
-              onClick={() => {
+                onClick={() => {
                 setModalStateTextArea(!modalStateTextArea);
               }}
             />

@@ -17,7 +17,7 @@ export function MainModalComents({
 }) {
   const db = useContext(FirestoreSdkContext);
   const navigate = useNavigate();
-  const { setUnreviewedQuestionData, setLoading, dataOfUser } =
+  const { setUnreviewedQuestionData, setLoading, dataOfUser, setDataOfQuestionToReview } =
     useContext(AppContext);
 
   const [comentOnQuestion, setComentOnQuestion] = useState("");
@@ -67,6 +67,8 @@ export function MainModalComents({
                       comentOnQuestion,
                     });
                     setModalStateTextArea(!modalStateTextArea);
+                    setDataOfQuestionToReview(null);
+                    localStorage.setItem("idQuestion", "");
                   }}
                 >
                   {"Enviar"}

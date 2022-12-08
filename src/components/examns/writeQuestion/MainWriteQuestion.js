@@ -29,8 +29,8 @@ import {
   onChangeStateModal,
 } from "./functions";
 import {
-  urlVideoFacebookValidator,
-  urlVideoYoutubeValidator,
+  urlVideoFacebookValidatorNR,
+  urlVideoYoutubeValidatorNR,
   typeQuestionValidator,
   requeridValidator,
 } from "./validators/formValidators";
@@ -274,7 +274,7 @@ export default function MainWriteQuestion() {
                     {...register("course", requeridValidator, {
                       required: true,
                     })}
-                    defaultValue={courseSelected ?? ""}
+                    // defaultValue={courseSelected ?? ""}
                     onChange={(e) =>
                       setCourseSelected(e.target?.value ? e.target?.value : [])
                     }
@@ -297,7 +297,7 @@ export default function MainWriteQuestion() {
                 <div className="select">
                   <select
                     id="standard-select"
-                    defaultValue={topicSelected ?? ""}
+                    // defaultValue={topicSelected ?? ""}
                     {...register("topic", requeridValidator)}
                     onChange={(e) => setTopicSelected(e.target.value)}
                   >
@@ -318,9 +318,9 @@ export default function MainWriteQuestion() {
                   <select
                     id="standard-select"
                     {...register("subTopic", requeridValidator)}
-                    defaultValue={
-                      dataSubTopics.length > 0 ? dataSubTopics : undefined
-                    }
+                    // defaultValue={
+                    //   dataSubTopics.length > 0 ? dataSubTopics : undefined
+                    // }
                     onChange={(e) =>
                       setSubTopicSelected(e.target.selectedOptions[0].id)
                     }
@@ -356,7 +356,7 @@ export default function MainWriteQuestion() {
                 <div className="select">
                   <select
                     id="standard-select"
-                    defaultValue={null}
+                    // defaultValue={null}
                     {...register("year")}
                   >
                     <option>Seleccione el año</option>
@@ -429,9 +429,10 @@ export default function MainWriteQuestion() {
                     <div className="select">
                       <select
                         id="standard-select-category"
-                        defaultValue={selectionCategory}
+                        // defaultValue={selectionCategory}
                         onChange={(e) => setSelectionCategory(e.target.value)}
                       >
+                        <option>Seleccione función a insertar </option>
                         {functionLatex.map((lat, index) => {
                           return (
                             <option
@@ -444,7 +445,6 @@ export default function MainWriteQuestion() {
                             }`}</option>
                           );
                         })}
-                        <span className="focus"></span>
                       </select>
                     </div>
                   </InputContainer>
@@ -565,7 +565,7 @@ export default function MainWriteQuestion() {
                   <input
                     type="url"
                     defaultValue={""}
-                    {...register("urlVideoYoutube", urlVideoYoutubeValidator)} //TODO: String.includes(youtube.com)
+                    {...register("urlVideoYoutube", urlVideoYoutubeValidatorNR)} //TODO: String.includes(youtube.com)
                     onChange={(e) => {
                       setQuestion({
                         ...question,
@@ -585,7 +585,7 @@ export default function MainWriteQuestion() {
                   <input
                     type="url"
                     defaultValue={""}
-                    {...register("urlVideoFacebook", urlVideoFacebookValidator)} //TODO: String.includes(fb.watch)
+                    {...register("urlVideoFacebook", urlVideoFacebookValidatorNR)} //TODO: String.includes(fb.watch)
                     onChange={(e) => {
                       setQuestion({
                         ...question,

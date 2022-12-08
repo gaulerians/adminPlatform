@@ -1,17 +1,5 @@
 export const functionLatex = [
   {
-    category:
-      "--------------------- Seleciona una opcion --------------------------",
-    subCategory: null,
-    functions: [
-      {
-        name: `  `,
-        styleButton: "",
-        expressionLatex: `  `,
-      },
-    ],
-  },
-  {
     category: "Acentos",
     subCategory: "Acentos Generales",
     functions: [

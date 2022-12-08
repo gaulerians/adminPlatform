@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <>
       <Helmet>
-        <title>Home | Gauler</title>
+        <title>Home | Ebbiner</title>
       </Helmet>
       <MainHome />
     </>

@@ -8,7 +8,7 @@ export const listItemsNavbar = [
   {
     nameItem: "Inicio",
     icon: <HomeSVG />,
-    link: "/",
+    link: "/home",
   },
   {
     nameItem: "Subir video ",

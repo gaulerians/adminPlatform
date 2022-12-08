@@ -1,9 +1,8 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Text, Title4, Title5, Title6 } from "../../styles/textGeneral";
-import { WrapperAdmin, WrapperOthers } from "../../styles/generalStyles";
+import { WrapperAdmin } from "../../styles/generalStyles";
 import { FormContainer, InputContainer } from "../../styles/inputGeneral";
 import { useForm } from "react-hook-form";
-import { ErrorMessage } from "@hookform/error-message";
 import { AppContext } from "../../App";
 import { FirestoreSdkContext } from "reactfire";
 import Tag from "../general/cOthers/Tag";
@@ -11,9 +10,9 @@ import { InputTextTopic } from "./InputTextTopic";
 import { WrapperDuplex } from "../../styles/boxesGeneral";
 import { Button } from "../../styles/buttonGeneral";
 import {
-  requeridValidator,
-  urlVideoFacebookValidator,
-  urlVideoYoutubeValidator,
+  textValidator,
+  urlVideoFacebookValidatorR,
+  urlVideoYoutubeValidatorR,
 } from "../examns/writeQuestion/validators/formValidators";
 import {
   addDataSubVideos,
@@ -46,12 +45,7 @@ export default function MainWriteTopic() {
   } = useContext(AppContext);
   const uuid = uuidv4();
   const db = useContext(FirestoreSdkContext);
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
-  //Estados de ceracion de subtopicos
+  //Estados de creacion de subtopicos
   const [coursesSelected, setCoursesSelected] = useState([]);
   const [urlsSuTopic, setUrlsSuTopic] = useState({
     urlFacebook: "",
@@ -69,7 +63,21 @@ export default function MainWriteTopic() {
   const [topicsFilters, setTopicsFilters] = useState([]);
   const [subTopicSelected, setSubTopicSelected] = useState(null);
   const [dataSubTopicSelected, setDataSubTopicSelected] = useState(null);
+  const [dataText, setDataText] = useState({
+    textTopic: "",
+    textSubTopic: "",
+  });
   //estados de doble uso
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultVaules: {
+      urlYoutubeSubTopic: dataSubTopicSelected?.urlOfVideo?.youtube ?? "",
+      urlFacebookSubTopic: dataSubTopicSelected?.urlOfVideo?.facebook ?? "",
+    },
+  });
 
   const onTagDeleteU = (tagName) => {
     setCoursesSelected([...coursesSelected].filter((u) => u !== tagName));
@@ -91,6 +99,7 @@ export default function MainWriteTopic() {
       const { id, ...rest } = obj;
       return rest;
     });
+    const { urlFacebookSubTopic, urlYoutubeSubTopic } = data;
 
     const dataToCreate = {
       subTopicId: "",
@@ -102,14 +111,13 @@ export default function MainWriteTopic() {
       title: textSubTopic,
       topics: localTopics,
       urlOfVideo: {
-        youtube: urlsSuTopic?.urlYoutube,
-        facebook: urlsSuTopic?.urlFacebook,
+        youtube: urlYoutubeSubTopic,
+        facebook: urlFacebookSubTopic,
       },
       subVideos: dataSubVideosWithoutId,
     };
 
     const dataForUpdate = {
-      //subTopicSelected es el id del subTopic
       publishersData: {
         idAuthor: dataOfUser?.uid,
         date: serverTimestamp(),
@@ -119,6 +127,11 @@ export default function MainWriteTopic() {
         facebook: urlsSuTopic?.urlFacebook,
       },
       subVideos: dataSubVideosWithoutId,
+      title: dataText?.textSubTopic,
+      topics: {
+        ...dataSubTopicSelected?.topics,
+        [courseSelectedName]: dataText?.textTopic,
+      },
     };
     if (subTopicSelected) {
       //se envia siempre que se este editando un subtopic
@@ -165,17 +178,25 @@ export default function MainWriteTopic() {
 
   useEffect(() => {
     if (subTopicSelected) {
-      let suVideoWithID = [];
+      let subVideos = [];
       dataSubTopics.map((obj) => {
         if (obj.subTopicId === subTopicSelected) {
-          setDataSubTopicSelected(obj);
           obj.subVideos.map((subVideo) => {
             const id = uuidv4();
-            suVideoWithID.push({ ...subVideo, id });
+            subVideos.push({ ...subVideo, id });
+          });
+          setDataSubTopicSelected(obj);
+          setDataText({
+            textTopic: obj.topics[courseSelectedName],
+            textSubTopic: obj.title,
+          });
+          setUrlsSuTopic({
+            urlFacebook: obj.urlOfVideo.facebook,
+            urlYoutube: obj.urlOfVideo.youtube,
           });
         }
       });
-      setDataSubVideos(suVideoWithID);
+      setDataSubVideos(subVideos);
     }
   }, [subTopicSelected]);
 
@@ -190,6 +211,7 @@ export default function MainWriteTopic() {
       setTextSubTopic,
       setLocalTopics,
       setCoursesSelected,
+      setDataText,
     });
   }, [toggleSwitchStatus]);
 
@@ -220,6 +242,7 @@ export default function MainWriteTopic() {
       setSubTopicSelected,
       setDataSubTopicSelected,
       setDataSubVideos,
+      setDataText,
     });
     recoveryDataSubTopics({
       db,
@@ -267,7 +290,6 @@ export default function MainWriteTopic() {
                             ? setCoursesSelected([
                                 ...new Set([
                                   ...coursesSelected,
-                                  // e.target.value,
                                   listOfCourses?.find(
                                     (c) => c.value === e.target.value
                                   )?.name,
@@ -285,15 +307,12 @@ export default function MainWriteTopic() {
                       </select>
                       <span className="focus"></span>
                     </div>
-                    {errors.courses && (
-                      <ErrorText>{errors.courses.message}</ErrorText>
-                    )}
                   </InputContainer>
                   {coursesSelected.map((chip, index) => (
                     <Tag
                       key={index}
                       name={chip}
-                      type="courses"
+                      type="course"
                       onDelete={onTagDeleteU}
                     />
                   ))}
@@ -335,17 +354,14 @@ export default function MainWriteTopic() {
           <div>
             {!toggleSwitchStatus ? (
               <>
-                <Title5>Seleccionar temas y sub-temas a los cursos</Title5>
+                <Title5>Seleccionar curso, tema y sub tema a editar:</Title5>
                 <div className="inputContainerQuad">
                   <InputContainer margin10B>
-                    <label>Curso *</label>
+                    <label>Curso: </label>
                     <div className="select">
                       <select
                         name="course"
                         id="standard-select"
-                        {...register("course", requeridValidator, {
-                          required: true,
-                        })}
                         defaultValue={courseSelected ?? ""}
                         onChange={(e) =>
                           setCourseSelected(
@@ -362,9 +378,6 @@ export default function MainWriteTopic() {
                       </select>
                       <span className="focus"></span>
                     </div>
-                    {errors.course && (
-                      <ErrorText>{errors.course.message}</ErrorText>
-                    )}
                   </InputContainer>
                   <InputContainer noMargin>
                     <label>Tema *</label>
@@ -373,7 +386,6 @@ export default function MainWriteTopic() {
                         name="topic"
                         id="standard-select"
                         defaultValue={topicSelected ?? ""}
-                        {...register("topic", requeridValidator)}
                         onChange={(e) => setTopicSelected(e.target.value)}
                       >
                         <option>Seleccione tema</option>
@@ -385,9 +397,6 @@ export default function MainWriteTopic() {
                       </select>
                       <span className="focus"></span>
                     </div>
-                    {errors.topic && (
-                      <ErrorText>{errors.topic.message}</ErrorText>
-                    )}
                   </InputContainer>
                   <InputContainer noMargin>
                     <label>Sub - tema * </label>
@@ -395,10 +404,6 @@ export default function MainWriteTopic() {
                       <select
                         name="subTopic"
                         id="standard-select"
-                        {...register("subTopic", requeridValidator)}
-                        defaultValue={
-                          dataSubTopics.length > 0 ? dataSubTopics : ""
-                        }
                         onChange={(e) =>
                           setSubTopicSelected(e.target.selectedOptions[0].id)
                         }
@@ -427,27 +432,54 @@ export default function MainWriteTopic() {
                       </select>
                       <span className="focus"></span>
                     </div>
-                    {errors.subTopic && (
-                      <ErrorText>{errors.subTopic.message}</ErrorText>
-                    )}
                   </InputContainer>
                 </div>
+                <InputContainer margin10B>
+                  <label>Tema: </label>
+                  <input
+                    type={"text"}
+                    required={true}
+                    name="topicTextEdit"
+                    value={dataText?.textTopic ?? ""}
+                    onChange={(e) =>
+                      setDataText((prev) => ({
+                        ...prev,
+                        textTopic: e.target.value,
+                      }))
+                    }
+                  />
+                </InputContainer>
+                <InputContainer margin10B>
+                  <label>Sub tema: </label>
+                  <input
+                    type={"text"}
+                    required={true}
+                    name="subTopicTextEdit"
+                    value={dataText?.textSubTopic ?? ""}
+                    onChange={(e) =>
+                      setDataText((prev) => ({
+                        ...prev,
+                        textSubTopic: e.target.value,
+                      }))
+                    }
+                  />
+                </InputContainer>
               </>
             ) : null}
           </div>
           <div>
             <WrapperDuplex>
               <InputContainer margin10B>
-                <label>URL de videos en facebook</label>
+                <label>URL de facebook:</label>
                 <input
-                  name="urlFacebook"
-                  type="text"
-                  defaultValue={
-                    dataSubTopicSelected !== null
-                      ? dataSubTopicSelected?.urlOfVideo.facebook
-                      : ""
-                  }
-                  {...register("urlFacebook")}
+                  type={"text"}
+                  name="urlFacebookSubTopic"
+                  required={true}
+                  value={urlsSuTopic?.urlFacebook ?? ""}
+                  {...register(
+                    "urlFacebookSubTopic",
+                    urlVideoFacebookValidatorR
+                  )}
                   onChange={(e) => {
                     setUrlsSuTopic({
                       ...urlsSuTopic,
@@ -455,20 +487,18 @@ export default function MainWriteTopic() {
                     });
                   }}
                 />
-                {errors.urlFacebook && (
-                  <ErrorText>{errors.urlFacebook.message}</ErrorText>
+                {errors.urlFacebookSubTopic && (
+                  <ErrorText>{errors.urlFacebookSubTopic.message}</ErrorText>
                 )}
               </InputContainer>
               <InputContainer margin10B>
-                <label>URL de videos en youtube</label>
+                <label>URL de youtube:</label>
                 <input
-                  name="urlYoutube"
-                  type="text"
-                  defaultValue={
-                    dataSubTopicSelected !== null
-                      ? dataSubTopicSelected?.urlOfVideo.youtube
-                      : ""
-                  }
+                  type={"text"}
+                  required={true}
+                  name="urlYoutubeSubTopic"
+                  value={urlsSuTopic?.urlYoutube ?? ""}
+                  {...register("urlYoutubeSubTopic", urlVideoYoutubeValidatorR)}
                   onChange={(e) => {
                     setUrlsSuTopic({
                       ...urlsSuTopic,
@@ -476,8 +506,8 @@ export default function MainWriteTopic() {
                     });
                   }}
                 />
-                {errors.urlYoutube && (
-                  <ErrorText>{errors.urlYoutube.message}</ErrorText>
+                {errors.urlYoutubeSubTopic && (
+                  <ErrorText>{errors.urlYoutubeSubTopic.message}</ErrorText>
                 )}
               </InputContainer>
             </WrapperDuplex>
@@ -496,7 +526,7 @@ export default function MainWriteTopic() {
                         placeholder="Escribe el titulo"
                         defaultValue={obj.title}
                         name={`title${obj.id}`}
-                        {...register(`title${obj.id}`)}
+                        {...register(`title${obj.id}`, textValidator)}
                         onChange={(event) =>
                           updateTitleOfURLVideos({
                             dataSubVideos,
@@ -507,6 +537,11 @@ export default function MainWriteTopic() {
                           })
                         }
                       />
+                      {errors[`title${obj.id}`] && (
+                        <ErrorText>
+                          {errors[`title${obj.id}`].message}
+                        </ErrorText>
+                      )}
                     </InputContainer>
                     <InputContainer className="containerInputsURL">
                       <label>URL de Facebook:</label>
@@ -514,7 +549,10 @@ export default function MainWriteTopic() {
                         placeholder="URL de facebook"
                         name={`facebook${obj.id}`}
                         value={obj.facebook}
-                        {...register(`facebook${obj.id}`)}
+                        {...register(
+                          `facebook${obj.id}`,
+                          urlVideoFacebookValidatorR
+                        )}
                         onChange={(event) =>
                           updateTitleOfURLVideos({
                             dataSubVideos,
@@ -525,6 +563,11 @@ export default function MainWriteTopic() {
                           })
                         }
                       />
+                      {errors[`facebook${obj.id}`] && (
+                        <ErrorText>
+                          {errors[`facebook${obj.id}`].message}
+                        </ErrorText>
+                      )}
                     </InputContainer>
                     <InputContainer className="containerInputsURL">
                       <label>URL de Youtube:</label>
@@ -532,7 +575,10 @@ export default function MainWriteTopic() {
                         placeholder="URL de youtube"
                         value={obj.youtube}
                         name={`youtube${obj.id}`}
-                        {...register(`youtube${obj.id}`)}
+                        {...register(
+                          `youtube${obj.id}`,
+                          urlVideoYoutubeValidatorR
+                        )}
                         onChange={(event) =>
                           updateTitleOfURLVideos({
                             dataSubVideos,
@@ -543,6 +589,11 @@ export default function MainWriteTopic() {
                           })
                         }
                       />
+                      {errors[`youtube${obj.id}`] && (
+                        <ErrorText>
+                          {errors[`youtube${obj.id}`].message}
+                        </ErrorText>
+                      )}
                     </InputContainer>
                     <Button
                       key={index}

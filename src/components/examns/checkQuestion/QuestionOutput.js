@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React from "react";
 import {
   QuestionInputContainer,
   TextQuestionStyled,
@@ -24,6 +24,7 @@ export default function QuestionOutput({
       </TextQuestionStyled>
       {UrlOfImage && (
         <img
+          loading="lazy"
           className="questionImage"
           src={UrlOfImage}
           alt={"imagen de la pregunta"}
@@ -57,15 +58,15 @@ export default function QuestionOutput({
                 <span className="keyLetterQuestion">{keyLetter}</span>
                 <div className="question">
                   {item.startsWith("https") ? (
-                    <img src={item} alt={item} />
+                    <img loading="lazy" src={item} alt={item} />
                   ) : (
-                    <p>
+                    <>
                       {index === 0 ? (
                         <Latex>{`\\textcolor{green}{${item}}`}</Latex>
                       ) : (
                         <Latex>{`\\textcolor{red}{${item}}`}</Latex>
                       )}
-                    </p>
+                    </>
                   )}
                 </div>
               </label>

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { InputContainer } from "../../styles/inputGeneral";
 import { InputTopicContainer } from "./styles/sMainWriteTopics";
 import { useTranslation } from "react-i18next";

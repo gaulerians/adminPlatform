@@ -33,7 +33,7 @@ const Mainlogin = () => {
     <DesktopRegisterContainer>
       <ImageDesktopRegisterAndLogin>
         <TransparentLR />
-        <img src={loginImage} alt="Entra en Gauler" />
+        <img src={loginImage} alt="Entra en Ebbiner" />
       </ImageDesktopRegisterAndLogin>
       <Wrapper>
         <RegisterAndLoginWrapper>

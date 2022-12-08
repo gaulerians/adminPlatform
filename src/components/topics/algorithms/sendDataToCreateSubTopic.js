@@ -6,7 +6,7 @@ export const sendDataOfSubTopic = async ({
   setLoading,
   db,
 }) => {
-    setLoading({ status: true, title: "Enviando ... " });
+    setLoading({ status: true, title: "Estamos enviando tu cambio... " });
   let uuid = uuidv4();
   try {
     const refSubTopicsDb = doc(collection(db, "subTopics"), uuid);

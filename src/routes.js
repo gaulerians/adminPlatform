@@ -8,6 +8,10 @@ import WriteTopic from './pages/WriteTopic';
 
 export const adminRoutes = [
 	{
+		path: "/question/:idQuestion",
+		element: <CheckQuestion />
+	},
+	{
 		path: "/home",
 		element: <Home />
 	},

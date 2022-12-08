@@ -72,7 +72,7 @@ export const onSubmitDataQuestion = async ({
         dateUpload: serverTimestamp(), 
         university: university, 
         yearOfQuestion: year ?? null, 
-        curse: course ?? null,
+        course: course ?? null,
         isQuestionOfPreuniversity: isPreUniversityCheck=== "true" ? true : false,
         subTopicID: subTopicSelected, 
         latexQuestion: question.question?.text,

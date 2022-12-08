@@ -24,11 +24,34 @@ export const TagContainer = styled.div`
     `}
 
   ${(props) =>
-    props.name === "Biología" &&
+    (props.name === "Biología" || props.name === "biology") &&
     css`
       background: #bbf9b9;
       color: #083906;
     `}
+
+    ${(props) =>
+    props.name === "algebra" &&
+    css`
+      background: #bb4;
+      color: #083906;
+    `}
+
+    ${(props) =>
+    props.name === "Anatomía humana" &&
+    css`
+      background: #bb4;
+      color: #083906;
+    `}
+
+
+      ${(props) =>
+    props.name === "geometría" &&
+    css`
+      background: #bc3;
+      color: #083906;
+    `}
+
   ${(props) =>
     props.name === "Física" &&
     css`
@@ -36,7 +59,7 @@ export const TagContainer = styled.div`
       color: #5f3a00;
     `}
   ${(props) =>
-    props.name === "Matemáticas" &&
+    props.name === "Razonameinto " &&
     css`
       background: #f9b9b9;
       color: #5f0000;
@@ -63,7 +86,7 @@ export const TagContainer = styled.div`
   ${(props) =>
     props.type == "course" &&
     css`
-      background: #f9e9b9;
+      background: #b9f1ee;
       color: #083906;
     `}
 

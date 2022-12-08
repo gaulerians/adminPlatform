@@ -15,25 +15,58 @@ import TagCheck from "./TagCheck";
 import { TagContainer } from "./styles/sTagCheck";
 import { MainModalCheck } from "../../modal/MainModalCheck";
 import { MainModalComents } from "../../modal/MainModalComents";
+import { useParams } from "react-router-dom";
 
 export default function MainCheckQuestion() {
   const db = useContext(FirestoreSdkContext);
-  const { loading, dataOfQuestionToReview, setDataOfQuestionToReview } =
-    useContext(AppContext);
+  const {
+    setLoading,
+    listOfCourses,
+    dataOfQuestionToReview,
+    unreviewedQuestionData,
+    setDataOfQuestionToReview,
+  } = useContext(AppContext);
   const navigate = useNavigate();
+  const { idQuestion } = useParams();
 
   const [resultOfQuestion, setResultOfQuestion] = useState(null);
   const [modalState, setModalState] = useState(false);
   const [modalStateTextArea, setModalStateTextArea] = useState(false);
 
+  const courseSelectedName = listOfCourses?.find(
+    (c) => c.value === dataOfQuestionToReview?.course
+  )?.name;
+
+
   useEffect(() => {
-    searchSolutionQuestion({
-      db,
-      uqid: dataOfQuestionToReview?.uqid,
-      setResultOfQuestion,
-    });
+    idQuestion && localStorage.setItem("idQuestion", idQuestion);
+    if (!idQuestion && localStorage.getItem("idQuestion")) {
+      navigate(`/question/${localStorage.getItem("idQuestion")}`);
+    }
+    const onRecoverDataOfQuestionSelected = (idQuestion) => {
+      // eslint-disable-next-line array-callback-return
+      unreviewedQuestionData.filter((question) => {
+        if (question.uqid === idQuestion) {
+          setDataOfQuestionToReview(question);
+        }
+      });
+    };
+    onRecoverDataOfQuestionSelected(idQuestion);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [idQuestion]);
+
+  useEffect(() => {
+    dataOfQuestionToReview &&
+      searchSolutionQuestion({
+        setLoading,
+        db,
+        uqid: dataOfQuestionToReview?.uqid,
+        setResultOfQuestion,
+      });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataOfQuestionToReview]);
 
+  // setLoading({ state: true, text: "Cargando pergunta..." });
   return (
     <main>
       <WrapperAdmin>
@@ -55,7 +88,7 @@ export default function MainCheckQuestion() {
               </div>
               <div>
                 {dataOfQuestionToReview?.course ? (
-                  <Tag name={dataOfQuestionToReview?.course} type="course" />
+                  <Tag name={courseSelectedName} type="course" />
                 ) : null}
               </div>
               <div>

@@ -1,25 +1,13 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext } from "react";
 import { Title4, Title5 } from "./../../styles/textGeneral";
 import { WrapperAdmin } from "./../../styles/generalStyles";
 import { ContentDetailsQuestion } from "./ContentDetailsQuestion";
-import { Button } from "../../styles/buttonGeneral";
 import { AppContext } from "../../App";
-import { useNavigate } from "react-router";
+
 
 export default function MainHome() {
-  const { unreviewedQuestionData, setDataOfQuestionToReview, dataOfAuthors, dataOfUser } =
+  const { unreviewedQuestionData, dataOfAuthors, dataOfUser } =
     useContext(AppContext);
-  const navigate = useNavigate();
-
-  const onRecoverDataOfQuestionSelected = (id) => {
-    unreviewedQuestionData.filter((question) => {
-      if (question.uqid === id) {
-        setDataOfQuestionToReview(question);
-      }
-    });
-    navigate("/check-questions", { replace: true });
-  };
-
 
   return (
     <main>
@@ -32,10 +20,12 @@ export default function MainHome() {
         </div>
         {unreviewedQuestionData ? (
           unreviewedQuestionData?.map((question, index) => {
+            console.log(question);
             return (
               <div key={index}>
                 <ContentDetailsQuestion
                   key={question.uqid}
+                  uqid={question.uqid}
                   topic={question.latexQuestion}
                   authorId={question.authorId}
                   date={question.dateUpload}
@@ -43,15 +33,6 @@ export default function MainHome() {
                   dataOfAuthors={dataOfAuthors}
                   course={question.course}
                 />
-                <Button
-                  primary
-                  onClick={() => {
-                    onRecoverDataOfQuestionSelected(question.uqid);
-                  }}
-                >
-                  {"REVISAR"}
-                </Button>
-                ;
               </div>
             );
           })

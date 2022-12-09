@@ -20,7 +20,6 @@ export default function MainHome() {
         </div>
         {unreviewedQuestionData ? (
           unreviewedQuestionData?.map((question, index) => {
-            console.log(question);
             return (
               <div key={index}>
                 <ContentDetailsQuestion

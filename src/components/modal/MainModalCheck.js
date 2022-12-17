@@ -6,73 +6,78 @@ import { ReactComponent as CloseSVG } from "./../../icons/close.svg";
 import { Overlay, ModalContainer } from "./styles/sMainModal";
 
 export function MainModalCheck({
-  db,
-  uqid,
-  navigate,
-  modalState,
-  setModalState,
-  title,
-  uqidSubTopic,
+	db,
+	uqid,
+	navigate,
+	modalState,
+	setModalState,
+	title,
+	uqidSubTopic,
+	setResultOfQuestion,
 }) {
-  const { setLoading, setUnreviewedQuestionData, dataOfUser } =
-    useContext(AppContext);
-  // console.log("uquid", uqidSubTopic);
-  return (
-    <>
-      {modalState && (
-        <>
-          <Overlay
-            onClick={() => {
-              setModalState(false);
-            }}
-          ></Overlay>
-          <ModalContainer>
-            <div>
-              <h1>{title}</h1>
-              <CloseSVG
-                className="closeModal"
-                onClick={() => {
-                  setModalState(false);
-                }}
-              />
-            </div>
-            <div>
-              <div>
-                <Button
-                  primary
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setModalState(false);
-                  }}
-                >
-                  {"No"}
-                </Button>
-              </div>
-              <div>
-                <Button
-                  iris
-                  secundary
-                  onClick={() => {
-                    uqidSubTopic &&
-                      UploadStatusRevisedQuestion({
-                        db,
-                        uqid,
-                        setLoading,
-                        navigate,
-                        setUnreviewedQuestionData,
-                        dataOfUser,
-                        uqidSubTopic,
-                      });
-                    setModalState(!modalState);
-                  }}
-                >
-                  {"Si"}
-                </Button>
-              </div>
-            </div>
-          </ModalContainer>
-        </>
-      )}
-    </>
-  );
+	const {
+		setLoading,
+		setDataOfQuestionToReview,
+		setUnreviewedQuestionData,
+		dataOfUser,
+	} = useContext(AppContext);
+	// console.log("uquid", uqidSubTopic);
+	return (
+		<>
+			{modalState && (
+				<>
+					<Overlay
+						onClick={() => {
+							setModalState(false);
+						}}></Overlay>
+					<ModalContainer>
+						<div>
+							<h1>{title}</h1>
+							<CloseSVG
+								className='closeModal'
+								onClick={() => {
+									setModalState(false);
+								}}
+							/>
+						</div>
+						<div>
+							<div>
+								<Button
+									primary
+									onClick={(e) => {
+										e.preventDefault();
+										setModalState(false);
+									}}>
+									{"No"}
+								</Button>
+							</div>
+							<div>
+								<Button
+									iris
+									secundary
+									onClick={() => {
+										uqidSubTopic &&
+											UploadStatusRevisedQuestion({
+												db,
+												uqid,
+												setLoading,
+												navigate,
+												setUnreviewedQuestionData,
+												dataOfUser,
+												uqidSubTopic,
+											});
+										setDataOfQuestionToReview(null);
+										setResultOfQuestion(null);
+										localStorage.setItem("idQuestion", "");
+										setModalState(!modalState);
+									}}>
+									{"Si"}
+								</Button>
+							</div>
+						</div>
+					</ModalContainer>
+				</>
+			)}
+		</>
+	);
 }

@@ -1,11 +1,11 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from 'react';
 
-import { InputContainer } from "../../../styles/inputGeneral";
-import { ReactComponent as ImageFilesSVG } from "./../../../icons/image-files.svg";
-import { ReactComponent as CloseImage } from "./../../../icons/close.svg";
-import { InputSvgContainer } from "./styles/sInputSvg";
-import { handleChangeTextLatex } from "../../examns/writeQuestion/algorithms/handleChangeTextLatex";
-import { transformTextLatexInPlain } from "../../examns/writeQuestion/algorithms/transformTextLatexInPlain";
+import { InputContainer } from '../../../styles/inputGeneral';
+import { ReactComponent as ImageFilesSVG } from './../../../icons/image-files.svg';
+import { ReactComponent as CloseImage } from './../../../icons/close.svg';
+import { InputSvgContainer } from './styles/sInputSvg';
+import { handleChangeTextLatex } from '../../examns/writeQuestion/algorithms/handleChangeTextLatex';
+import { transformTextLatexInPlain } from '../../examns/writeQuestion/algorithms/transformTextLatexInPlain';
 
 export default function InputSvg({
   heightTextArea,
@@ -25,7 +25,7 @@ export default function InputSvg({
     end: 0,
   });
 
-  const [localText, setLocalText] = useState("");
+  const [localText, setLocalText] = useState('');
   const [localImage, setLocalImage] = useState(null);
   const inputRef = useRef(null);
   const refImageFile = useRef(null);
@@ -34,7 +34,7 @@ export default function InputSvg({
   const uploadImageFile = (e) => {
     e.preventDefault();
     refImageFile.current.click();
-    refImageFile.current.addEventListener("change", (ev) => {
+    refImageFile.current.addEventListener('change', (ev) => {
       setLocalImage(ev.target.files[0]);
     });
   };
@@ -73,7 +73,7 @@ export default function InputSvg({
               plainText: transformTextLatexInPlain(localText),
             },
           },
-        })
+        }),
       );
     !isQuestion &&
       !alternativeId &&
@@ -87,9 +87,11 @@ export default function InputSvg({
       });
   }, [localText, localImage]);
 
+  useEffect(() => {}, [alternatives]);
+
   return (
     <InputContainer noMargin heightTextArea={heightTextArea}>
-      {type === "textArea" ? (
+      {type === 'textArea' ? (
         <>
           <label>{label}</label>
           <InputSvgContainer type={type}>
@@ -98,28 +100,24 @@ export default function InputSvg({
               required={isQuestion || alternativeId ? true : false}
               id={
                 isQuestion
-                  ? "questionInput"
+                  ? 'questionInput'
                   : alternativeId
                   ? `alternativeInput${alternativeId}`
-                  : "solutionInput"
+                  : 'solutionInput'
               }
               value={localText}
               ref={inputRef}
               placeholder={
                 isQuestion
-                  ? "Escribe aquí tu pregunta"
+                  ? 'Escribe aquí tu pregunta'
                   : alternativeId
                   ? alternativeId === 1
-                    ? "Escribe aquí la alternativa correcta"
-                    : "Escribe aquí la alternativa Incorrecta"
-                  : "Escribe aquí tu solución"
+                    ? 'Escribe aquí la alternativa correcta'
+                    : 'Escribe aquí la alternativa Incorrecta'
+                  : 'Escribe aquí tu solución'
               }
               style={
-                alternativeId
-                  ? alternativeId === 1
-                    ? { color: "green" }
-                    : { color: "red" }
-                  : {}
+                alternativeId ? (alternativeId === 1 ? { color: 'green' } : { color: 'red' }) : {}
               }
               onChange={(e) =>
                 handleChangeTextLatex({
@@ -147,16 +145,11 @@ export default function InputSvg({
               }
             ></textarea>
             <ImageFilesSVG onClick={uploadImageFile} />
-            <input
-              ref={refImageFile}
-              type={"file"}
-              accept="image/*"
-              style={{ display: "none" }}
-            />
+            <input ref={refImageFile} type={'file'} accept="image/*" style={{ display: 'none' }} />
             <CloseImage
               ref={refCloseImage}
               style={{
-                display: localImage ? "block" : "none",
+                display: localImage ? 'block' : 'none',
               }}
               onClick={() => setLocalImage(null)}
             />

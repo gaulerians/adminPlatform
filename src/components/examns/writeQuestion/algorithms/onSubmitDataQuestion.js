@@ -61,7 +61,7 @@ export const onSubmitDataQuestion = async ({
         };
         delete urlKey.alternativeId;
         delete urlKey.typeImage;
-        acc.keys.push({ key: curr.alternative.text, ...urlKey });
+        acc.keys.push({ key: curr.alternative?.text.replaceAll(" ", "\\space "), ...urlKey });
         return acc;
       },
       {
@@ -74,7 +74,7 @@ export const onSubmitDataQuestion = async ({
         course: course ?? null,
         isQuestionOfPreuniversity: isPreUniversityCheck === 'true' ? true : false,
         subTopicID: subTopicSelected,
-        latexQuestion: question.question?.text,
+        latexQuestion: question.question?.text.replaceAll(" ", "\\space "),
         SEOQuestion: question.question.plainText,
         typeQuestion: typeQuestion,
         urlOfImage: {

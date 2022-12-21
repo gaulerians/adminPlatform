@@ -338,155 +338,155 @@ export const functionLatex = [
     functions: [
       {
         name: ` \\begin{matrix}
-                a & b \\
+                a & b \\\\
                 c & d
              \\end{matrix} `,
         styleButton: "largeButton",
         expressionLatex: ` \\begin{matrix}
-                a & b \\
+                a & b \\\\
                 c & d
              \\end{matrix} `,
       },
       {
         name: ` \\begin{pmatrix}
-                a & b \\
+                a & b \\\\
                 c & d
              \\end{pmatrix} `,
         styleButton: "largeButton",
         expressionLatex: ` \\begin{pmatrix}
-                a & b \\
+                a & b \\\\
                 c & d
              \\end{pmatrix} `,
       },
       {
         name: ` \\begin{vmatrix}
-                a & b \\
+                a & b \\\\
                 c & d
              \\end{vmatrix} `,
         styleButton: "largeButton",
         expressionLatex: ` \\begin{vmatrix}
-                a & b \\
+                a & b \\\\
                 c & d
              \\end{vmatrix} `,
       },
       {
         name: ` \\begin{Bmatrix}
-                a & b \\
+                a & b \\\\
                 c & d
              \\end{Bmatrix} `,
         styleButton: "largeButton",
         expressionLatex: ` \\begin{Bmatrix}
-                a & b \\
+                a & b \\\\
                 c & d
              \\end{Bmatrix} `,
       },
       {
         name: ` x = \\begin{cases}
-                a &\\text{si } b \\
+                a &\\text{si } b \\\\
                 c &\\text{si } d
              \\end{cases} `,
         styleButton: "largeButton",
         expressionLatex: ` x = \\begin{cases}
-                a &\\text{si } b \\
+                a &\\text{si } b \\\\
                 c &\\text{si } d
              \\end{cases} `,
       },
       {
         name: ` \\begin{smallmatrix}
-                a & b \\
+                a & b \\\\
                 c & d
              \\end{smallmatrix} `,
         styleButton: "largeButton",
         expressionLatex: ` \\begin{smallmatrix}
-                a & b \\
+                a & b \\\\
                 c & d
              \\end{smallmatrix} `,
       },
       {
         name: ` \\begin{array}{cc}
-                a & b \\
+                a & b \\\\
                 c & d
              \\end{array} `,
         styleButton: "largeButton",
         expressionLatex: ` \\begin{array}{cc}
-                a & b \\
+                a & b \\\\
                 c & d
              \\end{array} `,
       },
       {
         name: ` \\begin{bmatrix}
-                a & b \\
+                a & b \\\\
                 c & d
              \\end{bmatrix} `,
         styleButton: "largeButton",
         expressionLatex: ` \\begin{bmatrix}
-                a & b \\
+                a & b \\\\
                 c & d
              \\end{bmatrix} `,
       },
       {
         name: ` \\begin{Vmatrix}
-                a & b \\
+                a & b \\\\
                 c & d
              \\end{Vmatrix} `,
         styleButton: "largeButton",
         expressionLatex: ` \\begin{Vmatrix}
-                a & b \\
+                a & b \\\\
                 c & d
              \\end{Vmatrix} `,
       },
-      // {
-      //     name: ` \\def\\arraystretch{1.5}
-      //     \\begin{array}{c:c:c}
-      //     a & b & c \\ \hline
-      //     d & e & f \\
-      //     \\hdashline
-      //     g & h & i
-      //  \\end{array} `,
-      //styleButton: 'largeButton',
-      //expressionLatex: ` \\def\\arraystretch{1.5}
-      //     \\begin{array}{c:c:c}
-      //     a & b & c \\ \\hline
-      //     d & e & f \\
-      //     \\hdashline
-      //     g & h & i
-      //  \\end{array} `,
-      // },
+      {
+          name: ` \\def\\arraystretch{1.5}
+          \\begin{array}{c:c:c}
+          a & b & c \\\\ \\hline
+          d & e & f \\\\
+          \\hdashline
+          g & h & i
+       \\end{array} `,
+      styleButton: 'largeButton',
+      expressionLatex: ` \\def\\arraystretch{1.5}
+          \\begin{array}{c:c:c}
+          a & b & c \\\\ \\hline
+          d & e & f \\\\
+          \\hdashline
+          g & h & i
+       \\end{array} `,
+      },
       {
         name: ` \\begin{rcases}
-                a &\\text{if } b \\
+                a &\\text{if } b \\\\
                 c &\\text{if } d
              \\end{rcases}⇒… `,
         styleButton: "largeButton",
         expressionLatex: ` \\begin{rcases}
-                a &\\text{if } b \\
+                a &\\text{if } b \\\\
                 c &\\text{if } d
              \\end{rcases}⇒… `,
       },
       {
         name: ` \\sum_{
                     \\begin{subarray}{l}
-                       i\\in\\Lambda\\
+                       i\\in\\Lambda\\\\
                        0<j<n
                     \\end{subarray}} `,
         styleButton: "largeButton",
         expressionLatex: ` \\sum_{
                     \\begin{subarray}{l}
-                       i\\in\\Lambda\\
+                       i\\in\\Lambda\\\\
                        0<j<n
                     \\end{subarray}} `,
       },
-      // {
-      //     name: ` \\begin{alignat}{2}
-      //     10&x+&3&y=2\\
-      //     3&x+&13&y=4
-      //  \\end{alignat} `,
-      //styleButton: 'smallButton',
-      //expressionLatex: ` \\begin{alignat}{2}
-      //     10&x+&3&y=2\\
-      //     3&x+&13&y=4
-      //  \\end{alignat} `,
-      // }
+      {
+          name: ` \\begin{aligned}
+          10&x+&3&y=2\\\\
+          3&x+&13&y=4
+       \\end{aligned}{(2)} `,
+      styleButton: 'smallButton',
+      expressionLatex: ` \\begin{aligned}
+          10&x+&3&y=2\\\\
+          3&x+&13&y=4
+       \\end{aligned}{(2)} `,
+      }
     ],
   },
   {
@@ -971,14 +971,15 @@ export const functionLatex = [
         expressionLatex: ` a\\raisebox{0.25em}{$b$}c `,
       },
       {
-        name: ` a+\\left(\\vcenter{\\hbox{$\\frac{\\frac a b}c$}}\\right) `,
+        name: ` a+\\left(\\vcenter{\\hbox{$\\frac{\\frac{a}{b}}c$}}\\right) `,
         styleButton: "smallButton",
-        expressionLatex: ` a+\\left(\\vcenter{\\hbox{$\\frac{\\frac a b}c$}}\\right) `,
+        expressionLatex: ` a+\\left(\\vcenter{\\hbox{$\\frac{\\frac{a}{b}}c$}}\\right) `,
       },
       {
         name: ` \\sum_{\\substack{0<i<m\\0<j<n}} `,
         styleButton: "smallButton",
-        expressionLatex: ` \\sum_{\\substack{0<i<m\\0<j<n}} `,
+        expressionLatex: ` \\sum_{\\substack{0<i<m\\\\
+          0<j<n}} `,
       },
     ],
   },
@@ -4515,7 +4516,7 @@ export const functionLatex = [
         name: ` \\minuso `,
         styleButton: "smallButton",
         expressionLatex: ` \\minuso `,
-      }
+      },
     ],
-  }
+  },
 ];

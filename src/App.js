@@ -105,17 +105,18 @@ export default function App() {
           <Routes>
             {/* <Route path="/" element={<h1>Landing</h1>} /> */}
             <Route path="/" element={<Login />} />
-            {currentUser
+            {/* {currentUser
               ? dataOfUser?.typeOfUser?.includes(t("data_administrator"))
-                ? adminRoutes.map((route) => (
+                ?  */}
+                {adminRoutes.map((route) => (
                     <Route
                       path={route.path}
                       key={route.path}
                       element={<AdminLayout children={route.element} />}
                     />
-                  ))
-                : window.open("https://www.gauler.com.pe", "_self")
-              : undefined}
+                  ))}
+              {/* //   : window.open("https://www.gauler.com.pe", "_self")
+              // : undefined} */}
             <Route path="*" element={<h1>Error 404</h1>} />
           </Routes>
         </ThemeProvider>

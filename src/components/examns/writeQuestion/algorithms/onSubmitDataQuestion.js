@@ -1,7 +1,6 @@
 import { collection, doc, setDoc, arrayUnion, serverTimestamp } from 'firebase/firestore';
 import { onSubmitImage } from './onSubmitImage';
 import { v4 as uuidv4 } from 'uuid';
-import { handleQuestionForQestionBank } from './handleQuestionForQestionBank';
 
 export const onSubmitDataQuestion = async ({
   setLoading,
@@ -36,7 +35,6 @@ export const onSubmitDataQuestion = async ({
       isPreUniversityCheck,
       course,
     } = data;
-    handleQuestionForQestionBank({ question, alternatives });
     const refQuestionsDb = doc(collection(db, 'questions'), uuid);
     const refQuestionsBankDb = doc(collection(db, 'questionsBank'), uuid);
     const refSolutionsDb = doc(collection(db, 'solutions'), uuid);
@@ -113,10 +111,11 @@ export const onSubmitDataQuestion = async ({
       isKatex: true,
       question: question.question?.text,
       university: university,
-      level: Math.floor(Math.random() * 5) + 1,
-      week: Math.floor(Math.random() * 12) + 1,
-      // index: Math.floor(Math.random() * 100) + 1,
+      level: 15000,
     };
+
+    // console.log('dataForQuestionBank', dataForQuestionBank);
+
     setDoc(refQuestionsDb, questionData, { merge: true });
     setDoc(refQuestionsBankDb, dataForQuestionBank, { merge: true });
     setDoc(refSolutionsDb, solutionData, { merge: true });

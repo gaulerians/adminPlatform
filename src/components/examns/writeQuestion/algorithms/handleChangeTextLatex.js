@@ -1,49 +1,96 @@
 export const handleChangeTextLatex = ({
   e,
-  latexString,
   setLatexString,
   selections,
   setSelections,
   inputRef,
+  setTextRecords,
+  textRecords,
 }) => {
-  if (e.type === 'change') {
-    console.log(e.nativeEvent.inputType);
-    let copiedText = Array.from(latexString);
-    let lengthAdded = 0;
-    if (e.nativeEvent.inputType === 'insertLineBreak') {
-      let latexFunction = ' \\newline ';
-      copiedText.splice(selections.end, 0, latexFunction);
-      lengthAdded = latexFunction.length - 1;
-    } else if (e.nativeEvent.inputType === 'deleteContentBackward') {
-      copiedText.splice(
-        selections.start === selections.end ? selections.start - 1 : selections.start,
-        selections.start === selections.end
-          ? selections.end - selections.start + 1
-          : selections.end - selections.start,
-        '',
-      );
-    } else if (e.nativeEvent.inputType === 'insertText') {
-      if (e.nativeEvent.data === ' ') {
-        let latexFunction = ' \\space ';
-        copiedText.splice(selections.end, 0, latexFunction);
-        lengthAdded = latexFunction.length - 1;
-      } else {
-        copiedText.splice(selections.start, 0, e.nativeEvent.data);
-      }
-    } else if (e.nativeEvent.inputType === 'deleteContentForward') {
-      copiedText.splice(selections.start, 1, '');
-    } else if (e.nativeEvent.inputType === 'insertFromPaste') {
-      console.log(latexString);
+  let lengthAdded = 0;
+  let valueAdded = null;
+  if (e.type === "change" || e.type === "paste" || e.type === "select") {
+    if (e.type === "change") {
+      setTextRecords((prev) => [...prev, inputRef.current.value]);
     }
-    setSelections({
-      start: inputRef.current.selectionStart + lengthAdded,
-      end: inputRef.current.selectionEnd + lengthAdded,
-    });
-    setLatexString(copiedText.join(''));
-  } else if (e.type === 'select') {
-    setSelections({
-      start: inputRef.current.selectionStart,
-      end: inputRef.current.selectionEnd,
-    });
+
+    if (e.nativeEvent.inputType === "insertLineBreak") {
+      let latexFunction = "\\\\\n";
+      setLatexString(
+        (prev) =>
+          prev.slice(0, selections.start) +
+          latexFunction +
+          prev.slice(selections.end)
+      );
+      lengthAdded = null;
+      inputRef.current.setSelectionRange(selections.start, selections.end);
+    } else if (e.nativeEvent.inputType === "deleteContentBackward") {
+      setLatexString((prev) => {
+        if (selections.start === selections.end) {
+          return (
+            prev.slice(0, selections.start - 1) + prev.slice(selections.end)
+          );
+        } else {
+          return prev.slice(0, selections.start) + prev.slice(selections.end);
+        }
+      });
+    } else if (e.nativeEvent.inputType === "deleteContentForward") {
+      setLatexString((prev) => {
+        if (selections.start === selections.end) {
+          return (
+            prev.slice(0, selections.start) + prev.slice(selections.end + 1)
+          );
+        } else {
+          return prev.slice(0, selections.start) + prev.slice(selections.end);
+        }
+      });
+    } else if (e.nativeEvent.inputType === "deleteByCut") {
+      setLatexString(
+        (prev) => prev.slice(0, selections.start) + prev.slice(selections.end)
+      );
+    } else if (e.nativeEvent.inputType === "insertText") {
+      valueAdded = e.nativeEvent.data;
+    } else if (e.nativeEvent.type === "paste") {
+      valueAdded =
+        e.clipboardData.getData("text/plain").replaceAll(" ", "") + " ";
+    }
+
+    lengthAdded !== null &&
+      setSelections({
+        start: inputRef.current.selectionStart + lengthAdded,
+        end: inputRef.current.selectionEnd + lengthAdded,
+      });
+    valueAdded &&
+      setLatexString(
+        (prev) =>
+          prev.slice(0, selections.start) +
+          valueAdded +
+          prev.slice(selections.end)
+      );
+  }
+
+  if (e.type === "keydown") {
+    if (e.ctrlKey) {
+      if (e.code === "KeyZ" && textRecords.length > 1) {
+        setLatexString((prev) => {
+          let index = textRecords.indexOf(prev);
+          if (index - 1 > 0) {
+            return textRecords[index - 1];
+          } else {
+            return prev;
+          }
+        });
+      }
+      if (e.shiftKey && e.code === "KeyZ" && textRecords.length > 2) {
+        setLatexString((prev) => {
+          let index = textRecords.indexOf(prev);
+          if (index + 2 < textRecords.length - 1) {
+            return textRecords[index + 2];
+          } else {
+            return prev;
+          }
+        });
+      }
+    }
   }
 };

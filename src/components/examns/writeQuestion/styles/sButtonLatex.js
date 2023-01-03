@@ -32,8 +32,8 @@ export const ButtonLatex = styled.button`
       }
 
       @media (min-width: 768px) {
-        height: 60px !important;
-        padding: 0 auto !important;
+        height: auto !important;
+        padding: 5px auto !important;
       }
     `}
 
@@ -50,8 +50,8 @@ export const ButtonLatex = styled.button`
         color: ${(props) => props.theme.hoverBrand};
       }
       @media (min-width: 768px) {
-        height: 47px !important;
-        padding: 0 12px !important;
+        height: auto !important;
+        padding: 5px 12px !important;
       }
     `}
   
@@ -73,7 +73,7 @@ export const ButtonLatex = styled.button`
     props.small &&
     css`
       height: 32px;
-      padding: 0 20px;
+      padding: 5px 20px;
       font-size: 0.938em;
     `}
 
@@ -81,7 +81,7 @@ export const ButtonLatex = styled.button`
   ${(props) =>
     props.inForm &&
     css`
-      margin: 10px 0 0 0;
+      margin: 10px 5px;
     `}
 
   ${(props) =>

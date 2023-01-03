@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/img-redundant-alt */
 import React, { useContext, useEffect, useState, CSSProperties } from "react";
-import ClipLoader from "react-spinners/ClipLoader";
+// import ClipLoader from "react-spinners/ClipLoader";
 import { Text, Title4, Title5 } from "./../../../styles/textGeneral";
 import { WrapperAdmin } from "./../../../styles/generalStyles";
 import Tag from "./../../general/cOthers/Tag";

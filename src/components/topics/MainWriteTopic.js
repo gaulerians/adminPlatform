@@ -9,23 +9,23 @@ import Tag from '../general/cOthers/Tag';
 import { InputTextTopic } from './InputTextTopic';
 import { WrapperDuplex } from '../../styles/boxesGeneral';
 import { Button } from '../../styles/buttonGeneral';
+// import {
+//   textValidator,
+//   urlVideoFacebookValidatorR,
+//   urlVideoYoutubeValidatorR,
+// } from '../examns/writeQuestion/validators/formValidators';
 import {
-  textValidator,
-  urlVideoFacebookValidatorR,
-  urlVideoYoutubeValidatorR,
-} from '../examns/writeQuestion/validators/formValidators';
-import {
-  addDataSubVideos,
-  deleteDataSubVideos,
+  // addDataSubVideos,
+  // deleteDataSubVideos,
   resetStates as resetStatesOfAdd,
   resetStates as resetStatesOfEdit,
-  updateTitleOfURLVideos,
+  // updateTitleOfURLVideos,
 } from './algorithms/generalFunctionsWriteTopic';
 import { sendDataOfSubTopic } from './algorithms/sendDataToCreateSubTopic';
 import { filterTopics, onChangeStateModal } from '../examns/writeQuestion/functions';
 import { MainModalUpload } from '../modal/MainModalUpload';
 // import { enviarTopics } from "./algorithms/enviarTopics";
-import { ErrorText } from '../examns/writeQuestion/styles/sErrorText';
+// import { ErrorText } from '../examns/writeQuestion/styles/sErrorText';
 import { v4 as uuidv4 } from 'uuid';
 import { ToggleSwitch } from '../general/cOthers/ToggleSwitch';
 import { recoveryDataSubTopics } from '../examns/writeQuestion/algorithms/recoveryDataSubtopics';
@@ -35,7 +35,7 @@ import { updateDataSubTopic } from './algorithms/updateDataSubTopic';
 export default function MainWriteTopic() {
   const { listOfCourses, dataOfUser, setLoading, dataSubTopics, setDataSubTopics } =
     useContext(AppContext);
-  const uuid = uuidv4();
+  // const uuid = uuidv4();
   const db = useContext(FirestoreSdkContext);
   //Estados de creacion de subtopicos
   const [coursesSelected, setCoursesSelected] = useState([]);

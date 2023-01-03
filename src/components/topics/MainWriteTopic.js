@@ -89,7 +89,8 @@ export default function MainWriteTopic() {
       const { id, ...rest } = obj;
       return rest;
     });
-    const { urlFacebookSubTopic, urlYoutubeSubTopic } = data;
+    // TODO: Uncomment when need url social video
+    // const { urlFacebookSubTopic, urlYoutubeSubTopic } = data;
 
     const dataToCreate = {
       subTopicId: '',
@@ -100,10 +101,10 @@ export default function MainWriteTopic() {
       courses: coursesSelected,
       title: textSubTopic,
       topics: localTopics,
-      urlOfVideo: {
-        youtube: urlYoutubeSubTopic,
-        facebook: urlFacebookSubTopic,
-      },
+      // urlOfVideo: {
+      //   youtube: urlYoutubeSubTopic,
+      //   facebook: urlFacebookSubTopic,
+      // },
       subVideos: dataSubVideosWithoutId,
     };
 
@@ -112,10 +113,10 @@ export default function MainWriteTopic() {
         idAuthor: dataOfUser?.uid,
         date: serverTimestamp(),
       },
-      urlOfVideo: {
-        youtube: urlsSuTopic?.urlYoutube,
-        facebook: urlsSuTopic?.urlFacebook,
-      },
+      // urlOfVideo: {
+      //   youtube: urlsSuTopic?.urlYoutube,
+      //   facebook: urlsSuTopic?.urlFacebook,
+      // },
       subVideos: dataSubVideosWithoutId,
       title: dataText?.textSubTopic,
       topics: {

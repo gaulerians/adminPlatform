@@ -372,6 +372,25 @@ export default function MainWriteQuestion() {
                   <span className="focus"></span>
                 </div>
               </InputContainer>
+              <InputContainer noMargin>
+                <label>Semana *</label>
+                <div className="select">
+                  <select
+                    id="standard-select"
+                    defaultValue={null}
+                    {...register("week", requeridValidator)}
+                  >
+                    <option>Seleccione el semana</option>
+                    {/* Contador de doce semanas no quitar la v*/}
+                    {Array.from({ length: 12 }, (v, k) => k + 1).map((val) => (
+                      <option key={val} value={val}>
+                        Semana {val}
+                      </option>
+                    ))}
+                  </select>
+                  <span className="focus"></span>
+                </div>
+              </InputContainer>
             </div>
             <div className="inputContainerDuplo">
               <InputContainer noMargin>
@@ -379,7 +398,7 @@ export default function MainWriteQuestion() {
                 <div className="inputsRadioContainer">
                   <label className="inputRadioContainer inputType">
                     <input
-                      value="simuluacro"
+                      value="simulacro"
                       name="typeOfQuestion"
                       type="checkbox"
                       {...register("typeQuestion", typeQuestionValidator)}
@@ -538,11 +557,11 @@ export default function MainWriteQuestion() {
                             ? `\\textcolor{green}{${alt.alternative?.text.replaceAll(
                                 " ",
                                 "\\space "
-                              )}}}`
+                              )}}`
                             : `\\textcolor{red}{${alt.alternative?.text.replaceAll(
                                 " ",
                                 "\\space "
-                              )}}}`
+                              )}}`
                           : ""
                       }
                       `}</Latex>
@@ -551,7 +570,12 @@ export default function MainWriteQuestion() {
                 </div>
                 <div>
                   <Title5>Solución: </Title5>
-                  <Latex>{question.solution?.textSolution ?? ""}</Latex>
+                  <Latex>
+                    {question.solution?.textSolution?.replaceAll(
+                      " ",
+                      "\\space "
+                    ) ?? ""}
+                  </Latex>
                   {question.solution.imageSolution && (
                     // eslint-disable-next-line jsx-a11y/alt-text
                     <img

@@ -136,7 +136,11 @@ export const onSubmitDataQuestion = async ({
     setDoc(refQuestionsBankDb, dataForQuestionBank, { merge: true });
     setDoc(
       doc(db, "indices", "questionsPerWeek"),
-      { [`week${data.week}`]: arrayUnion(refQuestionsBankDb) },
+      {
+        [courseSelectedName]: {
+          [`week${data.week}`]: arrayUnion(refQuestionsBankDb),
+        },
+      },
       { merge: true }
     );
 

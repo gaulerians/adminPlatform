@@ -103,7 +103,7 @@ export const onSubmitDataQuestion = async ({
     const solutionData = {
       uqid: uuid,
       SEOjustification: question.solution.plainTextSolution,
-      justification: question.solution.textSolution,
+      justification: question.solution.textSolution.replaceAll(" ", "\\space "),
       urlOfImage: {
         ...(dataUrls.length > 0
           ? dataUrls.filter((obj) => obj.typeImage === "solution")[0]
@@ -125,7 +125,7 @@ export const onSubmitDataQuestion = async ({
       keys: alternatives.map((key) => key.alternative.text),
       course: courseSelectedName ?? null,
       isKatex: true,
-      week: data.week,
+      week: parseInt(data.week),
       question: question.question?.text,
       university: university,
       level: 15000,

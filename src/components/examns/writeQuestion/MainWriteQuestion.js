@@ -35,6 +35,7 @@ import {
   requeridValidator,
 } from "./validators/formValidators";
 import { generatorYear } from "./algorithms/generatorYear";
+import { optionDefaults } from "../../../constants/generalConstants";
 
 export default function MainWriteQuestion() {
   const {
@@ -49,7 +50,9 @@ export default function MainWriteQuestion() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    mode: "onChange",
+  });
   const [loading, setLoading] = useState({ status: false, title: null });
   const [modalState, setModalState] = useState(false);
   const [universitiesSelected, setUniversitiesSelected] = useState([]);
@@ -147,6 +150,11 @@ export default function MainWriteQuestion() {
           }))
         : {}),
     });
+    if (data.year === optionDefaults.SELECT_YEAR) {
+      data.year = null;
+    } else {
+      data.year = parseInt(data.year);
+    }
 
     const result = await onSubmitDataQuestion({
       //mandar el nombre del curso en ingles
@@ -367,7 +375,7 @@ export default function MainWriteQuestion() {
                     defaultValue={null}
                     {...register("year")}
                   >
-                    <option>Seleccione el año</option>
+                    <option>{optionDefaults.SELECT_YEAR}</option>
                     {generatorYear().map((year, index) => {
                       return (
                         <option key={index} value={year}>
@@ -387,7 +395,7 @@ export default function MainWriteQuestion() {
                     defaultValue={null}
                     {...register("week", requeridValidator)}
                   >
-                    <option>Seleccione el semana</option>
+                    <option>Seleccione la semana</option>
                     {/* Contador de doce semanas no quitar la v*/}
                     {Array.from({ length: 12 }, (v, k) => k + 1).map((val) => (
                       <option key={val} value={val}>

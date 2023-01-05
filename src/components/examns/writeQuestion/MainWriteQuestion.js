@@ -155,6 +155,7 @@ export default function MainWriteQuestion() {
     } else {
       data.year = parseInt(data.year);
     }
+    data.university = universitiesSelected;
 
     const result = await onSubmitDataQuestion({
       //mandar el nombre del curso en ingles

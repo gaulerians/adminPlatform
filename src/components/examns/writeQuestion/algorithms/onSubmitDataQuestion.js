@@ -47,7 +47,12 @@ export const onSubmitDataQuestion = async ({
 
     const dataUrls =
       imagesArr.length > 0
-        ? await onSubmitImage({ imagesArr, setLoading })
+        ? await onSubmitImage({
+            imagesArr,
+            setLoading,
+            uuid,
+            course: courseSelectedName,
+          })
         : [];
     if (!Array.isArray(dataUrls))
       return {
@@ -127,7 +132,7 @@ export const onSubmitDataQuestion = async ({
       isKatex: true,
       week: parseInt(data.week),
       question: question.question?.text,
-      university: university,
+      university: university.length > 0 ? university[0] : null,
       level: 15000,
     };
 

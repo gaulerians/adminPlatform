@@ -303,11 +303,18 @@ export default function MainWriteQuestion() {
                     onChange={(e) => setTopicSelected(e.target.value)}
                   >
                     <option>Seleccione tema</option>
-                    {topicsFilters?.map((topic, index) => (
-                      <option key={index} value={topic}>
-                        {topic}
-                      </option>
-                    ))}
+                    {topicsFilters
+                      ?.reduce((acc, topic) => {
+                        if (!acc.includes(topic)) {
+                          acc.push(topic);
+                        }
+                        return acc;
+                      }, [])
+                      .map((topic, index) => (
+                        <option key={index} value={topic}>
+                          {topic}
+                        </option>
+                      ))}
                   </select>
                   <span className="focus"></span>
                 </div>

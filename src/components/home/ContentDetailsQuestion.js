@@ -24,7 +24,6 @@ export const ContentDetailsQuestion = ({
         </div>
         <div className="container-text-data">
           <div>
-            {console.log(authorId)}
             <Text>{`Autor: ${
               authorName?.name?.firstName
                 ? `${authorName.name.firstName} ${authorName.name.lastName}`
@@ -35,8 +34,8 @@ export const ContentDetailsQuestion = ({
             <Text>{`Creada el: ${fecha.toLocaleString()}`}</Text>
           </div>
           <div className="container-duplex">
-            <Text>{course}</Text>
-            <Text>{universities}</Text>
+            <Text>Curso: {course}</Text>
+            <Text>Universidades: {universities.join(", ")}</Text>
           </div>
         </div>
       </div>

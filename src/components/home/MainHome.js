@@ -1,13 +1,18 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Title4, Title5 } from "./../../styles/textGeneral";
 import { WrapperAdmin } from "./../../styles/generalStyles";
 import { ContentDetailsQuestion } from "./ContentDetailsQuestion";
 import { AppContext } from "../../App";
 
-
 export default function MainHome() {
-  const { unreviewedQuestionData, dataOfAuthors, dataOfUser } =
+  const navigate = useNavigate();
+  const { unreviewedQuestionData, dataOfAuthors, dataOfUser, currentUser } =
     useContext(AppContext);
+
+  useEffect(() => {
+    !currentUser && navigate("/");
+  }, []);
 
   return (
     <main>

@@ -15,6 +15,7 @@ export const ContentDetailsQuestion = ({
   dataOfAuthors = [],
 }) => {
   const fecha = new Date(date.seconds * 1000);
+  const authorName = dataOfAuthors?.filter((e) => e.uid === authorId)[0];
   return (
     <QuestionPrevContainer>
       <div className="container-text ">
@@ -23,8 +24,11 @@ export const ContentDetailsQuestion = ({
         </div>
         <div className="container-text-data">
           <div>
+            {console.log(authorId)}
             <Text>{`Autor: ${
-              dataOfAuthors?.filter((e) => e.uid === authorId)[0]?.username
+              authorName?.name?.firstName
+                ? `${authorName.name.firstName} ${authorName.name.lastName}`
+                : authorName?.username
             }`}</Text>
           </div>
           <div>

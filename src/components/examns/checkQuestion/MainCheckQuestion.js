@@ -179,7 +179,6 @@ export default function MainCheckQuestion() {
                 <Text>No hay resolución</Text>
               )}
               <div>
-                {console.log(resultOfQuestion)}
                 {resultOfQuestion?.length > 0 &&
                 resultOfQuestion[0]?.urlOfImage?.urlImage ? (
                   <img

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, createContext } from "react";
 import { ThemeProvider } from "styled-components";
 import GlobalStyles from "./theme/GlobalStyles";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import theme from "./theme/Theme";
 import AdminLayout from "./components/layouts/AdminLayout";
 import MainSpinner from "./components/spinner/MainSpinner";
@@ -22,6 +22,7 @@ import { recoverDataListOfCourses } from "./algorithms/recoverDataListOfCourses"
 import { recoverDataUnreviewedQuestions } from "./algorithms/recoverDataUnreviewedQuestions";
 import { recoverDataOfAuthor } from "./algorithms/recoverDataOfAuthor";
 import { useTranslation } from "react-i18next";
+import { roles } from "./constants/roles";
 
 const AppContext = createContext();
 const { Provider: AppProvider, Consumer } = AppContext;
@@ -29,7 +30,6 @@ const { Provider: AppProvider, Consumer } = AppContext;
 export default function App() {
   const firestoreInstance = getFirestore(useFirebaseApp()); //db
   const auth = getAuth();
-  const { t } = useTranslation();
   const [currentUser, setCurrentUser] = useState(auth.currentUser || null);
   const [dataOfUser, setDataOfUser] = useState(null);
   const [listOfCourses, setListOfCourses] = useState(null);
@@ -68,8 +68,6 @@ export default function App() {
     // unreviewedQuestionData && console.log(unreviewedQuestionData);
   }, [unreviewedQuestionData]);
 
-
-
   const appValue = {
     setCurrentUser,
     currentUser,
@@ -105,18 +103,17 @@ export default function App() {
           <Routes>
             {/* <Route path="/" element={<h1>Landing</h1>} /> */}
             <Route path="/" element={<Login />} />
-            {/* {currentUser
-              ? dataOfUser?.typeOfUser?.includes(t("data_administrator"))
-                ?  */}
-                {adminRoutes.map((route) => (
+            {currentUser && dataOfUser
+              ? dataOfUser.typeOfUser?.includes(roles.DATA_ADMIN)
+                ? adminRoutes.map((route) => (
                     <Route
                       path={route.path}
                       key={route.path}
                       element={<AdminLayout children={route.element} />}
                     />
-                  ))}
-              {/* //   : window.open("https://www.gauler.com.pe", "_self")
-              // : undefined} */}
+                  ))
+                : window.open("https://www.ebbiner.com", "_self")
+              : undefined}
             <Route path="*" element={<h1>Error 404</h1>} />
           </Routes>
         </ThemeProvider>

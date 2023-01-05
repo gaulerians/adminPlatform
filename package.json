@@ -24,7 +24,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "env-cmd -f ./env/.production.env react-scripts start",
+    "start": "env-cmd -f ./env/.development.env react-scripts start",
     "build": "env-cmd -f ./env/.development.env react-scripts build && firebase hosting:channel:deploy admint_data_public_development",
     "start:test": "env-cmd -f ./env/.testing.env react-scripts start",
     "build:test": "env-cmd -f ./env/.testing.env react-scripts build && firebase hosting:channel:deploy admint_data_public_qa",

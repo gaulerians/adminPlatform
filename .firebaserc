@@ -1,5 +1,15 @@
 {
   "projects": {
     "default": "gauler-665ba"
-  }
+  },
+  "targets": {
+    "gauler-665ba": {
+      "hosting": {
+        "admin": [
+          "gauler-admin-data"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }

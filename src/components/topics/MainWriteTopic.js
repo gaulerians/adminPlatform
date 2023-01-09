@@ -1,14 +1,14 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { Text, Title4, Title5, Title6 } from '../../styles/textGeneral';
-import { WrapperAdmin } from '../../styles/generalStyles';
-import { FormContainer, InputContainer } from '../../styles/inputGeneral';
-import { useForm } from 'react-hook-form';
-import { AppContext } from '../../App';
-import { FirestoreSdkContext } from 'reactfire';
-import Tag from '../general/cOthers/Tag';
-import { InputTextTopic } from './InputTextTopic';
-import { WrapperDuplex } from '../../styles/boxesGeneral';
-import { Button } from '../../styles/buttonGeneral';
+import React, { useContext, useState, useEffect } from "react";
+import { Text, Title4, Title5, Title6 } from "../../styles/textGeneral";
+import { WrapperAdmin } from "../../styles/generalStyles";
+import { FormContainer, InputContainer } from "../../styles/inputGeneral";
+import { useForm } from "react-hook-form";
+import { AppContext } from "../../App";
+import { FirestoreSdkContext } from "reactfire";
+import Tag from "../general/cOthers/Tag";
+import { InputTextTopic } from "./InputTextTopic";
+import { WrapperDuplex } from "../../styles/boxesGeneral";
+import { Button } from "../../styles/buttonGeneral";
 // import {
 //   textValidator,
 //   urlVideoFacebookValidatorR,
@@ -20,30 +20,38 @@ import {
   resetStates as resetStatesOfAdd,
   resetStates as resetStatesOfEdit,
   // updateTitleOfURLVideos,
-} from './algorithms/generalFunctionsWriteTopic';
-import { sendDataOfSubTopic } from './algorithms/sendDataToCreateSubTopic';
-import { filterTopics, onChangeStateModal } from '../examns/writeQuestion/functions';
-import { MainModalUpload } from '../modal/MainModalUpload';
+} from "./algorithms/generalFunctionsWriteTopic";
+import { sendDataOfSubTopic } from "./algorithms/sendDataToCreateSubTopic";
+import {
+  filterTopics,
+  onChangeStateModal,
+} from "../examns/writeQuestion/functions";
+import { MainModalUpload } from "../modal/MainModalUpload";
 // import { enviarTopics } from "./algorithms/enviarTopics";
 // import { ErrorText } from '../examns/writeQuestion/styles/sErrorText';
-import { v4 as uuidv4 } from 'uuid';
-import { ToggleSwitch } from '../general/cOthers/ToggleSwitch';
-import { recoveryDataSubTopics } from '../examns/writeQuestion/algorithms/recoveryDataSubtopics';
-import { serverTimestamp } from 'firebase/firestore';
-import { updateDataSubTopic } from './algorithms/updateDataSubTopic';
+import { v4 as uuidv4 } from "uuid";
+import { ToggleSwitch } from "../general/cOthers/ToggleSwitch";
+import { recoveryDataSubTopics } from "../examns/writeQuestion/algorithms/recoveryDataSubtopics";
+import { serverTimestamp } from "firebase/firestore";
+import { updateDataSubTopic } from "./algorithms/updateDataSubTopic";
 
 export default function MainWriteTopic() {
-  const { listOfCourses, dataOfUser, setLoading, dataSubTopics, setDataSubTopics } =
-    useContext(AppContext);
+  const {
+    listOfCourses,
+    dataOfUser,
+    setLoading,
+    dataSubTopics,
+    setDataSubTopics,
+  } = useContext(AppContext);
   // const uuid = uuidv4();
   const db = useContext(FirestoreSdkContext);
   //Estados de creacion de subtopicos
   const [coursesSelected, setCoursesSelected] = useState([]);
   const [urlsSuTopic, setUrlsSuTopic] = useState({
-    urlFacebook: '',
-    urlYoutube: '',
+    urlFacebook: "",
+    urlYoutube: "",
   });
-  const [textSubTopic, setTextSubTopic] = useState('');
+  const [textSubTopic, setTextSubTopic] = useState("");
   const [localTopics, setLocalTopics] = useState({});
   const [modalState, setModalState] = useState(false);
   const [toggleSwitchStatus, setToggleSwitchStatus] = useState(true);
@@ -56,8 +64,8 @@ export default function MainWriteTopic() {
   const [subTopicSelected, setSubTopicSelected] = useState(null);
   const [dataSubTopicSelected, setDataSubTopicSelected] = useState(null);
   const [dataText, setDataText] = useState({
-    textTopic: '',
-    textSubTopic: '',
+    textTopic: "",
+    textSubTopic: "",
   });
   //estados de doble uso
   const {
@@ -66,8 +74,8 @@ export default function MainWriteTopic() {
     formState: { errors },
   } = useForm({
     defaultVaules: {
-      urlYoutubeSubTopic: dataSubTopicSelected?.urlOfVideo?.youtube ?? '',
-      urlFacebookSubTopic: dataSubTopicSelected?.urlOfVideo?.facebook ?? '',
+      urlYoutubeSubTopic: dataSubTopicSelected?.urlOfVideo?.youtube ?? "",
+      urlFacebookSubTopic: dataSubTopicSelected?.urlOfVideo?.facebook ?? "",
     },
   });
 
@@ -82,7 +90,9 @@ export default function MainWriteTopic() {
     ?.map((course) => course.value)
     .sort((a, b) => a.localeCompare(b));
 
-  const courseSelectedName = listOfCourses?.find((c) => c.value === courseSelected)?.name;
+  const courseSelectedName = listOfCourses?.find(
+    (c) => c.value === courseSelected
+  )?.name;
 
   const onSubmit = (data) => {
     const dataSubVideosWithoutId = dataSubVideos.map((obj) => {
@@ -93,7 +103,7 @@ export default function MainWriteTopic() {
     // const { urlFacebookSubTopic, urlYoutubeSubTopic } = data;
 
     const dataToCreate = {
-      subTopicId: '',
+      subTopicId: "",
       dataOfTheCreator: {
         uid: dataOfUser.uid,
         date: serverTimestamp(),
@@ -252,14 +262,17 @@ export default function MainWriteTopic() {
         <Title5>Selecciona una opción</Title5>
         <InputContainer>
           <ToggleSwitch
-            textLeft={'Crear un nuevo tema'}
-            textRight={'Editar un tema'}
+            textLeft={"Crear un nuevo tema"}
+            textRight={"Editar un tema"}
             toggleSwitchStatus={toggleSwitchStatus}
             setToggleSwitchStatus={setToggleSwitchStatus}
           />
         </InputContainer>
         <FormContainer
-          onSubmit={(e) => [e.preventDefault(), onChangeStateModal({ setModalState, modalState })]}
+          onSubmit={(e) => [
+            e.preventDefault(),
+            onChangeStateModal({ setModalState, modalState }),
+          ]}
         >
           <div>
             {toggleSwitchStatus ? (
@@ -272,13 +285,15 @@ export default function MainWriteTopic() {
                       <select
                         name="courses"
                         id="standard-select"
-                        {...register('courses')}
+                        {...register("courses")}
                         onChange={(e) =>
                           e.target.selectedIndex !== 0
                             ? setCoursesSelected([
                                 ...new Set([
                                   ...coursesSelected,
-                                  listOfCourses?.find((c) => c.value === e.target.value)?.name,
+                                  listOfCourses?.find(
+                                    (c) => c.value === e.target.value
+                                  )?.name,
                                 ]),
                               ])
                             : undefined
@@ -295,7 +310,12 @@ export default function MainWriteTopic() {
                     </div>
                   </InputContainer>
                   {coursesSelected.map((chip, index) => (
-                    <Tag key={index} name={chip} type="course" onDelete={onTagDeleteU} />
+                    <Tag
+                      key={index}
+                      name={chip}
+                      type="course"
+                      onDelete={onTagDeleteU}
+                    />
                   ))}
                 </div>
 
@@ -321,7 +341,10 @@ export default function MainWriteTopic() {
                 <InputContainer>
                   <label>Sub - Tema *</label>
                   {coursesSelected.length > 0 ? (
-                    <InputTextTopic textSubTopic={textSubTopic} setTextSubTopic={setTextSubTopic} />
+                    <InputTextTopic
+                      textSubTopic={textSubTopic}
+                      setTextSubTopic={setTextSubTopic}
+                    />
                   ) : (
                     <Text>Seleccione algun curso</Text>
                   )}
@@ -340,8 +363,12 @@ export default function MainWriteTopic() {
                       <select
                         name="course"
                         id="standard-select"
-                        defaultValue={courseSelected ?? ''}
-                        onChange={(e) => setCourseSelected(e.target?.value ? e.target?.value : [])}
+                        defaultValue={courseSelected ?? ""}
+                        onChange={(e) =>
+                          setCourseSelected(
+                            e.target?.value ? e.target?.value : []
+                          )
+                        }
                       >
                         <option>Seleccione curso</option>
                         {listOfCoursesNames?.map((courses, index) => (
@@ -359,15 +386,22 @@ export default function MainWriteTopic() {
                       <select
                         name="topic"
                         id="standard-select"
-                        defaultValue={topicSelected ?? ''}
+                        defaultValue={topicSelected ?? ""}
                         onChange={(e) => setTopicSelected(e.target.value)}
                       >
                         <option>Seleccione tema</option>
-                        {topicsFilters?.map((topic, index) => (
-                          <option key={index} value={topic}>
-                            {topic}
-                          </option>
-                        ))}
+                        {topicsFilters
+                          ?.reduce((acc, topic) => {
+                            if (!acc.includes(topic)) {
+                              acc.push(topic);
+                            }
+                            return acc;
+                          }, [])
+                          .map((topic, index) => (
+                            <option key={index} value={topic}>
+                              {topic}
+                            </option>
+                          ))}
                       </select>
                       <span className="focus"></span>
                     </div>
@@ -378,19 +412,27 @@ export default function MainWriteTopic() {
                       <select
                         name="subTopic"
                         id="standard-select"
-                        onChange={(e) => setSubTopicSelected(e.target.selectedOptions[0].id)}
+                        onChange={(e) =>
+                          setSubTopicSelected(e.target.selectedOptions[0].id)
+                        }
                       >
                         <option>Seleccione Subtema</option>
                         {dataSubTopics
                           ?.filter(
                             (st) =>
                               st.courses?.includes(courseSelectedName) &&
-                              Object.values(st.topics).includes(topicSelected) &&
-                              st.title,
+                              Object.values(st.topics).includes(
+                                topicSelected
+                              ) &&
+                              st.title
                           )
                           .map((subtopic, index) => {
                             return (
-                              <option key={index} value={subtopic.title} id={subtopic.subTopicId}>
+                              <option
+                                key={index}
+                                value={subtopic.title}
+                                id={subtopic.subTopicId}
+                              >
                                 {subtopic.title}
                               </option>
                             );
@@ -403,10 +445,10 @@ export default function MainWriteTopic() {
                 <InputContainer margin10B>
                   <label>Tema: </label>
                   <input
-                    type={'text'}
+                    type={"text"}
                     required={true}
                     name="topicTextEdit"
-                    value={dataText?.textTopic ?? ''}
+                    value={dataText?.textTopic ?? ""}
                     onChange={(e) =>
                       setDataText((prev) => ({
                         ...prev,
@@ -418,10 +460,10 @@ export default function MainWriteTopic() {
                 <InputContainer margin10B>
                   <label>Sub tema: </label>
                   <input
-                    type={'text'}
+                    type={"text"}
                     required={true}
                     name="subTopicTextEdit"
-                    value={dataText?.textSubTopic ?? ''}
+                    value={dataText?.textSubTopic ?? ""}
                     onChange={(e) =>
                       setDataText((prev) => ({
                         ...prev,

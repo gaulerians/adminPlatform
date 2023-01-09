@@ -107,13 +107,6 @@ export default function MainCheckQuestion() {
     }
     idQuestion && localStorage.setItem("idQuestion", idQuestion);
     await onRecoverDataOfQuestionSelected(idQuestion);
-    dataOfQuestionToReview &&
-      (await searchSolutionQuestion({
-        setLoading,
-        db,
-        uqid: dataOfQuestionToReview?.uqid,
-        setResultOfQuestion,
-      }));
     // await recoveryURLS({ dataOfQuestionToReview, resultOfQuestion });
     // await spaced({ urls });
   };
@@ -121,6 +114,17 @@ export default function MainCheckQuestion() {
   useEffect(() => {
     recoverAllDataOfQuestion({ idQuestion });
   }, [idQuestion]);
+
+  useEffect(() => {
+    !resultOfQuestion &&
+      dataOfQuestionToReview &&
+      searchSolutionQuestion({
+        setLoading,
+        db,
+        uqid: dataOfQuestionToReview?.uqid,
+        setResultOfQuestion,
+      });
+  }, [resultOfQuestion]);
 
   // useEffect(() => {}, [urls]);
 
@@ -140,24 +144,21 @@ export default function MainCheckQuestion() {
                 <div>
                   {
                     //AGREGAR ESTA DE ERPORTADO
-                    dataOfQuestionToReview?.isReported ? (
+                    dataOfQuestionToReview?.isReported && (
                       <Tag name="Reportado" type="report" />
-                    ) : null
+                    )
                   }
                 </div>
                 <div>
-                  {dataOfQuestionToReview?.course ? (
+                  {dataOfQuestionToReview?.course && (
                     <Tag name={courseSelectedName} type="course" />
-                  ) : null}
+                  )}
                 </div>
-                <div>
-                  {dataOfQuestionToReview?.university ? (
-                    <Tag
-                      name={dataOfQuestionToReview?.university}
-                      type="university"
-                    />
-                  ) : null}
-                </div>
+                {dataOfQuestionToReview?.university.map((u) => (
+                  <div>
+                    <Tag key={u} name={u} type="university" />
+                  </div>
+                ))}
               </TagsUnlist>
             </div>
             <div>
@@ -172,6 +173,7 @@ export default function MainCheckQuestion() {
               <Title5>Resolución</Title5>
             </div>
             <QuestionInputContainer className="questionContainer">
+              {console.log(resultOfQuestion)}
               {resultOfQuestion?.length > 0 &&
               resultOfQuestion[0]?.justification ? (
                 <Latex>{resultOfQuestion[0]?.justification}</Latex>

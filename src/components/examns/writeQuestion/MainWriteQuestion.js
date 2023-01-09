@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import { AppContext } from "../../../App";
 import { FirestoreSdkContext } from "reactfire";
@@ -38,6 +39,7 @@ import { generatorYear } from "./algorithms/generatorYear";
 import { optionDefaults } from "../../../constants/generalConstants";
 
 export default function MainWriteQuestion() {
+  const navigate = useNavigate();
   const {
     universities,
     dataSubTopics,
@@ -196,7 +198,9 @@ export default function MainWriteQuestion() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [courseSelected]);
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    !dataOfUser && navigate("/");
+  }, [dataOfUser, navigate]);
 
   if (loading.status) {
     return (

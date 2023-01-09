@@ -21,7 +21,6 @@ import { recoverUniversities } from "./algorithms/recoverUniversities";
 import { recoverDataListOfCourses } from "./algorithms/recoverDataListOfCourses";
 import { recoverDataUnreviewedQuestions } from "./algorithms/recoverDataUnreviewedQuestions";
 import { recoverDataOfAuthor } from "./algorithms/recoverDataOfAuthor";
-import { useTranslation } from "react-i18next";
 import { roles } from "./constants/roles";
 
 const AppContext = createContext();

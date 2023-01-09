@@ -51,8 +51,7 @@ export const handleChangeTextLatex = ({
     } else if (e.nativeEvent.inputType === "insertText") {
       valueAdded = e.nativeEvent.data;
     } else if (e.nativeEvent.type === "paste") {
-      valueAdded =
-        e.clipboardData.getData("text/plain").replaceAll(" ", "") + " ";
+      valueAdded = e.clipboardData.getData("text/plain");
     }
 
     lengthAdded !== null &&

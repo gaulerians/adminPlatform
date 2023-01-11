@@ -1,28 +1,28 @@
 /* eslint-disable jsx-a11y/img-redundant-alt */
-import React, { useContext, useEffect, useState, CSSProperties } from "react";
+import React, { useContext, useEffect, useState, CSSProperties } from 'react';
 // import ClipLoader from "react-spinners/ClipLoader";
-import { Text, Title4, Title5 } from "./../../../styles/textGeneral";
-import { WrapperAdmin } from "./../../../styles/generalStyles";
-import Tag from "./../../general/cOthers/Tag";
-import { TagsUnlist } from "./../../../styles/boxesGeneral";
-import { FirestoreSdkContext } from "reactfire";
-import { AppContext } from "../../../App";
-import { useNavigate } from "react-router";
-import QuestionOutput from "./QuestionOutput";
-import { searchSolutionQuestion } from "./algorithms/searchSolutionQuestion";
-import { QuestionInputContainer } from "./styles/sQuestionInput";
-import { Latex } from "../../latex/Latex";
-import TagCheck from "./TagCheck";
-import { TagContainer } from "./styles/sTagCheck";
-import { MainModalCheck } from "../../modal/MainModalCheck";
-import { MainModalComents } from "../../modal/MainModalComents";
-import { useParams } from "react-router-dom";
+import { Text, Title4, Title5 } from './../../../styles/textGeneral';
+import { WrapperAdmin } from './../../../styles/generalStyles';
+import Tag from './../../general/cOthers/Tag';
+import { TagsUnlist } from './../../../styles/boxesGeneral';
+import { FirestoreSdkContext } from 'reactfire';
+import { AppContext } from '../../../App';
+import { useNavigate } from 'react-router';
+import QuestionOutput from './QuestionOutput';
+import { searchSolutionQuestion } from './algorithms/searchSolutionQuestion';
+import { QuestionInputContainer } from './styles/sQuestionInput';
+import { Latex } from '../../latex/Latex';
+import TagCheck from './TagCheck';
+import { TagContainer } from './styles/sTagCheck';
+import { MainModalCheck } from '../../modal/MainModalCheck';
+import { MainModalComents } from '../../modal/MainModalComents';
+import { useParams } from 'react-router-dom';
 
-const override = {
-  display: "block",
-  margin: "0 auto",
-  borderColor: "red",
-};
+// const override = {
+//   display: 'block',
+//   margin: '0 auto',
+//   borderColor: 'red',
+// };
 
 export default function MainCheckQuestion() {
   const db = useContext(FirestoreSdkContext);
@@ -40,10 +40,10 @@ export default function MainCheckQuestion() {
   const [modalState, setModalState] = useState(false);
   const [modalStateTextArea, setModalStateTextArea] = useState(false);
   // const [loadingSpinner, setLoadingSpinner] = useState(true);
-  const [imgsLoaded, setImgsLoaded] = useState(true);
+  // const [imgsLoaded, setImgsLoaded] = useState(true);
 
   const courseSelectedName = listOfCourses?.find(
-    (c) => c.value === dataOfQuestionToReview?.course
+    (c) => c.value === dataOfQuestionToReview?.course,
   )?.name;
 
   const onRecoverDataOfQuestionSelected = (idQuestion) => {
@@ -102,10 +102,10 @@ export default function MainCheckQuestion() {
   // };
 
   const recoverAllDataOfQuestion = async ({ idQuestion }) => {
-    if (!idQuestion && localStorage.getItem("idQuestion")) {
-      navigate(`/question/${localStorage.getItem("idQuestion")}`);
+    if (!idQuestion && localStorage.getItem('idQuestion')) {
+      navigate(`/question/${localStorage.getItem('idQuestion')}`);
     }
-    idQuestion && localStorage.setItem("idQuestion", idQuestion);
+    idQuestion && localStorage.setItem('idQuestion', idQuestion);
     await onRecoverDataOfQuestionSelected(idQuestion);
     // await recoveryURLS({ dataOfQuestionToReview, resultOfQuestion });
     // await spaced({ urls });
@@ -113,6 +113,7 @@ export default function MainCheckQuestion() {
 
   useEffect(() => {
     recoverAllDataOfQuestion({ idQuestion });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [idQuestion]);
 
   useEffect(() => {
@@ -124,7 +125,8 @@ export default function MainCheckQuestion() {
         uqid: dataOfQuestionToReview?.uqid,
         setResultOfQuestion,
       });
-  }, [resultOfQuestion]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resultOfQuestion, dataOfQuestionToReview]);
 
   // useEffect(() => {}, [urls]);
 
@@ -144,9 +146,7 @@ export default function MainCheckQuestion() {
                 <div>
                   {
                     //AGREGAR ESTA DE ERPORTADO
-                    dataOfQuestionToReview?.isReported && (
-                      <Tag name="Reportado" type="report" />
-                    )
+                    dataOfQuestionToReview?.isReported && <Tag name="Reportado" type="report" />
                   }
                 </div>
                 <div>
@@ -154,11 +154,14 @@ export default function MainCheckQuestion() {
                     <Tag name={courseSelectedName} type="course" />
                   )}
                 </div>
-                {dataOfQuestionToReview?.university.map((u) => (
+                {
+                  //TODO: AGREGAR ESTA DE UNIVERSIDAD EN ARRAY
+                  /* {dataOfQuestionToReview?.university.map((u) => (
                   <div>
                     <Tag key={u} name={u} type="university" />
                   </div>
-                ))}
+                ))} */
+                }
               </TagsUnlist>
             </div>
             <div>
@@ -174,19 +177,17 @@ export default function MainCheckQuestion() {
             </div>
             <QuestionInputContainer className="questionContainer">
               {console.log(resultOfQuestion)}
-              {resultOfQuestion?.length > 0 &&
-              resultOfQuestion[0]?.justification ? (
+              {resultOfQuestion?.length > 0 && resultOfQuestion[0]?.justification ? (
                 <Latex>{resultOfQuestion[0]?.justification}</Latex>
               ) : (
                 <Text>No hay resolución</Text>
               )}
               <div>
-                {resultOfQuestion?.length > 0 &&
-                resultOfQuestion[0]?.urlOfImage?.urlImage ? (
+                {resultOfQuestion?.length > 0 && resultOfQuestion[0]?.urlOfImage?.urlImage ? (
                   <img
                     className="questionImage"
                     src={resultOfQuestion[0]?.urlOfImage?.urlImage}
-                    alt={"Image of solution"}
+                    alt={'Image of solution'}
                   />
                 ) : null}
               </div>
@@ -197,13 +198,13 @@ export default function MainCheckQuestion() {
                   <TagCheck
                     setModalState={setModalState}
                     modalState={modalState}
-                    name={"ok"}
-                    type={"ok"}
+                    name={'ok'}
+                    type={'ok'}
                   />
                   <TagCheck
                     setModalState={setModalState}
                     modalState={modalState}
-                    type={"no"}
+                    type={'no'}
                     setModalStateTextArea={setModalStateTextArea}
                     modalStateTextArea={modalStateTextArea}
                   />

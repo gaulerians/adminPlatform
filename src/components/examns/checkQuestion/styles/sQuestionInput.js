@@ -1,5 +1,5 @@
-import styled, { css } from "styled-components";
-import { Text } from "./../../../../styles/textGeneral";
+import styled, { css } from 'styled-components';
+import { Text } from './../../../../styles/textGeneral';
 
 export const QuestionInputContainer = styled.li`
   margin: 0;
@@ -18,12 +18,12 @@ export const QuestionInputContainer = styled.li`
     right: 0;
   }
 
-  input[type="radio"] + label > .keyLetterQuestion,
-  input[type="radio"] + label > .question {
+  input[type='radio'] + label > .keyLetterQuestion,
+  input[type='radio'] + label > .question {
     transition: all 0.2s;
   }
 
-  input[type="radio"] + label {
+  input[type='radio'] + label {
     transition: all 0.2s;
 
     &:hover > .keyLetterQuestion,
@@ -32,13 +32,13 @@ export const QuestionInputContainer = styled.li`
     }
   }
 
-  input[type="radio"]:checked + label > .keyLetterQuestion {
+  input[type='radio']:checked + label > .keyLetterQuestion {
     background: ${(props) => props.theme.iris500};
     border: 1px solid ${(props) => props.theme.iris500};
     color: ${(props) => props.theme.backgroundColor};
   }
 
-  input[type="radio"]:checked + label > .question {
+  input[type='radio']:checked + label > .question {
     border: 1px solid ${(props) => props.theme.iris500};
   }
 
@@ -61,7 +61,7 @@ export const QuestionInputContainer = styled.li`
   }
 
   label {
-    cursor: pointer;
+    // cursor: pointer;
     width: 100vw;
   }
 
@@ -94,7 +94,7 @@ export const QuestionInputContainer = styled.li`
   ${(props) =>
     props.inputResults &&
     css`
-      input[type="radio"] + label {
+      input[type='radio'] + label {
         &:hover > .keyLetterQuestion,
         &:hover > .question {
           border: 1px solid transparent;
@@ -124,7 +124,6 @@ export const TextQuestionStyled = styled(Text)`
   line-height: 1.55em;
 `;
 
-
 export const InputLabelResult = styled.label`
   cursor: default !important;
 
@@ -140,7 +139,7 @@ export const InputLabelResult = styled.label`
   }
 
   ${(props) =>
-    props.stateQuestion === "correct" &&
+    props.stateQuestion === 'correct' &&
     css`
       button {
         color: ${(props) => props.theme.green500};
@@ -163,7 +162,7 @@ export const InputLabelResult = styled.label`
     `}
 
   ${(props) =>
-    props.stateQuestion === "incorrect" &&
+    props.stateQuestion === 'incorrect' &&
     css`
       button {
         color: ${(props) => props.theme.red500};
@@ -186,7 +185,7 @@ export const InputLabelResult = styled.label`
     `}
 
   ${(props) =>
-    props.stateQuestion === "unaswered" &&
+    props.stateQuestion === 'unaswered' &&
     css`
       button {
         color: ${(props) => props.theme.yellow500};

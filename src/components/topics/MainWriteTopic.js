@@ -9,23 +9,23 @@ import Tag from '../general/cOthers/Tag';
 import { InputTextTopic } from './InputTextTopic';
 import { WrapperDuplex } from '../../styles/boxesGeneral';
 import { Button } from '../../styles/buttonGeneral';
-// import {
-//   textValidator,
-//   urlVideoFacebookValidatorR,
-//   urlVideoYoutubeValidatorR,
-// } from '../examns/writeQuestion/validators/formValidators';
 import {
-  // addDataSubVideos,
-  // deleteDataSubVideos,
+  textValidator,
+  urlVideoFacebookValidatorR,
+  urlVideoYoutubeValidatorR,
+} from '../examns/writeQuestion/validators/formValidators';
+import {
+  addDataSubVideos,
+  deleteDataSubVideos,
   resetStates as resetStatesOfAdd,
   resetStates as resetStatesOfEdit,
-  // updateTitleOfURLVideos,
+  updateTitleOfURLVideos,
 } from './algorithms/generalFunctionsWriteTopic';
 import { sendDataOfSubTopic } from './algorithms/sendDataToCreateSubTopic';
 import { filterTopics, onChangeStateModal } from '../examns/writeQuestion/functions';
 import { MainModalUpload } from '../modal/MainModalUpload';
-// import { enviarTopics } from "./algorithms/enviarTopics";
-// import { ErrorText } from '../examns/writeQuestion/styles/sErrorText';
+import { enviarTopics } from './algorithms/enviarTopics';
+import { ErrorText } from '../examns/writeQuestion/styles/sErrorText';
 import { v4 as uuidv4 } from 'uuid';
 import { ToggleSwitch } from '../general/cOthers/ToggleSwitch';
 import { recoveryDataSubTopics } from '../examns/writeQuestion/algorithms/recoveryDataSubtopics';
@@ -35,7 +35,7 @@ import { updateDataSubTopic } from './algorithms/updateDataSubTopic';
 export default function MainWriteTopic() {
   const { listOfCourses, dataOfUser, setLoading, dataSubTopics, setDataSubTopics } =
     useContext(AppContext);
-  // const uuid = uuidv4();
+  const uuid = uuidv4();
   const db = useContext(FirestoreSdkContext);
   //Estados de creacion de subtopicos
   const [coursesSelected, setCoursesSelected] = useState([]);
@@ -89,8 +89,7 @@ export default function MainWriteTopic() {
       const { id, ...rest } = obj;
       return rest;
     });
-    // TODO: Uncomment when need url social video
-    // const { urlFacebookSubTopic, urlYoutubeSubTopic } = data;
+    const { urlFacebookSubTopic, urlYoutubeSubTopic } = data;
 
     const dataToCreate = {
       subTopicId: '',
@@ -101,10 +100,10 @@ export default function MainWriteTopic() {
       courses: coursesSelected,
       title: textSubTopic,
       topics: localTopics,
-      // urlOfVideo: {
-      //   youtube: urlYoutubeSubTopic,
-      //   facebook: urlFacebookSubTopic,
-      // },
+      urlOfVideo: {
+        youtube: urlYoutubeSubTopic,
+        facebook: urlFacebookSubTopic,
+      },
       subVideos: dataSubVideosWithoutId,
     };
 
@@ -113,10 +112,10 @@ export default function MainWriteTopic() {
         idAuthor: dataOfUser?.uid,
         date: serverTimestamp(),
       },
-      // urlOfVideo: {
-      //   youtube: urlsSuTopic?.urlYoutube,
-      //   facebook: urlsSuTopic?.urlFacebook,
-      // },
+      urlOfVideo: {
+        youtube: urlsSuTopic?.urlYoutube,
+        facebook: urlsSuTopic?.urlFacebook,
+      },
       subVideos: dataSubVideosWithoutId,
       title: dataText?.textSubTopic,
       topics: {
@@ -126,7 +125,6 @@ export default function MainWriteTopic() {
     };
     if (subTopicSelected) {
       //se envia siempre que se este editando un subtopic
-      console.log(dataForUpdate);
       updateDataSubTopic({
         db,
         dataForUpdate,
@@ -135,7 +133,6 @@ export default function MainWriteTopic() {
       });
     } else {
       //se envia siempre que se este creando un subtopic
-      console.log(dataToCreate);
       sendDataOfSubTopic({
         db,
         setLoading,
@@ -183,7 +180,7 @@ export default function MainWriteTopic() {
           });
           setUrlsSuTopic({
             urlFacebook: obj?.urlOfVideo?.facebook,
-            urlYoutube: obj?.urlOfVideo?.youtube,
+            urlYoutube: obj?.urlOfVideo.youtube,
           });
         }
       });
@@ -442,18 +439,14 @@ export default function MainWriteTopic() {
           </div>
           <div>
             <WrapperDuplex>
-              {/* <InputContainer margin10B>
+              <InputContainer margin10B>
                 <label>URL de facebook:</label>
                 <input
                   type={'text'}
                   name="urlFacebookSubTopic"
                   required={true}
                   value={urlsSuTopic?.urlFacebook ?? ''}
-                  {...register(
-                    'urlFacebookSubTopic',
-                    //TODO: agregar validacion
-                    // urlVideoFacebookValidatorR
-                  )}
+                  {...register('urlFacebookSubTopic', urlVideoFacebookValidatorR)}
                   onChange={(e) => {
                     setUrlsSuTopic({
                       ...urlsSuTopic,
@@ -464,19 +457,15 @@ export default function MainWriteTopic() {
                 {errors.urlFacebookSubTopic && (
                   <ErrorText>{errors.urlFacebookSubTopic.message}</ErrorText>
                 )}
-              </InputContainer> */}
-              {/* <InputContainer margin10B>
+              </InputContainer>
+              <InputContainer margin10B>
                 <label>URL de youtube:</label>
                 <input
                   type={'text'}
                   required={true}
                   name="urlYoutubeSubTopic"
                   value={urlsSuTopic?.urlYoutube ?? ''}
-                  {...register(
-                    'urlYoutubeSubTopic',
-                    //TODO: agregar validacion
-                    // urlVideoYoutubeValidatorR
-                  )}
+                  {...register('urlYoutubeSubTopic', urlVideoYoutubeValidatorR)}
                   onChange={(e) => {
                     setUrlsSuTopic({
                       ...urlsSuTopic,
@@ -487,12 +476,14 @@ export default function MainWriteTopic() {
                 {errors.urlYoutubeSubTopic && (
                   <ErrorText>{errors.urlYoutubeSubTopic.message}</ErrorText>
                 )}
-              </InputContainer> */}
+              </InputContainer>
             </WrapperDuplex>
           </div>
-          <div>{/* <Title6>Sub - videos:</Title6> */}</div>
+          <div>
+            <Title6>Sub - videos:</Title6>
+          </div>
           <WrapperDuplex>
-            {/* <InputContainer margin10B>
+            <InputContainer margin10B>
               {dataSubVideos.length > 0 ? (
                 dataSubVideos?.map((obj, index) => (
                   <>
@@ -579,10 +570,10 @@ export default function MainWriteTopic() {
               ) : (
                 <Text>Click en el boton agregar para insertar sub-video</Text>
               )}
-            </InputContainer> */}
+            </InputContainer>
             <InputContainer>
               <div className="containerBottons">
-                {/* <Button
+                <Button
                   small
                   iris
                   onClick={(event) =>
@@ -595,7 +586,7 @@ export default function MainWriteTopic() {
                   }
                 >
                   Agregar
-                </Button> */}
+                </Button>
               </div>
             </InputContainer>
           </WrapperDuplex>

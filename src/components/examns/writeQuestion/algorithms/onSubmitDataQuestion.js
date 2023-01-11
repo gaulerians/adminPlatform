@@ -1,4 +1,4 @@
-import { collection, doc, setDoc, arrayUnion, serverTimestamp } from 'firebase/firestore';
+import { collection, doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { onSubmitImage } from './onSubmitImage';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -33,10 +33,8 @@ export const onSubmitDataQuestion = async ({
       urlVideoFacebook,
       urlVideoYoutube,
       isPreUniversityCheck,
-      course,
     } = data;
     const refQuestionsDb = doc(collection(db, 'questions'), uuid);
-    const refQuestionsBankDb = doc(collection(db, 'questionsBank'), uuid);
     const refSolutionsDb = doc(collection(db, 'solutions'), uuid);
 
     const dataUrls =
@@ -80,12 +78,13 @@ export const onSubmitDataQuestion = async ({
         dateUpload: serverTimestamp(),
         university: university, //TODO: cabiar el envio de datos en modo array
         yearOfQuestion: year ?? null,
-        course: course ?? null,
+        course: courseSelectedName ?? null,
         isQuestionOfPreuniversity: isPreUniversityCheck === 'true' ? true : false,
         subTopicID: subTopicSelected,
         latexQuestion: question.question?.text.replaceAll(' ', '\\space '),
         SEOQuestion: question.question.plainText,
         typeQuestion: typeQuestion,
+        week: parseInt(data.week),
         urlOfImage: {
           ...(dataUrls.length > 0
             ? dataUrls.filter((obj) => obj.typeImage === 'question')[0]
@@ -111,33 +110,8 @@ export const onSubmitDataQuestion = async ({
       },
     };
 
-    const dataForQuestionBank = {
-      uqid: uuid,
-      UrlOfImage:
-        dataUrls?.length > 0
-          ? dataUrls.filter((obj) => obj.typeImage === 'question')[0]?.urlImage ?? null
-          : null,
-      keys: alternatives.map((key) => key.alternative.text),
-      course: courseSelectedName ?? null,
-      isKatex: true,
-      week: parseInt(data.week),
-      question: question.question?.text,
-      university: university.length > 0 ? university[0] : null,
-      level: 15000,
-    };
-
     setDoc(refQuestionsDb, questionData, { merge: true });
     setDoc(refSolutionsDb, solutionData, { merge: true });
-    setDoc(refQuestionsBankDb, dataForQuestionBank, { merge: true });
-    setDoc(
-      doc(db, 'indices', 'questionsPerWeek'),
-      {
-        [courseSelectedName]: {
-          [`week${data.week}`]: arrayUnion(refQuestionsBankDb),
-        },
-      },
-      { merge: true },
-    );
 
     return {
       status: 200,

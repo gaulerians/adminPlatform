@@ -42,10 +42,6 @@ export default function MainCheckQuestion() {
   // const [loadingSpinner, setLoadingSpinner] = useState(true);
   // const [imgsLoaded, setImgsLoaded] = useState(true);
 
-  const courseSelectedName = listOfCourses?.find(
-    (c) => c.value === dataOfQuestionToReview?.course,
-  )?.name;
-
   const onRecoverDataOfQuestionSelected = (idQuestion) => {
     // eslint-disable-next-line array-callback-return
     unreviewedQuestionData.filter((question) => {
@@ -128,9 +124,18 @@ export default function MainCheckQuestion() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resultOfQuestion, dataOfQuestionToReview]);
 
-  // useEffect(() => {}, [urls]);
+  const dataForQuestionBank = {
+    uqid: dataOfQuestionToReview?.uqid ?? null,
+    urlImage: dataOfQuestionToReview?.urlOfImage?.urlImage ?? null,
+    keys: dataOfQuestionToReview?.keys.map((item) => item.key) ?? null,
+    course: dataOfQuestionToReview?.course ?? null,
+    isKatex: true,
+    week: dataOfQuestionToReview?.week ?? null,
+    question: dataOfQuestionToReview?.latexQuestion ?? null,
+    university: dataOfQuestionToReview?.university[0] ?? null,
+    level: 15000,
+  };
 
-  // setLoading({ state: true, text: "Cargando pergunta..." });
   return (
     <>
       <main>
@@ -151,17 +156,14 @@ export default function MainCheckQuestion() {
                 </div>
                 <div>
                   {dataOfQuestionToReview?.course && (
-                    <Tag name={courseSelectedName} type="course" />
+                    <Tag name={dataOfQuestionToReview?.course} type="course" />
                   )}
                 </div>
-                {
-                  //TODO: AGREGAR ESTA DE UNIVERSIDAD EN ARRAY
-                  /* {dataOfQuestionToReview?.university.map((u) => (
+                {dataOfQuestionToReview?.university.map((u) => (
                   <div>
                     <Tag key={u} name={u} type="university" />
                   </div>
-                ))} */
-                }
+                ))}
               </TagsUnlist>
             </div>
             <div>
@@ -176,7 +178,6 @@ export default function MainCheckQuestion() {
               <Title5>Resolución</Title5>
             </div>
             <QuestionInputContainer className="questionContainer">
-              {console.log(resultOfQuestion)}
               {resultOfQuestion?.length > 0 && resultOfQuestion[0]?.justification ? (
                 <Latex>{resultOfQuestion[0]?.justification}</Latex>
               ) : (
@@ -220,6 +221,7 @@ export default function MainCheckQuestion() {
               uqid={dataOfQuestionToReview?.uqid}
               navigate={navigate}
               setResultOfQuestion={setResultOfQuestion}
+              dataForQuestionBank={dataForQuestionBank}
             />
             <MainModalComents
               modalStateTextArea={modalStateTextArea}

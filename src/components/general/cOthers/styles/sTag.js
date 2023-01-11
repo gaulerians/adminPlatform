@@ -1,4 +1,4 @@
-import styled, { css } from "styled-components";
+import styled, { css } from 'styled-components';
 
 export const TagContainer = styled.div`
   padding: 7px 15px;
@@ -10,35 +10,35 @@ export const TagContainer = styled.div`
   cursor: default;
 
   ${(props) =>
-    props.type == "report" &&
+    props.type == 'report' &&
     css`
       background: ${(props) => props.theme.red300};
       color: ${(props) => props.theme.red500};
     `}
 
   ${(props) =>
-    props.type === "university" &&
+    props.type === 'university' &&
     css`
-      background: #b9f1ee;
+      background: #bc3;
       color: #05322f;
     `}
 
   ${(props) =>
-    (props.name === "Biología" || props.name === "biology") &&
+    (props.name === 'Biología' || props.name === 'biology') &&
     css`
       background: #bbf9b9;
       color: #083906;
     `}
 
     ${(props) =>
-    props.name === "algebra" &&
+    props.name === 'algebra' &&
     css`
       background: #bb4;
       color: #083906;
     `}
 
     ${(props) =>
-    props.name === "Anatomía humana" &&
+    props.name === 'Anatomía humana' &&
     css`
       background: #bb4;
       color: #083906;
@@ -46,45 +46,45 @@ export const TagContainer = styled.div`
 
 
       ${(props) =>
-    props.name === "geometría" &&
+    props.name === 'geometría' &&
     css`
       background: #bc3;
       color: #083906;
     `}
 
   ${(props) =>
-    props.name === "Física" &&
+    props.name === 'Física' &&
     css`
       background: #f9e9b9;
       color: #5f3a00;
     `}
   ${(props) =>
-    props.name === "Razonameinto " &&
+    props.name === 'Razonameinto ' &&
     css`
       background: #f9b9b9;
       color: #5f0000;
     `}
   ${(props) =>
-    props.name === "Química" &&
+    props.name === 'Química' &&
     css`
       background: #f9b9b9;
       color: #5f0000;
     `}
   ${(props) =>
-    props.name === "Historia" &&
+    props.name === 'Historia' &&
     css`
       background: #b9f1ee;
       color: #05322f;
     `}
   ${(props) =>
-    props.name === "Historia del Perú" &&
+    props.name === 'Historia del Perú' &&
     css`
       background: #b9f1ee;
       color: #05322f;
     `}
 
   ${(props) =>
-    props.type == "course" &&
+    props.type == 'course' &&
     css`
       background: #b9f1ee;
       color: #083906;

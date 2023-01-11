@@ -35,7 +35,18 @@ export const ContentDetailsQuestion = ({
           </div>
           <div className="container-duplex">
             <Text>Curso: {course}</Text>
-            {/* <Text>Universidades: {universities?.join(', ')}</Text> */}
+            <Text>
+              Universidades:{' '}
+              <span
+                style={
+                  {
+                    // color: 'blue',
+                  }
+                }
+              >
+                {universities?.join(', ')}
+              </span>
+            </Text>
           </div>
         </div>
       </div>

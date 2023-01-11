@@ -1,59 +1,49 @@
-import React, { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router";
-import { useForm } from "react-hook-form";
-import { AppContext } from "../../../App";
-import { FirestoreSdkContext } from "reactfire";
-import "katex/dist/katex.min.css";
-import { Latex } from "../../latex/Latex";
+import React, { useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
+import { useForm } from 'react-hook-form';
+import { AppContext } from '../../../App';
+import { FirestoreSdkContext } from 'reactfire';
+import 'katex/dist/katex.min.css';
+import { Latex } from '../../latex/Latex';
 
 // IMPORT COMPONENTS AND STYLES
-import { Title4, Title5, Title6 } from "./../../../styles/textGeneral";
-import { Button } from "./../../../styles/buttonGeneral";
-import { WrapperAdmin } from "./../../../styles/generalStyles";
-import { MainModalUpload } from "../.././modal/MainModalUpload";
-import { ErrorText } from "./styles/sErrorText";
-import { InputContainer, FormContainer } from "./../../../styles/inputGeneral";
-import { WrapperDuplex } from "./../../../styles/boxesGeneral";
-import { ButtonLatex } from "./styles/sButtonLatex";
-import Tag from "../../general/cOthers/Tag";
-import InputSvg from "./../../general/cOthers/InputSvg";
-import Mainspinner from "../../spinner/MainSpinner";
+import { Title4, Title5, Title6 } from './../../../styles/textGeneral';
+import { Button } from './../../../styles/buttonGeneral';
+import { WrapperAdmin } from './../../../styles/generalStyles';
+import { MainModalUpload } from '../.././modal/MainModalUpload';
+import { ErrorText } from './styles/sErrorText';
+import { InputContainer, FormContainer } from './../../../styles/inputGeneral';
+import { WrapperDuplex } from './../../../styles/boxesGeneral';
+import { ButtonLatex } from './styles/sButtonLatex';
+import Tag from '../../general/cOthers/Tag';
+import InputSvg from './../../general/cOthers/InputSvg';
+import Mainspinner from '../../spinner/MainSpinner';
 
 //IMPORTS FUNCTIONS
-import { recoveryDataSubTopics } from "./algorithms/recoveryDataSubtopics";
-import { functionLatex } from "../functionsLatex/functionsLatex";
-import { onSubmitDataQuestion } from "./algorithms/onSubmitDataQuestion";
-import {
-  handleClickFunction,
-  filterTopics,
-  resetValues,
-  onChangeStateModal,
-} from "./functions";
+import { recoveryDataSubTopics } from './algorithms/recoveryDataSubtopics';
+import { functionLatex } from '../functionsLatex/functionsLatex';
+import { onSubmitDataQuestion } from './algorithms/onSubmitDataQuestion';
+import { handleClickFunction, filterTopics, resetValues, onChangeStateModal } from './functions';
 import {
   urlVideoFacebookValidatorNR,
   urlVideoYoutubeValidatorNR,
   typeQuestionValidator,
   requeridValidator,
-} from "./validators/formValidators";
-import { generatorYear } from "./algorithms/generatorYear";
-import { optionDefaults } from "../../../constants/generalConstants";
+} from './validators/formValidators';
+import { generatorYear } from './algorithms/generatorYear';
+import { optionDefaults } from '../../../constants/generalConstants';
 
 export default function MainWriteQuestion() {
   const navigate = useNavigate();
-  const {
-    universities,
-    dataSubTopics,
-    setDataSubTopics,
-    listOfCourses,
-    dataOfUser,
-  } = useContext(AppContext);
+  const { universities, dataSubTopics, setDataSubTopics, listOfCourses, dataOfUser } =
+    useContext(AppContext);
   const db = useContext(FirestoreSdkContext);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({
-    mode: "onChange",
+    mode: 'onChange',
   });
   const [loading, setLoading] = useState({ status: false, title: null });
   const [modalState, setModalState] = useState(false);
@@ -62,7 +52,7 @@ export default function MainWriteQuestion() {
   const [topicsFilters, setTopicsFilters] = useState([]);
   const [topicSelected, setTopicSelected] = useState(null);
   const [subTopicSelected, setSubTopicSelected] = useState(null);
-  const [selectionCategory, setSelectionCategory] = useState("");
+  const [selectionCategory, setSelectionCategory] = useState('');
   const [superiorSelections, setSuperiorSelections] = useState({
     selections: { start: 0, end: 0 },
     setSelections: null,
@@ -113,20 +103,14 @@ export default function MainWriteQuestion() {
     ?.map((course) => course.value)
     .sort((a, b) => a.localeCompare(b));
 
-  const courseSelectedName = listOfCourses?.find(
-    (c) => c.value === courseSelected
-  )?.name;
+  const courseSelectedName = listOfCourses?.find((c) => c.value === courseSelected)?.name;
 
   const onTagDeleteU = (tagName) => {
-    setUniversitiesSelected(
-      [...universitiesSelected].filter((u) => u !== tagName)
-    );
+    setUniversitiesSelected([...universitiesSelected].filter((u) => u !== tagName));
   };
 
   const onSubmit = async (data) => {
-    const alternativesImage = alternatives.filter(
-      (a) => a.alternative.image !== null
-    );
+    const alternativesImage = alternatives.filter((a) => a.alternative.image !== null);
 
     const imagesArr = Object.values({
       ...(question.question.image
@@ -199,15 +183,11 @@ export default function MainWriteQuestion() {
   }, [courseSelected]);
 
   useEffect(() => {
-    !dataOfUser && navigate("/");
+    !dataOfUser && navigate('/');
   }, [dataOfUser, navigate]);
 
   if (loading.status) {
-    return (
-      <Mainspinner
-        title={loading.title ?? "Hey tú, sí tú... ¡ME IMPORTAS MUCHO!"}
-      />
-    );
+    return <Mainspinner title={loading.title ?? 'Hey tú, sí tú... ¡ME IMPORTAS MUCHO!'} />;
   }
   return (
     <main>
@@ -229,14 +209,11 @@ export default function MainWriteQuestion() {
                 <div className="select">
                   <select
                     id="standard-select"
-                    {...register("university", requeridValidator)}
+                    {...register('university', requeridValidator)}
                     onChange={(e) =>
                       e.target.selectedIndex !== 0
                         ? setUniversitiesSelected([
-                            ...new Set([
-                              ...universitiesSelected,
-                              e.target.value,
-                            ]),
+                            ...new Set([...universitiesSelected, e.target.value]),
                           ])
                         : undefined
                     }
@@ -252,17 +229,10 @@ export default function MainWriteQuestion() {
                 </div>
               </InputContainer>
               {universitiesSelected.map((chip, index) => (
-                <Tag
-                  key={index}
-                  name={chip}
-                  type="university"
-                  onDelete={onTagDeleteU}
-                />
+                <Tag key={index} name={chip} type="university" onDelete={onTagDeleteU} />
               ))}
             </div>
-            {errors.university && (
-              <ErrorText>{errors.university.message}</ErrorText>
-            )}
+            {errors.university && <ErrorText>{errors.university.message}</ErrorText>}
             <div className="inputContainerDuplo">
               <InputContainer margin20B>
                 <label>¿Pertenece al centro preuniversitario? (Opcional)</label>
@@ -272,7 +242,7 @@ export default function MainWriteQuestion() {
                       value={true}
                       name="isPreUniversityCheck"
                       type="checkbox"
-                      {...register("isPreUniversityCheck")}
+                      {...register('isPreUniversityCheck')}
                     />
                     Si
                   </label>
@@ -285,13 +255,11 @@ export default function MainWriteQuestion() {
                 <div className="select">
                   <select
                     id="standard-select"
-                    {...register("course", requeridValidator, {
+                    {...register('course', requeridValidator, {
                       required: true,
                     })}
-                    defaultValue={courseSelected ?? ""}
-                    onChange={(e) =>
-                      setCourseSelected(e.target?.value ? e.target?.value : [])
-                    }
+                    defaultValue={courseSelected ?? ''}
+                    onChange={(e) => setCourseSelected(e.target?.value ? e.target?.value : [])}
                   >
                     <option>Seleccione curso</option>
                     {listOfCoursesNames?.map((courses, index) => (
@@ -302,17 +270,15 @@ export default function MainWriteQuestion() {
                   </select>
                   <span className="focus"></span>
                 </div>
-                {errors.course && (
-                  <ErrorText>{errors.course.message}</ErrorText>
-                )}
+                {errors.course && <ErrorText>{errors.course.message}</ErrorText>}
               </InputContainer>
               <InputContainer noMargin>
                 <label>Tema *</label>
                 <div className="select">
                   <select
                     id="standard-select"
-                    defaultValue={topicSelected ?? ""}
-                    {...register("topic", requeridValidator)}
+                    defaultValue={topicSelected ?? ''}
+                    {...register('topic', requeridValidator)}
                     onChange={(e) => setTopicSelected(e.target.value)}
                   >
                     <option>Seleccione tema</option>
@@ -338,13 +304,9 @@ export default function MainWriteQuestion() {
                 <div className="select">
                   <select
                     id="standard-select"
-                    {...register("subTopic", requeridValidator)}
-                    defaultValue={
-                      dataSubTopics.length > 0 ? dataSubTopics : undefined
-                    }
-                    onChange={(e) =>
-                      setSubTopicSelected(e.target.selectedOptions[0].id)
-                    }
+                    {...register('subTopic', requeridValidator)}
+                    defaultValue={dataSubTopics.length > 0 ? dataSubTopics : undefined}
+                    onChange={(e) => setSubTopicSelected(e.target.selectedOptions[0].id)}
                   >
                     <option>Seleccione Subtema</option>
                     {dataSubTopics
@@ -352,15 +314,11 @@ export default function MainWriteQuestion() {
                         (st) =>
                           st.courses?.includes(courseSelectedName) &&
                           Object.values(st.topics).includes(topicSelected) &&
-                          st.title
+                          st.title,
                       )
                       .map((subtopic, index) => {
                         return (
-                          <option
-                            key={index}
-                            value={subtopic.title}
-                            id={subtopic.subTopicId}
-                          >
+                          <option key={index} value={subtopic.title} id={subtopic.subTopicId}>
                             {subtopic.title}
                           </option>
                         );
@@ -368,18 +326,12 @@ export default function MainWriteQuestion() {
                   </select>
                   <span className="focus"></span>
                 </div>
-                {errors.subTopic && (
-                  <ErrorText>{errors.subTopic.message}</ErrorText>
-                )}
+                {errors.subTopic && <ErrorText>{errors.subTopic.message}</ErrorText>}
               </InputContainer>
               <InputContainer noMargin>
                 <label>Año (opcional)</label>
                 <div className="select">
-                  <select
-                    id="standard-select"
-                    defaultValue={null}
-                    {...register("year")}
-                  >
+                  <select id="standard-select" defaultValue={null} {...register('year')}>
                     <option>{optionDefaults.SELECT_YEAR}</option>
                     {generatorYear().map((year, index) => {
                       return (
@@ -398,7 +350,7 @@ export default function MainWriteQuestion() {
                   <select
                     id="standard-select"
                     defaultValue={null}
-                    {...register("week", requeridValidator)}
+                    {...register('week', requeridValidator)}
                   >
                     <option>Seleccione la semana</option>
                     {/* Contador de doce semanas no quitar la v*/}
@@ -421,7 +373,7 @@ export default function MainWriteQuestion() {
                       value="simulacro"
                       name="typeOfQuestion"
                       type="checkbox"
-                      {...register("typeQuestion", typeQuestionValidator)}
+                      {...register('typeQuestion', typeQuestionValidator)}
                     />
                     Simulacros
                   </label>
@@ -430,23 +382,21 @@ export default function MainWriteQuestion() {
                       value="cuestionario"
                       name="typeOfQuestion"
                       type="checkbox"
-                      {...register("typeQuestion", typeQuestionValidator)}
+                      {...register('typeQuestion', typeQuestionValidator)}
                     />
                     Questionario
                   </label>
                   <label className="inputRadioContainer inputType">
                     <input
-                      value={"deco"}
+                      value={'deco'}
                       name="typeOfQuestion"
                       type="checkbox"
-                      {...register("typeQuestion", typeQuestionValidator)}
+                      {...register('typeQuestion', typeQuestionValidator)}
                     />
                     DECO
                   </label>
                 </div>
-                {errors.typeQuestion && (
-                  <ErrorText>{errors.typeQuestion.message}</ErrorText>
-                )}
+                {errors.typeQuestion && <ErrorText>{errors.typeQuestion.message}</ErrorText>}
               </InputContainer>
             </div>
             <WrapperDuplex>
@@ -477,10 +427,10 @@ export default function MainWriteQuestion() {
                             <option
                               key={index}
                               value={`${lat.category}${
-                                lat.subCategory ? "-" + lat.subCategory : ""
+                                lat.subCategory ? '-' + lat.subCategory : ''
                               }`}
                             >{`${lat.category}${
-                              lat.subCategory ? "-" + lat.subCategory : ""
+                              lat.subCategory ? '-' + lat.subCategory : ''
                             }`}</option>
                           );
                         })}
@@ -491,10 +441,10 @@ export default function MainWriteQuestion() {
                 <div>
                   {functionLatex
                     .filter((lat) =>
-                      selectionCategory.split("-")?.length > 1
-                        ? lat.category === selectionCategory.split("-")[0] &&
-                          lat.subCategory === selectionCategory.split("-")[1]
-                        : lat.category === selectionCategory
+                      selectionCategory.split('-')?.length > 1
+                        ? lat.category === selectionCategory.split('-')[0] &&
+                          lat.subCategory === selectionCategory.split('-')[1]
+                        : lat.category === selectionCategory,
                     )
                     .map((lat, index) =>
                       lat.functions.map((func, index) => (
@@ -516,7 +466,7 @@ export default function MainWriteQuestion() {
                         >
                           <Latex key={index}>{func.expressionLatex}</Latex>
                         </ButtonLatex>
-                      ))
+                      )),
                     )}
                 </div>
                 <div>
@@ -539,10 +489,10 @@ export default function MainWriteQuestion() {
               </div>
               <div
                 style={{
-                  backgroundColor: "#fff",
-                  borderRadius: "10px",
-                  padding: "10px",
-                  boxShadow: "0px 0px 10px 0px rgba(0,0,0,0.25)",
+                  backgroundColor: '#fff',
+                  borderRadius: '10px',
+                  padding: '10px',
+                  boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.25)',
                 }}
               >
                 <Title5>Vista previa</Title5>
@@ -550,14 +500,14 @@ export default function MainWriteQuestion() {
                 <div>
                   <Latex>
                     {question.question?.text
-                      ? question.question?.text.replaceAll(" ", "\\space ")
-                      : "\\blacktriangleright"}
+                      ? question.question?.text.replaceAll(' ', '\\space ')
+                      : '\\blacktriangleright'}
                   </Latex>
                   {question.question.image && (
                     // eslint-disable-next-line jsx-a11y/alt-text
                     <img
                       src={URL.createObjectURL(question.question.image)}
-                      style={{ width: "300px", marginTop: "10px" }}
+                      style={{ width: '300px', marginTop: '10px' }}
                     />
                   )}
                 </div>
@@ -575,14 +525,14 @@ export default function MainWriteQuestion() {
                         alt.alternative?.text
                           ? index + 1 === 1
                             ? `\\textcolor{green}{${alt.alternative?.text.replaceAll(
-                                " ",
-                                "\\space "
+                                ' ',
+                                '\\space ',
                               )}}`
                             : `\\textcolor{red}{${alt.alternative?.text.replaceAll(
-                                " ",
-                                "\\space "
+                                ' ',
+                                '\\space ',
                               )}}`
-                          : ""
+                          : ''
                       }
                       `}</Latex>
                     </div>
@@ -591,16 +541,13 @@ export default function MainWriteQuestion() {
                 <div>
                   <Title5>Solución: </Title5>
                   <Latex>
-                    {question.solution?.textSolution?.replaceAll(
-                      " ",
-                      "\\space "
-                    ) ?? ""}
+                    {question.solution?.textSolution?.replaceAll(' ', '\\space ') ?? ''}
                   </Latex>
                   {question.solution.imageSolution && (
                     // eslint-disable-next-line jsx-a11y/alt-text
                     <img
                       src={URL.createObjectURL(question.solution.imageSolution)}
-                      style={{ width: "300px", marginTop: "10px" }}
+                      style={{ width: '300px', marginTop: '10px' }}
                     />
                   )}
                 </div>
@@ -613,8 +560,8 @@ export default function MainWriteQuestion() {
                   <label>URL del video de Youtube (Opcional)</label>
                   <input
                     type="url"
-                    defaultValue={""}
-                    {...register("urlVideoYoutube", urlVideoYoutubeValidatorNR)} //TODO: String.includes(youtube.com)
+                    defaultValue={''}
+                    {...register('urlVideoYoutube', urlVideoYoutubeValidatorNR)} //TODO: String.includes(youtube.com)
                     onChange={(e) => {
                       setQuestion({
                         ...question,
@@ -633,11 +580,8 @@ export default function MainWriteQuestion() {
                   <label>URL del video de Facebook (Opcional)</label>
                   <input
                     type="url"
-                    defaultValue={""}
-                    {...register(
-                      "urlVideoFacebook",
-                      urlVideoFacebookValidatorNR
-                    )} //TODO: String.includes(fb.watch)
+                    defaultValue={''}
+                    {...register('urlVideoFacebook', urlVideoFacebookValidatorNR)} //TODO: String.includes(fb.watch)
                     onChange={(e) => {
                       setQuestion({
                         ...question,

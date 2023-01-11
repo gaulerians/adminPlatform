@@ -1,9 +1,10 @@
-import React, { useContext } from "react";
-import { AppContext } from "../../App";
-import { Button } from "../../styles/buttonGeneral";
-import { UploadStatusRevisedQuestion } from "../examns/checkQuestion/algorithms/updateStatusQuestion";
-import { ReactComponent as CloseSVG } from "./../../icons/close.svg";
-import { Overlay, ModalContainer } from "./styles/sMainModal";
+import React, { useContext } from 'react';
+import { AppContext } from '../../App';
+import { Button } from '../../styles/buttonGeneral';
+import { sendQuestionForQuestionBank } from '../examns/checkQuestion/algorithms/sendQuestionForQuestionBank';
+import { UploadStatusRevisedQuestion } from '../examns/checkQuestion/algorithms/updateStatusQuestion';
+import { ReactComponent as CloseSVG } from './../../icons/close.svg';
+import { Overlay, ModalContainer } from './styles/sMainModal';
 
 export function MainModalCheck({
   db,
@@ -14,6 +15,7 @@ export function MainModalCheck({
   title,
   subTopicId,
   setResultOfQuestion,
+  dataForQuestionBank,
 }) {
   const {
     setLoading,
@@ -26,7 +28,7 @@ export function MainModalCheck({
   return (
     <>
       {modalState && (
-        <>
+        <div>
           <Overlay
             onClick={() => {
               setModalState(false);
@@ -42,46 +44,47 @@ export function MainModalCheck({
                 }}
               />
             </div>
-            <div>
-              <div>
-                <Button
-                  primary
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setModalState(false);
-                  }}
-                >
-                  {"No"}
-                </Button>
-              </div>
-              <div>
-                <Button
-                  iris
-                  secundary
-                  onClick={() => {
-                    subTopicId &&
-                      UploadStatusRevisedQuestion({
-                        db,
-                        uqid,
-                        setLoading,
-                        navigate,
-                        setUnreviewedQuestionData,
-                        unreviewedQuestionData,
-                        dataOfUser,
-                        subTopicId,
-                      });
-                    setDataOfQuestionToReview(null);
-                    setResultOfQuestion(null);
-                    localStorage.setItem("idQuestion", "");
-                    setModalState(!modalState);
-                  }}
-                >
-                  {"Si"}
-                </Button>
-              </div>
+            <div className="buttonsContent">
+              <Button
+                primary
+                onClick={(e) => {
+                  e.preventDefault();
+                  setModalState(false);
+                }}
+              >
+                {'No'}
+              </Button>
+              <Button
+                iris
+                secundary
+                onClick={() => {
+                  sendQuestionForQuestionBank({
+                    db,
+                    dataForQuestionBank,
+                    setLoading,
+                  });
+                  subTopicId &&
+                    UploadStatusRevisedQuestion({
+                      db,
+                      uqid,
+                      setLoading,
+                      navigate,
+                      setUnreviewedQuestionData,
+                      unreviewedQuestionData,
+                      dataOfUser,
+                      subTopicId,
+                    });
+                  setDataOfQuestionToReview(null);
+                  setResultOfQuestion(null);
+                  localStorage.setItem('idQuestion', '');
+                  setModalState(!modalState);
+                }}
+              >
+                {'Si'}
+              </Button>
             </div>
           </ModalContainer>
-        </>
+        </div>
       )}
     </>
   );
